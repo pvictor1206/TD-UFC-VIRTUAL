@@ -1,0 +1,361 @@
+﻿
+space    #text                                                                                                                                                                          
+-----    -----                                                                                                                                                                          
+preserve FILOSOFIA DA TECNOLOGIA EaD                                                                                                                                                    
+preserve AULA 1                                                                                                                                                                         
+preserve Ã¡udio 1 aula 1 filotec                                                                                                                                                        
+preserve [                                                                                                                                                                              
+preserve Linha lateral no texto                                                                                                                                                         
+preserve ]                                                                                                                                                                              
+preserve A Filosofia da Tecnologia Ã© um campo que analisa criticamente o papel da tÃ©cnica e da tecnologia na vida humana, na cultura e na sociedade.                                  
+preserve Ela abrange desde reflexÃµes ontolÃ³gicas (o que Ã© a tÃ©cnica?), atÃ© Ã©ticas (como devemos usÃ¡-la?) e polÃ­ticas (quem controla a tecnologia e para quÃª?).                 
+preserve O ponto de partida Ã  brasileira -                                                                                                                                             
+preserve [Dropdown                                                                                                                                                                      
+preserve ]                                                                                                                                                                              
+preserve [                                                                                                                                                                              
+preserve Cada bullet point Ã© um dropdown                                                                                                                                               
+preserve  ]                                                                                                                                                                             
+preserve Marilena ChauÃ­, filÃ³sofa brasileira, que na minha forma de entender define a filosofia como:                                                                                 
+preserve Atividade crÃ­tica: questiona o que parece Ã³bvio, revelando pressupostos ocultos.                                                                                             
+preserve Busca de fundamentos: nÃ£o se contenta com opiniÃµes, procura razÃµes universais.                                                                                              
+preserve Autonomia do pensamento: pensar por si mesmo, libertar-se do senso comum e da aceitaÃ§Ã£o passiva.                                                                             
+preserve HistÃ³rico-social: a filosofia nasce em contextos especÃ­ficos, mas sempre interroga a realidade de modo radical.                                                              
+preserve Ou seja - perguntar criticamente â€œpor quÃª?â€ e â€œpara quÃª?â€ sobre aquilo que                                                                                           
+preserve parece natural                                                                                                                                                                 
+preserve .                                                                                                                                                                              
+preserve [                                                                                                                                                                              
+preserve Fazer quadrinhos ou vÃ­deo                                                                                                                                                     
+preserve  ]                                                                                                                                                                             
+preserve HISTORINHA DE FILOSOFIAS                                                                                                                                                       
+preserve O BUTECO, O CARA E O OUTRO CARA.                                                                                                                                               
+preserve E quanto a Filosofia da Tecnologia:                                                                                                                                            
+preserve A tecnologia, muitas vezes, Ã© vivida como Ã³bvia e inevitÃ¡vel:                                                                                                               
+preserve [                                                                                                                                                                              
+preserve Cada bullet point Ã© um card diferente                                                                                                                                         
+preserve  ]                                                                                                                                                                             
+preserve â€œO celular Ã© assim porque a tÃ©cnica evolui.â€                                                                                                                             
+preserve â€œAs redes sociais sÃ£o neutras, depende de como usamos.â€                                                                                                                   
+preserve â€œIA Ã© sÃ³ mais uma ferramenta.â€                                                                                                                                           
+preserve A filosofia da tecnologia, inspirado no espÃ­rito de ChauÃ­, nos faz estranhar o familiar:                                                                                     
+preserve [                                                                                                                                                                              
+preserve Cada bullet point Ã© um card diferente                                                                                                                                         
+preserve  ]                                                                                                                                                                             
+preserve Por que aceitamos certas tecnologias e rejeitamos outras?                                                                                                                      
+preserve Quem decide quais tecnologias serÃ£o produzidas?                                                                                                                               
+preserve A quem serve a inovaÃ§Ã£o?                                                                                                                                                     
+preserve Quais valores estÃ£o embutidos em um artefato?                                                                                                                                 
+preserve Um dos â€œnervosâ€ centrais da Filosofia da Tecnologia:                                                                                                                       
+preserve                                                                                                                                                                                
+preserve a naturalizaÃ§Ã£o da tÃ©cnica como estratÃ©gia de poder.                                                                                                                       
+preserve A ideia central: naturalizaÃ§Ã£o da tecnologia                                                                                                                                 
+preserve Grandes empresÃ¡rios e corporaÃ§Ãµes financiam pesquisas e contratam especialistas para criar novos artefatos tÃ©cnicos (apps, algoritmos, dispositivos, biotecnologias etc).  
+preserve MAS VOCÃŠ PESQUISA O QUE EU QUERO!                                                                                                                                             
+preserve Esses artefatos nÃ£o sÃ£o neutros: carregam interesses econÃ´micos, polÃ­ticos e culturais.                                                                                    
+preserve LEMBRAR DE SEMPRE PERGUNTAR - â€œCARREGAM PARA QUEM?                                                                                                                           
+preserve Para garantir sua aceitaÃ§Ã£o, o discurso empresarial busca apresentÃ¡-los como naturais e inevitÃ¡veis:                                                                       
+preserve â€œO futuro Ã© digital.â€                                                                                                                                                     
+preserve â€œNÃ£o hÃ¡ como parar a IA.â€                                                                                                                                                
+preserve â€œTodo mundo vai usar isso.â€                                                                                                                                                
+preserve TIPO: VAI ACONTECER ASSIM MESMO!                                                                                                                                               
+preserve Resultado: as pessoas deixam de ver que haviam outras possibilidades de design, outras escolhas de uso, outras polÃ­ticas possÃ­veis.                                          
+preserve A Filosofia da Tecnologia pode servir para                                                                                                                                     
+preserve estranhar o familiar e desnaturalizar o que parece dado.                                                                                                                       
+preserve [                                                                                                                                                                              
+preserve TÃ­tulo em caps lock                                                                                                                                                           
+preserve ]                                                                                                                                                                              
+preserve [                                                                                                                                                                              
+preserve Caixa de texto                                                                                                                                                                 
+preserve ]                                                                                                                                                                              
+preserve Aplicada Ã  tecnologia:                                                                                                                                                        
+preserve â€¦ a filosofia revela que o celular, o algoritmo, a plataforma                                                                                                                
+preserve nÃ£o sÃ£o naturais,                                                                                                                                                            
+preserve  mas frutos de escolhas humanas situadas em contextos de poder.                                                                                                                
+preserve                                                                                                                                                                                
+preserve [                                                                                                                                                                              
+preserve Linha lateral do texto                                                                                                                                                         
+preserve ]                                                                                                                                                                              
+preserve Assim, Filosofia da Tecnologia pode servir como                                                                                                                                
+preserve antÃ­doto ao discurso                                                                                                                                                          
+preserve  que tenta impor a tecnologia como inevitÃ¡vel.                                                                                                                                
+preserve [                                                                                                                                                                              
+preserve Cada autor Ã© um dropdown                                                                                                                                                      
+preserve ]                                                                                                                                                                              
+preserve Heidegger                                                                                                                                                                      
+preserve : mostra que a tÃ©cnica moderna revela o mundo como â€œrecursoâ€ (                                                                                                            
+preserve Bestand                                                                                                                                                                        
+preserve ). O discurso de inevitabilidade empresarial Ã© um exemplo de                                                                                                                  
+preserve Gestell                                                                                                                                                                        
+preserve : tudo aparece como disponÃ­vel e sem alternativas.                                                                                                                            
+preserve Ellul                                                                                                                                                                          
+preserve : afirmava que a tÃ©cnica evolui autonomamente. O que os grandes financiadores de desenvolvimentos tecnolÃ³gicos fazem Ã© encenar essa autonomia para ocultar seus interesses. 
+preserve Simondon                                                                                                                                                                       
+preserve : lembraria que cada objeto tÃ©cnico poderia ser desenvolvido de outro modo. A â€œinevitabilidadeâ€ Ã© mascarar as alternativas de individuaÃ§Ã£o tÃ©cnica.                   
+preserve Vieira Pinto:                                                                                                                                                                  
+preserve  enfatizou que a â€œnaturalizaÃ§Ã£oâ€ da tÃ©cnica Ã© mecanismo de dependÃªncia e dominaÃ§Ã£o; serve para perpetuar a subordinaÃ§Ã£o tecnolÃ³gica da periferia ao centro.      
+preserve [                                                                                                                                                                              
+preserve Inserir VÃ­deo ou quadrinhos                                                                                                                                                   
+preserve ]                                                                                                                                                                              
+preserve HISTORINHA DE FILOSOFIAS                                                                                                                                                       
+preserve CAFETERIA, CHUVA E â€œSMARTPHONEâ€.                                                                                                                                           
+preserve Vamos conhecer ALGUNS destes pensadores acadÃªmicos da Filosofia da Tecnologia.                                                                                                
+preserve FilÃ³sofos da Tecnologia                                                                                                                                                       
+preserve Martin Heidegger â€“                                                                                                                                                           
+preserve A questÃ£o da tÃ©cnica                                                                                                                                                         
+preserve  (1954): vÃª a tÃ©cnica moderna como um modo de revelaÃ§Ã£o (â€œGestellâ€), que reduz o mundo a recurso disponÃ­vel.                                                          
+preserve JosÃ© Ortega y Gasset â€“                                                                                                                                                      
+preserve MeditaÃ§Ã£o da TÃ©cnica                                                                                                                                                        
+preserve  (1939): defende que a tÃ©cnica Ã© parte essencial da condiÃ§Ã£o humana, nÃ£o mero instrumento.                                                                                
+preserve Lewis Mumford â€“                                                                                                                                                              
+preserve TÃ©cnica e CivilizaÃ§Ã£o                                                                                                                                                       
+preserve  (1934): analisa a evoluÃ§Ã£o tÃ©cnica e seu impacto social, distinguindo entre â€œtÃ©cnicas autoritÃ¡riasâ€ e â€œdemocrÃ¡ticasâ€.                                           
+preserve Jacques Ellul â€“                                                                                                                                                              
+preserve A tÃ©cnica ou o desafio do sÃ©culo                                                                                                                                             
+preserve  (1954): argumenta que a tÃ©cnica se desenvolve de forma autÃ´noma, independente da moral ou da polÃ­tica.                                                                     
+preserve Gilbert Simondon â€“                                                                                                                                                           
+preserve Du mode dâ€™existence des objets techniques                                                                                                                                    
+preserve  (1958): pensa a tÃ©cnica como individuaÃ§Ã£o, valorizando o conhecimento dos objetos tÃ©cnicos em si.                                                                         
+preserve Herbert Marcuse â€“                                                                                                                                                            
+preserve O homem unidimensional                                                                                                                                                         
+preserve  (1964): crÃ­tica Ã  racionalidade tecnolÃ³gica como forma de dominaÃ§Ã£o social.                                                                                              
+preserve Andrew Feenberg â€“ um dos principais filÃ³sofos contemporÃ¢neos da tecnologia, com abordagem crÃ­tica (inspirada na Escola de Frankfurt), defendendo a democratizaÃ§Ã£o das...
+preserve Langdon Winner â€“                                                                                                                                                             
+preserve A baleia e o reator                                                                                                                                                            
+preserve  (1986): discute como artefatos tÃ©cnicos embutem valores polÃ­ticos e sociais.                                                                                                
+preserve Autores + ContemporÃ¢neos                                                                                                                                                      
+preserve Don Ihde â€“ filosofia da tecnologia fenomenolÃ³gica, com foco na mediaÃ§Ã£o entre humanos e mundo via instrumentos e tecnologias (                                            
+preserve Technology and the Lifeworld                                                                                                                                                   
+preserve ).                                                                                                                                                                             
+preserve Bruno Latour â€“ com a Teoria Ator-Rede, dissolveu a separaÃ§Ã£o rÃ­gida entre tÃ©cnica, ciÃªncia e sociedade, mostrando redes hÃ­bridas de humanos e nÃ£o-humanos.            
+preserve Peter-Paul Verbeek â€“ trabalha com â€œtecnologias mediadorasâ€ e a Ã©tica da mediaÃ§Ã£o, continuando a linha de Ihde e Simondon.                                             
+preserve Byung-Chul Han â€“ embora mais focado em filosofia social e cultural, suas anÃ¡lises sobre sociedade digital e tecnologia do controle sÃ£o muito influentes.                   
+preserve Linhas de                                                                                                                                                                      
+preserve reflexÃ£o                                                                                                                                                                      
+preserve [                                                                                                                                                                              
+preserve Cada nÃºmero Ã© um dropdown diferente                                                                                                                                          
+preserve ]                                                                                                                                                                              
+preserve 1. OntolÃ³gica (Heidegger, Simondon)                                                                                                                                           
+preserve ðŸ‘‰ Foco: O que a tÃ©cnica                                                                                                                                                    
+preserve Ã©                                                                                                                                                                             
+preserve  em sua essÃªncia.                                                                                                                                                             
+preserve Heidegger: tÃ©cnica como modo de revelaÃ§Ã£o (                                                                                                                                 
+preserve Gestell                                                                                                                                                                        
+preserve ).                                                                                                                                                                             
+preserve Simondon: tÃ©cnica como processo de individuaÃ§Ã£o dos objetos.                                                                                                                
+preserve ðŸ“Œ Serve para pensar a natureza fundamental da tÃ©cnica alÃ©m de usos prÃ¡ticos.                                                                                             
+preserve ReflexÃ£o OntolÃ³gica pode levar a coisas desse tipo:                                                                                                                          
+preserve Ampliar a visÃ£o de mundo                                                                                                                                                      
+preserve Em vez de ver a tÃ©cnica sÃ³ como ferramenta (um martelo, um app, um carro), a pessoa percebe que ela molda como entendemos a realidade.                                       
+preserve Exemplo: o Google Maps nÃ£o Ã© sÃ³ prÃ¡tico para localizar ruas â†’ ele muda a forma como nos relacionamos com o espaÃ§o (dependÃªncia do GPS, perda da navegaÃ§Ã£o intuitiva).
+preserve Reconhecer implicaÃ§Ãµes existenciais                                                                                                                                          
+preserve Perguntar:                                                                                                                                                                     
+preserve como a tecnologia muda minha forma de ser e estar no mundo?                                                                                                                    
+preserve Exemplo: um celular nÃ£o Ã© sÃ³ â€œprÃ¡ticoâ€, ele altera tempo, atenÃ§Ã£o, memÃ³ria, relaÃ§Ãµes sociais.                                                                     
+preserve Evitar reducionismos                                                                                                                                                           
+preserve Em vez de pensar â€œÃ© sÃ³ usar bem ou malâ€, a pessoa entende que a tecnologia tem uma essÃªncia que transforma modos de vida.                                               
+preserve Isso ajuda a fugir da ideia simplista de que basta â€œsaber usarâ€.                                                                                                           
+preserve Desenvolver pensamento crÃ­tico profundo                                                                                                                                       
+preserve Essa reflexÃ£o nÃ£o Ã© sobre utilidade imediata, mas sobre sentido: para onde a tÃ©cnica nos conduz?                                                                           
+preserve Exemplo: perguntar nÃ£o apenas â€œpara que serve a IA?â€, mas â€œque tipo de humanidade estamos criando ao viver com IA?â€.                                                  
+preserve 2. SociotÃ©cnica (Mumford, Ellul, Latour, Winner)                                                                                                                              
+preserve ðŸ‘‰ Foco: Como tÃ©cnica e sociedade se moldam mutuamente.                                                                                                                     
+preserve Mumford: tÃ©cnicas democrÃ¡ticas versus tÃ©cnicas autoritÃ¡rias.                                                                                                               
+preserve Ellul: autonomia tÃ©cnica.                                                                                                                                                     
+preserve Latour: redes hÃ­bridas de humanos e nÃ£o-humanos.                                                                                                                             
+preserve Winner: artefatos carregam valores polÃ­ticos.                                                                                                                                 
+preserve ðŸ“Œ Colabora para analisar a tecnologia como construÃ§Ã£o social e polÃ­tica.                                                                                                 
+preserve ReflexÃ£o SociotÃ©cnica leva a coisas desse tipo:                                                                                                                              
+preserve ï‚·  Escolhas conscientes de consumo                                                                                                                                           
+preserve Em vez de pensar â€œo celular Ã© assim porque evoluiuâ€, a pessoa entende que ele foi projetado para certos usos (notificaÃ§Ãµes constantes, coleta de dados).                
+preserve Isso permite escolher melhor: configurar, limitar ou atÃ© rejeitar certas tecnologias.                                                                                         
+preserve ï‚·  Entender interesses por trÃ¡s das tecnologias                                                                                                                             
+preserve Reconhecer que aplicativos â€œgratuitosâ€ pagam-se com dados.                                                                                                                 
+preserve Perceber que o design das redes sociais visa manter atenÃ§Ã£o e gerar lucro, nÃ£o apenas â€œconectar pessoasâ€.                                                               
+preserve ï‚·  ParticipaÃ§Ã£o cidadÃ£                                                                                                                                                    
+preserve Ao ver a tecnologia como escolha polÃ­tica, a pessoa se sente parte do debate: pode cobrar regulaÃ§Ã£o de IA, discutir vigilÃ¢ncia, defender softwares pÃºblicos e acessÃ­veis.
+preserve ï‚·  Evitar a naturalizaÃ§Ã£o                                                                                                                                                  
+preserve Em vez de aceitar a frase â€œnÃ£o dÃ¡ para viver sem issoâ€, a pessoa aprende a questionar:                                                                                   
+preserve por que essa tecnologia Ã© vendida como inevitÃ¡vel?                                                                                                                           
+preserve Isso abre espaÃ§o para imaginar alternativas possÃ­veis.                                                                                                                       
+preserve ï‚·  Autonomia e emancipaÃ§Ã£o                                                                                                                                                 
+preserve Entender a tÃ©cnica como construÃ§Ã£o social devolve poder Ã  pessoa: se foi construÃ­da, pode ser reconstruÃ­da de outro jeito.                                               
+preserve Isso gera autonomia frente a discursos de empresas e governos que tentam impor tecnologias sem debate.                                                                         
+preserve 3. CrÃ­tica/PolÃ­tica (Marcuse, Feenberg)                                                                                                                                      
+preserve ðŸ‘‰ Foco: Tecnologia como instrumento de poder e dominaÃ§Ã£o, mas tambÃ©m de libertaÃ§Ã£o.                                                                                    
+preserve Marcuse: racionalidade tecnolÃ³gica cria conformismo.                                                                                                                          
+preserve Feenberg: democratizar decisÃµes tecnolÃ³gicas.                                                                                                                                
+preserve ðŸ“Œ Serve para pensar quem controla a tÃ©cnica e como transformÃ¡-la em ferramenta de emancipaÃ§Ã£o.                                                                          
+preserve ReflexÃ£o CrÃ­tica/PolÃ­tica leva coisas desse tipo:                                                                                                                           
+preserve NÃ£o ser refÃ©m das tecnologias                                                                                                                                                
+preserve A pessoa entende que a tÃ©cnica nÃ£o estÃ¡ â€œno arâ€, mas sob controle de empresas, governos ou grupos.                                                                      
+preserve Isso dÃ¡ clareza para nÃ£o se deixar dominar cegamente por novidades (apps, IA, redes sociais).                                                                                
+preserve Escolher com mais autonomia                                                                                                                                                    
+preserve Se sei que a tÃ©cnica Ã© controlada por alguÃ©m, posso escolher como e quando usÃ¡-la.                                                                                         
+preserve Exemplo: optar por softwares livres, limitar o uso de apps que coletam dados, usar a tecnologia de forma mais consciente.                                                      
+preserve Exigir participaÃ§Ã£o e justiÃ§a                                                                                                                                               
+preserve A reflexÃ£o leva a reivindicar espaÃ§o democrÃ¡tico para decidir sobre tecnologia (regulaÃ§Ã£o de IA, privacidade de dados, acesso igualitÃ¡rio).                              
+preserve Em vez de apenas â€œconsumirâ€, a pessoa se torna cidadÃ£ ativa no debate tecnolÃ³gico.                                                                                       
+preserve Transformar a tÃ©cnica em aliada                                                                                                                                               
+preserve Ao perceber que pode ser tambÃ©m ferramenta de emancipaÃ§Ã£o, a pessoa busca formas de usar a tecnologia para educaÃ§Ã£o, inclusÃ£o, saÃºde e criatividade.                    
+preserve Exemplo: usar redes para mobilizaÃ§Ã£o polÃ­tica, IA para acessibilidade, plataformas digitais para educaÃ§Ã£o crÃ­tica.                                                       
+preserve 4. FenomenolÃ³gica/Existencial (Ihde, Verbeek)                                                                                                                                 
+preserve ðŸ‘‰ Foco: Como a tecnologia media a experiÃªncia humana.                                                                                                                      
+preserve Ihde: instrumentos moldam a percepÃ§Ã£o do mundo.                                                                                                                              
+preserve Verbeek: Ã©tica das mediaÃ§Ãµes tecnolÃ³gicas.                                                                                                                                 
+preserve ðŸ“Œ Serve para entender como vivemos e sentimos atravÃ©s das tecnologias no cotidiano.                                                                                        
+preserve ReflexÃ£o FenomenolÃ³gica/Existencial leva coisas desse tipo:                                                                                                                  
+preserve Perceber como a tÃ©cnica molda a experiÃªncia                                                                                                                                  
+preserve Notar que nÃ£o usamos sÃ³ ferramentas: elas mudam nossa forma de ver, ouvir, sentir e pensar.                                                                                  
+preserve Exemplo: ver o mundo pela cÃ¢mera do celular altera o modo como registramos memÃ³rias.                                                                                         
+preserve Ganhar consciÃªncia dos efeitos sutis                                                                                                                                          
+preserve Compreender que tecnologias influenciam humor, atenÃ§Ã£o, corpo e relaÃ§Ãµes sociais.                                                                                          
+preserve Exemplo: notificaÃ§Ãµes constantes geram ansiedade ou sensaÃ§Ã£o de urgÃªncia.                                                                                                 
+preserve Refletir sobre hÃ¡bitos e escolhas                                                                                                                                             
+preserve Ao identificar como vivemos mediado por telas, algoritmos e dispositivos, a pessoa pode reorganizar seus usos.                                                                 
+preserve Exemplo: decidir desligar o celular em refeiÃ§Ãµes para recuperar a presenÃ§a nas relaÃ§Ãµes.                                                                                  
+preserve Cultivar autonomia emocional                                                                                                                                                   
+preserve Em vez de ser moldado inconscientemente pela tecnologia, a pessoa ganha ferramentas para usar com mais equilÃ­brio, alinhando tÃ©cnica com bem-estar.                          
+preserve 5. ContemporÃ¢nea e cultural (Byung-Chul Han, Bernard Stiegler)                                                                                                                
+preserve ðŸ‘‰ Foco: Impactos culturais, psicolÃ³gicos e temporais das tecnologias digitais.                                                                                             
+preserve Han: sociedade do cansaÃ§o, vigilÃ¢ncia e autoexploraÃ§Ã£o.                                                                                                                    
+preserve Stiegler: tÃ©cnica como â€œfarmakonâ€ (remÃ©dio e veneno) que organiza a memÃ³ria coletiva.                                                                                   
+preserve ðŸ“Œ Serve para analisar a cultura digital, subjetividade e novos modos de controle social.                                                                                    
+preserve ReflexÃ£o ContemporÃ¢nea Cultural leva a coisas desse tipo:                                                                                                                    
+preserve Entender seus prÃ³prios sintomas modernos                                                                                                                                      
+preserve Ansiedade, cansaÃ§o, FOMO (medo de ficar de fora), hiperconexÃ£o â€” nÃ£o sÃ£o sÃ³ problemas individuais, mas efeitos da cultura digital.                                      
+preserve Reconhecer formas invisÃ­veis de controle                                                                                                                                      
+preserve Perceber como algoritmos, big data e plataformas moldam comportamentos sem parecer imposiÃ§Ã£o.                                                                                
+preserve Exemplo: o feed de uma rede social direciona desejos, opiniÃµes e atÃ© votos.                                                                                                  
+preserve Proteger sua autonomia psÃ­quica                                                                                                                                               
+preserve Ao enxergar os mecanismos de manipulaÃ§Ã£o, a pessoa pode resistir e regular seus usos, evitando ser apenas â€œprodutoâ€ das plataformas.                                     
+preserve Reinterpretar o tempo e a memÃ³ria                                                                                                                                             
+preserve Entender que notificaÃ§Ãµes,                                                                                                                                                   
+preserve timelines                                                                                                                                                                      
+preserve  e nuvens digitais alteram como vivemos o tempo e guardamos lembranÃ§as.                                                                                                       
+preserve Isso ajuda a recuperar prÃ¡ticas de desaceleraÃ§Ã£o, atenÃ§Ã£o plena e cuidado de si.                                                                                          
+preserve ________________________________________________________________                                                                                                               
+preserve Linha do Tempo da Filosofia da Tecnologia (atualizada)                                                                                                                         
+preserve  PublicaÃ§Ãµes mais importantes na minha visÃ£o, ok!                                                                                                                           
+preserve [                                                                                                                                                                              
+preserve  linha do tempo em que as pessoas clicam nos acontecimentos para cada ano da linha do tempo                                                                                    
+preserve  ]                                                                                                                                                                             
+preserve InÃ­cio do sÃ©culo XX                                                                                                                                                          
+preserve 1934 â€“ Lewis Mumford                                                                                                                                                         
+preserve TÃ©cnica e CivilizaÃ§Ã£o                                                                                                                                                       
+preserve  â†’ histÃ³ria crÃ­tica da tÃ©cnica, distinÃ§Ã£o entre tÃ©cnicas democrÃ¡ticas e autoritÃ¡rias.                                                                                
+preserve 1939 â€“ JosÃ© Ortega y Gasset                                                                                                                                                 
+preserve MeditaÃ§Ã£o da TÃ©cnica                                                                                                                                                        
+preserve  â†’ tÃ©cnica como condiÃ§Ã£o essencial do humano.                                                                                                                             
+preserve Meados do sÃ©culo XX                                                                                                                                                           
+preserve 1954 â€“ Martin Heidegger                                                                                                                                                      
+preserve A questÃ£o da tÃ©cnica                                                                                                                                                         
+preserve  â†’ tÃ©cnica moderna como                                                                                                                                                     
+preserve Gestell                                                                                                                                                                        
+preserve  (armaÃ§Ã£o), modo de revelaÃ§Ã£o que transforma o mundo em recurso.                                                                                                           
+preserve 1954 â€“ Jacques Ellul                                                                                                                                                         
+preserve A tÃ©cnica ou o desafio do sÃ©culo                                                                                                                                             
+preserve  â†’ a tÃ©cnica cresce de modo autÃ´nomo, fora do controle Ã©tico-polÃ­tico.                                                                                                   
+preserve 1958 â€“ Gilbert Simondon                                                                                                                                                      
+preserve Du mode dâ€™existence des objets techniques                                                                                                                                    
+preserve  â†’ tÃ©cnica como individuaÃ§Ã£o dos objetos tÃ©cnicos.                                                                                                                       
+preserve 1959â€“1960 â€“ Ãlvaro Vieira Pinto (Brasil)                                                                                                                                  
+preserve ConferÃªncias e escritos que culminaram em                                                                                                                                     
+preserve ConsciÃªncia e Realidade Nacional                                                                                                                                              
+preserve  (1960).                                                                                                                                                                       
+preserve Mais tarde, em exÃ­lio, escreveu                                                                                                                                               
+preserve O Conceito de Tecnologia                                                                                                                                                       
+preserve  (publicado postumamente em 2005, em 2 volumes).                                                                                                                               
+preserve Anos 1960â€“1980                                                                                                                                                               
+preserve 1960 â€“ Ãlvaro Vieira Pinto                                                                                                                                                  
+preserve Desenvolve crÃ­tica prÃ³pria da tecnologia ligada Ã  questÃ£o do desenvolvimento nacional, da dependÃªncia tecnolÃ³gica e do papel da ciÃªncia na libertaÃ§Ã£o ou submissÃ£o...
+preserve 1964 â€“ Herbert Marcuse                                                                                                                                                       
+preserve O homem unidimensional                                                                                                                                                         
+preserve  â†’ crÃ­tica Ã  racionalidade tecnolÃ³gica e Ã  dominaÃ§Ã£o social.                                                                                                           
+preserve 1979 â€“ Jean-FranÃ§ois Lyotard                                                                                                                                                
+preserve A condiÃ§Ã£o pÃ³s-moderna                                                                                                                                                      
+preserve  â†’ impacto das tecnologias da informaÃ§Ã£o.                                                                                                                                  
+preserve 1986 â€“ Langdon Winner                                                                                                                                                        
+preserve A baleia e o reator                                                                                                                                                            
+preserve  â†’ a polÃ­tica dos artefatos tÃ©cnicos.                                                                                                                                      
+preserve Anos 1990â€“2000                                                                                                                                                               
+preserve 1990 â€“ Don Ihde â€“ fenomenologia das mediaÃ§Ãµes (                                                                                                                          
+preserve Technology and the Lifeworld                                                                                                                                                   
+preserve ).                                                                                                                                                                             
+preserve 1991 â€“ Bruno Latour â€“                                                                                                                                                      
+preserve Jamais fomos modernos                                                                                                                                                          
+preserve  â†’ Teoria Ator-Rede.                                                                                                                                                         
+preserve 1999 â€“ Andrew Feenberg â€“                                                                                                                                                   
+preserve Questioning Technology                                                                                                                                                         
+preserve  â†’ democratizaÃ§Ã£o da tecnologia.                                                                                                                                           
+preserve 2000 â€“ Bernard Stiegler â€“                                                                                                                                                  
+preserve La technique et le temps                                                                                                                                                       
+preserve  â†’ tÃ©cnica como â€œfarmakonâ€.                                                                                                                                             
+preserve SÃ©culo XXI                                                                                                                                                                    
+preserve 2005 â€“ Peter-Paul Verbeek â€“                                                                                                                                                
+preserve What Things Do                                                                                                                                                                 
+preserve  â†’ Ã©tica das mediaÃ§Ãµes.                                                                                                                                                   
+preserve 2010â€“2020 â€“ Byung-Chul Han â€“                                                                                                                                             
+preserve Sociedade do CansaÃ§o                                                                                                                                                          
+preserve ,                                                                                                                                                                              
+preserve PsicopolÃ­tica                                                                                                                                                                 
+preserve  â†’ crÃ­tica digital e do controle.                                                                                                                                           
+preserve A importÃ¢ncia de Ãlvaro Vieira Pinto                                                                                                                                         
+preserve Pioneirismo no Sul Global: Diferente de Heidegger, Ellul ou Simondon, Vieira Pinto partiu da realidade latino-americana, relacionando tecnologia com colonialismo, dependÃªn...
+preserve Tecnologia como prÃ¡tica social: Para ele, a tecnologia nÃ£o Ã© neutra nem autÃ´noma: Ã© produzida em contextos histÃ³ricos concretos e serve a interesses de classe.          
+preserve VisÃ£o crÃ­tica e libertadora: Enfatizou que a apropriaÃ§Ã£o criativa e crÃ­tica da tÃ©cnica Ã© condiÃ§Ã£o para a autonomia dos povos perifÃ©ricos.                            
+preserve Obra principal:                                                                                                                                                                
+preserve O Conceito de Tecnologia                                                                                                                                                       
+preserve  (escrito nos anos 1970, mas publicado em 2005), considerado um dos maiores tratados filosÃ³ficos sobre tecnologia jÃ¡ produzidos na AmÃ©rica Latina.                          
+preserve ðŸ” ComparaÃ§Ã£o em Eixos                                                                                                                                                     
+preserve                                                                                                                                                                                
+preserve A relevÃ¢ncia de Vieira Pinto                                                                                                                                                  
+preserve Complemento aos europeus: Enquanto Heidegger e Simondon buscam uma ontologia e Ellul alerta sobre a autonomia tÃ©cnica, Vieira Pinto recoloca a questÃ£o no campo social, po...
+preserve Atualidade: Suas ideias ecoam debates contemporÃ¢neos sobre soberania tecnolÃ³gica, colonialismo digital, inteligÃªncia artificial e dependÃªncia das Big Techs.               
+preserve Legado: Um dos maiores tratados de filosofia da tecnologia jÃ¡ produzidos fora do eixo Europaâ€“EUA.                                                                           
+preserve EntÃ£o praticar um pouco de Filosofia da Tecnologia pode nos ajudar em alguns pontos?                                                                                          
+preserve DespolitizaÃ§Ã£o: a ideia de â€œinevitÃ¡velâ€ retira a tecnologia do debate pÃºblico.                                                                                         
+preserve Consumo acrÃ­tico: se Ã© natural, resta apenas consumir.                                                                                                                       
+preserve Controle social: tecnologias de vigilÃ¢ncia, por exemplo, sÃ£o aceitas sem questionamento.                                                                                     
+preserve ReproduÃ§Ã£o da desigualdade: quem tem poder de decidir sobre a tÃ©cnica legitima sua prÃ³pria autoridade.                                                                     
+preserve E mais ...                                                                                                                                                                     
+preserve Desmontar o discurso da inevitabilidade.                                                                                                                                       
+preserve Recolocar a tÃ©cnica no campo da escolha coletiva e democrÃ¡tica.                                                                                                              
+preserve Mostrar que toda tecnologia Ã© decidida, financiada e projetada â€“ logo, poderia ser diferente.                                                                               
+preserve Filosofar Ã© â€œperguntar o que parece Ã³bvioâ€, e no caso da tÃ©cnica, o Ã³bvio Ã© justamente sua suposta naturalidade. (inspirado em ChauÃ­).                               
+preserve O QUIZ ABAIXO SÃ“ DEVE ABRIR EM DATA MARCADA PELO PROFESSOR E VALE DE 0 A 1 PONTO SE A ESCALA MÃXIMA FOR 10 PONTOS OU DE 0 A 100 SE A ESCALA MÃXIMA FOR 100 PONTOS.          
+preserve CADA QUESTÃƒO VALE 0,2 PONTOS                                                                                                                                                  
+preserve VEJA QUE TEREMOS 16 OU 17 ATIVIDADES PARA AUXILIAR O ALUNO A NÃƒO PERDER PONTOS. DE FATO ELE PODERÃ DESCARTAR 6 OU 7 ATIVIDADES PORQUE TRABALHAMOS COM SOMATÃ“RIO SIMPLES Q...
+preserve O SISTEMA TEM QUE SE ADEQUAR A ISSO PORQUE SENÃƒO NÃƒO SE TRATA DE ATIVIDADE DOCENTE UNIVERSITÃRIA. EXISTE UM FUNDAMENTO EM AVALIAÃ‡ÃƒO PARA SER ASSIM                        
+preserve [QUIZ]                                                                                                                                                                         
+preserve PROVA AULA 1                                                                                                                                                                   
+preserve A reflexÃ£o ontolÃ³gica da tecnologia serve principalmente para:                                                                                                               
+preserve a) Descobrir quem financia pesquisas cientÃ­ficas.                                                                                                                             
+preserve b) Entender como usar dispositivos de forma mais eficiente.                                                                                                                    
+preserve c) Pensar a natureza fundamental da tÃ©cnica alÃ©m de usos prÃ¡ticos. âœ…                                                                                                      
+preserve d) Analisar os impactos econÃ´micos da globalizaÃ§Ã£o.                                                                                                                         
+preserve e) Criar leis para regulamentar aplicativos digitais.                                                                                                                          
+preserve Segundo a abordagem sociotÃ©cnica, estudar a tecnologia ajuda a:                                                                                                               
+preserve a) Entender que cada tecnologia Ã© fruto de escolhas sociais e polÃ­ticas. âœ…                                                                                                 
+preserve b) Acreditar que a tÃ©cnica evolui sem nenhuma influÃªncia humana.                                                                                                             
+preserve c) Focar apenas na experiÃªncia sensorial que temos com os dispositivos.                                                                                                       
+preserve d) Avaliar a velocidade de transferÃªncia de dados nas redes militares.                                                                                                        
+preserve e) Interpretar sintomas psicolÃ³gicos como ansiedade e cansaÃ§o digital.                                                                                                       
+preserve O foco da reflexÃ£o crÃ­tica e polÃ­tica Ã©:                                                                                                                                   
+preserve a) Mostrar que a tÃ©cnica Ã© sempre neutra.                                                                                                                                    
+preserve b) Questionar quem controla a tÃ©cnica e como transformÃ¡-la em ferramenta de emancipaÃ§Ã£o. âœ…                                                                               
+preserve c) Analisar como a tecnologia altera nossa percepÃ§Ã£o sensorial.                                                                                                              
+preserve d) Estudar apenas a histÃ³ria das invenÃ§Ãµes industriais.                                                                                                                     
+preserve e) Desenvolver algoritmos para acelerar processos democrÃ¡ticos.                                                                                                               
+preserve Na vida da pessoa, essa linha FenomenolÃ³gica/Existencial serve para:                                                                                                          
+preserve a) Explicar por que empresas financiam pesquisas em biotecnologia.                                                                                                             
+preserve b) Entender como vivemos e sentimos atravÃ©s das tecnologias no cotidiano. âœ…                                                                                                 
+preserve c) Criar novas legislaÃ§Ãµes sobre plataformas digitais.                                                                                                                       
+preserve d) Garantir o acesso igualitÃ¡rio a softwares livres.                                                                                                                          
+preserve e) Mostrar que a tecnologia sempre gera emancipaÃ§Ã£o social.                                                                                                                  
+preserve O objetivo dessa reflexÃ£o ContemporÃ¢nea e Cultural Ã©:                                                                                                                       
+preserve a) Estudar a tÃ©cnica como processo de individuaÃ§Ã£o dos objetos.                                                                                                             
+preserve b) Analisar a cultura digital, subjetividade e novos modos de controle social. âœ…                                                                                             
+preserve c) Identificar formas de otimizar o uso de redes sociais.                                                                                                                      
+preserve d) Explicar apenas a evoluÃ§Ã£o histÃ³rica das ferramentas.                                                                                                                    
+preserve e) Avaliar a produtividade no uso de tecnologias empresariais.                                                                                                                 
+
+

@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background-color: white;
+    color: black;
+  }
+}

@@ -1,0 +1,22 @@
+# Memory Index
+
+- [Estrutura do Módulo 01 (Filotec Aula 01)](modulo-01-filotec-estrutura.md) — paths de JSON/JSX/UI e padrão de seções
+- [Inventário de componentes UI](inventario-componentes-ui.md) — o que cada componente em src/components/ui faz e quando usar
+- [Extração de texto de .docx via XML cru](extracao-docx-via-xml.md) — como ler .docx sem libs externas neste ambiente Windows
+- [Timeline interativa com clique-para-revelar](timeline-clique-revelar.md) — padrão de acordeão aplicado ao Timeline.jsx
+- [Discrepâncias JSON vs docx fonte (aula 01)](discrepancias-conteudo-aula01.md) — tipo de erro recorrente: diálogos parafraseados/cortados
+- [Padronização de cores para azul](padronizacao-cores-azul.md) — defaults lilás/roxo trocados por azul (2 rodadas: props default, depois hex arbitrário emClassName)
+- [Estrutura do Módulo 02 (Filotec Aula 02)](modulo-02-filotec-estrutura.md) — Vieira Pinto cap.1-4, tipo `dropdown` novo, roteamento multi-aula em App.jsx
+- [Estrutura do Módulo 04 (Filotec Aula 04)](modulo-04-filotec-estrutura.md) — Resumo integrado + Gerações Atuais; novos tipos `story`, `reference_box`, `video` (Google Drive)
+- [Estrutura do Módulo 05 (Filotec Aula 05)](modulo-05-filotec-estrutura.md) — Hans Jonas, ético-limitadora; 4 imagens PNG, story PROTOCOLO AURORA, video Drive
+- [Estrutura do Módulo 06 (Filotec Aula 06)](modulo-06-filotec-estrutura.md) — Galimberti, ciência sem filosofia; 1 imagem PNG, sem story, sem video (URL pendente)
+- [Estrutura do Módulo 07 (Filotec Aula 07)](modulo-07-filotec-estrutura.md) — Haraway/Harding/Wajcman; sem imagens; novos tipos `data_table`/`conclusion`; duplicação no docx resolvida
+- [Estrutura do Módulo 08 (Filotec Aula 08)](modulo-08-filotec-estrutura.md) — Suchman/Mies; 2 infográficos; novo tipo `bullet_cards` (reusa HighlightBlock); quadro-resumo geral de 9 autores/autoras
+- [Estrutura do Módulo 09 (Filotec Aula 09)](modulo-09-filotec-estrutura.md) — 7 filósofos mais citados (Hui/Verbeek/Coeckelbergh/Winner/Feenberg/Ihde/Simondon); só 2 de 7 infográficos embutidos; tabela movida p/ fim por pedido da revisora
+- [Estrutura do Módulo 10 (Filotec Aula 10)](modulo-10-filotec-estrutura.md) — Floridi/Latour/Berardi; sem imagens; sem objetivo literal no docx; numeração colidida no dropdown de Berardi renumerada e reportada
+- [Estrutura do Módulo 11 (Filotec Aula 11)](modulo-11-filotec-estrutura.md) — Postman/Han/Stiegler/Galimberti; sem imagens; "Adicionar uma charge" pedida mas não entregue; lacuna de numeração (autor "3" ausente); regra "caixa/quadro de texto"→highlight_section vs "linha lateral"→conclusion consolidada
+- [Estrutura do Módulo 12 (Filotec Aula 12)](modulo-12-filotec-estrutura.md) — Corpo e Tecnologia: Foucault/Haraway/Baudrillard/Le Breton/Preciado; sem imagens; "fazer tabela com o texto" → data_table de exposição inteira (novo); DataTable com células ricas via FormattedText (novo padrão técnico)
+- [Estrutura do Módulo 13 (Filotec Aula 13)](modulo-13-filotec-estrutura.md) — Info/Mídias: Foucault/Latour/Floridi/Haraway/Feenberg/Marcuse/Stiegler/Berardi/Han + universidade + docência; sem imagens; diretivas duplicadas (comentário+colchetes no corpo); case 'intro' agora processa negrito via FormattedText
+- [Estrutura do Módulo 14 (Filotec Aula 14)](modulo-14-filotec-estrutura.md) — Filósofos Asiáticos: Yuk Hui/Kiyota/Kawano/Qiu Renzong/Byung-Chul Han; sem imagens; extrator de `<w:br/>` dentro de `<w:r>` (nova armadilha); Yuk Hui 2x com conteúdo distinto
+- [Estrutura do Módulo 15 (Filotec Aula 15)](modulo-15-filotec-estrutura.md) — Manipulação Política/TI: Zuboff/Castells/Tufekci/Benkler/Pariser/Sunstein/Morozov/Han/Latour; sem imagens/tabelas; só 3 sections; "Conclusão" literal virou highlight_section (não conclusion) por ter bullets/negrito
+- [Estrutura do Módulo 16 (Filotec Aula 16)](modulo-16-filotec-estrutura.md) — Transhumanismo + diversidade do pensamento brasileiro; sem imagens; 2 "Conclusão" literais distintas (não duplicação); título de dropdown_group editorial; sub-bullets ilvl=1 achatados

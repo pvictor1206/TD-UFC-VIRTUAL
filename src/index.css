@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "@fontsource/figtree/400.css";
+@import "@fontsource/figtree/500.css";
+@import "@fontsource/figtree/600.css";
+@import "@fontsource/figtree/700.css";
+@import "@fontsource/figtree/800.css";
+@import "@fontsource/anek-devanagari/400.css";
+@import "@fontsource/anek-devanagari/800.css";
+@source "../criacao de recursos/src";
+
+@variant dark (&:where(.dark, .dark *));
+
+/* Identidade visual IUVI — Manual de Identidade Visual v1.1 (jul/2026) */
+@theme {
+  --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --font-anek: 'Anek Devanagari', 'Figtree', sans-serif;
+
+  --color-iuvi: #991F50;
+  --color-iuvi-2: #801436;
+  --color-iuvi-medio: #991F6D;
+  --color-iuvi-escuro: #510A32;
+  --color-iuvi-roxo: #2D132C;
+  --color-iuvi-roxo-medio: #482549;
+  --color-carmesim: #D64161;
+  --color-azul-iuvi: #1244B2;
+  --color-bege: #FEE6B5;
+  --color-cinza-iuvi: #E6DFD7;
+}
+
+html, body { font-family: var(--font-sans); }
+body { background: #F8F5F1; color: #1d1419; }
