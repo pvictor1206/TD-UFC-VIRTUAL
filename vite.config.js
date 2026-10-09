@@ -11,7 +11,22 @@ const criador = path.resolve(__dirname, 'criacao de recursos');
 // (mesmos aliases usados lá) e compartilha uma única cópia do React.
 export default defineConfig({
   base: './', // caminhos relativos: funciona em qualquer subpasta (ex.: GitHub Pages)
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    {
+      // O index.html da raiz é o site compilado (GitHub Pages); em desenvolvimento
+      // a página de entrada é app.html.
+      name: 'dev-entry',
+      configureServer(server) {
+        server.middlewares.use((req, _res, next) => {
+          if (req.url === '/' || req.url === '/index.html') req.url = '/app.html';
+          next();
+        });
+      },
+    },
+  ],
+  build: { rollupOptions: { input: path.join(__dirname, 'app.html') } },
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {
