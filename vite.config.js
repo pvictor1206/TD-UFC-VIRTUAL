@@ -10,6 +10,7 @@ const criador = path.resolve(__dirname, 'criacao de recursos');
 // O painel reaproveita o Construtor de Aulas da pasta "criacao de recursos"
 // (mesmos aliases usados lá) e compartilha uma única cópia do React.
 export default defineConfig({
+  base: './', // caminhos relativos: funciona em qualquer subpasta (ex.: GitHub Pages)
   plugins: [react(), tailwindcss()],
   resolve: {
     dedupe: ['react', 'react-dom'],
