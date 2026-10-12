@@ -9,19 +9,20 @@
 export const BLOCK_HELP = {
   intro: {
     what: 'Texto corrido, direto na página e sem moldura. Aceita negrito, itálico e listas.',
-    when: 'Use para introduções, explicações e qualquer parágrafo da aula. Para dar um título ao texto, clique em "Adicionar título" no cartão dele.',
+    when: 'Use para introduções, explicações e qualquer parágrafo da aula. Para dar um título ao texto, coloque-o em uma seção com título.',
     steps: ['Escreva o texto no campo e use a barra para negrito, itálico e listas.', 'Se quiser destacar uma ideia-chave, coloque-a entre ** **.'],
     tips: ['Prefira de 3 a 6 linhas: introduções longas cansam o aluno.', 'Coloque este bloco sempre como o primeiro da lista.'],
   },
   section: {
-    what: 'Um título (com rótulo e subtítulo opcionais) que agrupa outros blocos logo abaixo dele. O título é um componente separado: os demais blocos não carregam título próprio.',
-    when: 'Use quando um conteúdo precisa de título — uma tabela, um grupo de acordeões, uma lista de cards, um trecho de texto. Blocos que não precisam de título ficam soltos, direto na aula.',
+    what: 'Agrupa componentes em um trecho da aula. Pode ter um título (com rótulo e subtítulo, todos opcionais) que aparece acima dos componentes.',
+    when: 'Todo componente precisa estar dentro de uma seção. Use uma seção para cada tópico da aula; deixe o título em branco quando o conteúdo não precisar de título.',
     steps: [
-      'Clique em "Adicionar título" no cartão de qualquer bloco: ele passa a ficar dentro do título.',
-      'Preencha o "Título" (e, se quiser, o rótulo e o subtítulo).',
-      'Para pôr mais blocos sob o mesmo título, use a lista "Adicionar bloco dentro…". Para desfazer, clique em "Remover título".',
+      'Clique em "+ Adicionar seção" (na barra lateral ou no fim da lista).',
+      'Preencha o título, se quiser (rótulo e subtítulo também são opcionais).',
+      'Clique na seção para ativá-la e adicione componentes pela barra lateral, ou pela lista dentro da própria seção.',
+      'Use os botões do cartão para mover, duplicar ou excluir a seção inteira.',
     ],
-    tips: ['Uma seção não pode conter outra seção.', 'Para vários tópicos, use várias seções, uma para cada título.'],
+    tips: ['A seção com borda destacada é onde os componentes da barra lateral entram.', 'Uma seção não pode conter outra seção.'],
   },
   image: {
     what: 'Uma imagem centralizada, com legenda opcional. O aluno pode ampliar clicando nela.',

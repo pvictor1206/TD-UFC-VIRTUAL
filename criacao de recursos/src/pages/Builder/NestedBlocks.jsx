@@ -28,7 +28,7 @@ export default function NestedBlocks({ value, onChange }) {
   return (
     <div className="rounded-lg border-l-4 border-lav-bar bg-lav-soft/60 pl-3 pr-2 py-3 space-y-3">
       {blocks.length === 0 && (
-        <p className="text-xs text-gray-500 italic">Nenhum bloco nesta seção ainda. Adicione abaixo.</p>
+        <p className="text-xs text-gray-500 italic">Nenhum componente nesta seção ainda. Adicione abaixo ou pela barra lateral.</p>
       )}
       {blocks.map((block, i) => (
         <BlockCard
@@ -49,7 +49,7 @@ export default function NestedBlocks({ value, onChange }) {
         aria-label="Adicionar bloco dentro desta seção"
         className="w-full rounded-lg border border-dashed border-blue-400 bg-white text-blue-700 px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
-        <option value="">+ Adicionar bloco dentro desta seção…</option>
+        <option value="">+ Adicionar componente nesta seção…</option>
         {GROUPS.map((group) => {
           const options = SECTION_CATALOG.filter((b) => b.group === group.id && b.type !== 'section');
           if (options.length === 0) return null;

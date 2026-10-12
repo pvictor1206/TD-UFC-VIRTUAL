@@ -56,6 +56,27 @@ export const migrateSections = (sections = []) => {
 
 export const migrateLesson = (lesson) => {
   if (!lesson) return lesson;
-  const sections = migrateSections(lesson.sections || []);
+  const sections = groupIntoSections(migrateSections(lesson.sections || []));
   return sections === lesson.sections ? lesson : { ...lesson, sections };
+};
+
+// O editor exige que todo componente esteja dentro de uma seção: blocos soltos
+// consecutivos são agrupados em uma seção sem título. Idempotente.
+export const groupIntoSections = (sections = []) => {
+  const out = [];
+  let loose = null;
+  for (const s of sections) {
+    if (s && s.type === 'section') {
+      loose = null;
+      out.push(s);
+    } else {
+      if (!loose) {
+        loose = { type: 'section', label: '', title: '', subtitle: '', children: [] };
+        out.push(loose);
+      }
+      loose.children.push(s);
+    }
+  }
+  const unchanged = out.length === sections.length && out.every((s, i) => s === sections[i]);
+  return unchanged ? sections : out;
 };

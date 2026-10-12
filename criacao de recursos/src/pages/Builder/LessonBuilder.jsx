@@ -68,11 +68,30 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   const updateMeta = (key, value) => setLesson((l) => ({ ...l, [key]: value }));
 
+  // Seção onde os componentes da barra lateral serão adicionados
+  const [activeIdx, setActiveIdx] = useState(0);
+  const activeSection = Math.min(activeIdx, Math.max(lesson.sections.length - 1, 0));
+
+  const newSectionData = () => getSectionDefinition('section').defaultData();
+
+  // Nova seção (vazia) no fim da aula
+  const addEmptySection = () => {
+    setScrollToIndex(lesson.sections.length);
+    setActiveIdx(lesson.sections.length);
+    setLesson((l) => ({ ...l, sections: [...l.sections, newSectionData()] }));
+    setView('editar');
+  };
+
+  // Componente sempre entra dentro de uma seção (a ativa; cria uma se não houver)
   const addSection = (type) => {
     const definition = getSectionDefinition(type);
     if (!definition) return;
-    setScrollToIndex(lesson.sections.length);
-    setLesson((l) => ({ ...l, sections: [...l.sections, definition.defaultData()] }));
+    setLesson((l) => {
+      const sections = l.sections.length ? [...l.sections] : [newSectionData()];
+      const i = Math.min(activeSection, sections.length - 1);
+      sections[i] = { ...sections[i], children: [...(sections[i].children || []), definition.defaultData()] };
+      return { ...l, sections };
+    });
     setView('editar');
   };
 
@@ -90,28 +109,10 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   const duplicateSection = (index) => {
     setScrollToIndex(index + 1);
+    setActiveIdx(index + 1);
     setLesson((l) => {
       const sections = [...l.sections];
       sections.splice(index + 1, 0, JSON.parse(JSON.stringify(sections[index])));
-      return { ...l, sections };
-    });
-  };
-
-  // "Adicionar título": envolve o bloco em uma seção (título) logo acima dele.
-  const addTitleToSection = (index) => {
-    setScrollToIndex(index);
-    setLesson((l) => {
-      const sections = [...l.sections];
-      sections[index] = { type: 'section', label: '', title: '', subtitle: '', children: [sections[index]] };
-      return { ...l, sections };
-    });
-  };
-
-  // "Remover título": desfaz a seção e mantém os blocos de dentro no lugar.
-  const removeTitleFromSection = (index) => {
-    setLesson((l) => {
-      const sections = [...l.sections];
-      sections.splice(index, 1, ...(sections[index].children || []));
       return { ...l, sections };
     });
   };
@@ -122,6 +123,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
       if (j < 0 || j >= l.sections.length) return l;
       const sections = [...l.sections];
       [sections[index], sections[j]] = [sections[j], sections[index]];
+      setActiveIdx(j);
       return { ...l, sections };
     });
   };
@@ -240,7 +242,19 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
       ) : (
         <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 px-4 md:px-6 py-6">
           <aside className="lg:sticky lg:top-[88px] lg:self-start bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 max-h-[80vh] overflow-y-auto">
-            <h2 className="text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">Adicionar bloco</h2>
+            <button
+              type="button"
+              onClick={addEmptySection}
+              className="w-full mb-4 rounded-lg bg-blue-700 text-white text-sm font-bold px-3 py-2.5 hover:bg-blue-800 transition-colors"
+            >
+              + Adicionar seção
+            </button>
+            <h2 className="text-sm font-bold text-gray-700 dark:text-gray-200">Adicionar componente</h2>
+            <p className="text-xs text-gray-500 mb-3">
+              {sectionCount === 0
+                ? 'Entra em uma nova seção.'
+                : <>Entra na <strong>Seção {activeSection + 1}</strong>{lesson.sections[activeSection]?.title ? ` — ${lesson.sections[activeSection].title}` : ''}. Clique em outra seção para trocar.</>}
+            </p>
             <BlockPalette onAdd={addSection} />
           </aside>
 
@@ -292,19 +306,25 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-gray-700 dark:text-gray-200">
-                Blocos de conteúdo {sectionCount > 0 && <span className="text-gray-400 font-normal">({sectionCount})</span>}
+                Seções {sectionCount > 0 && <span className="text-gray-400 font-normal">({sectionCount})</span>}
               </h2>
             </div>
 
             {sectionCount === 0 && (
               <div className="text-center text-sm text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl py-12">
-                Nenhum bloco ainda. Escolha um bloco no menu ao lado para começar.
+                Nenhuma seção ainda. Clique em "Adicionar seção" para começar — os componentes ficam dentro dela.
               </div>
             )}
 
             <div className="space-y-3">
               {lesson.sections.map((section, index) => (
-                <div key={index} data-block-index={index}>
+                <div
+                  key={index}
+                  data-block-index={index}
+                  onFocusCapture={() => setActiveIdx(index)}
+                  onMouseDownCapture={() => setActiveIdx(index)}
+                  className={index === activeSection ? 'rounded-xl ring-2 ring-blue-300 ring-offset-2' : ''}
+                >
                 <BlockCard
                   section={section}
                   index={index}
@@ -313,12 +333,18 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   onRemove={() => removeSection(index)}
                   onDuplicate={() => duplicateSection(index)}
                   onMove={(dir) => moveSection(index, dir)}
-                  onAddTitle={() => addTitleToSection(index)}
-                  onRemoveTitle={() => removeTitleFromSection(index)}
                 />
                 </div>
               ))}
             </div>
+
+            <button
+              type="button"
+              onClick={addEmptySection}
+              className="w-full rounded-xl border-2 border-dashed border-blue-400 text-blue-700 py-4 text-sm font-bold hover:bg-lav-soft transition-colors"
+            >
+              + Adicionar seção
+            </button>
           </main>
         </div>
       )}

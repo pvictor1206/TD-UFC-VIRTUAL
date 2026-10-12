@@ -31,15 +31,15 @@ const helpFormatacao = 'Use **texto** para negrito, *texto* para itálico e linh
 export const SECTION_CATALOG = [
   {
     type: 'section',
-    label: 'Título',
+    label: 'Seção',
     group: 'estrutura',
     icon: '🔖',
-    description: 'Título que fica acima do(s) bloco(s) dentro dele. Criado pelo botão "Adicionar título" de cada bloco.',
+    description: 'Agrupa componentes. Pode ter um título (opcional) acima deles. Todo componente precisa estar dentro de uma seção.',
     fields: [
       { key: 'label', label: 'Rótulo (opcional, ex: "HISTÓRIA")', type: FIELD_TYPES.TEXT },
-      { key: 'title', label: 'Título', type: FIELD_TYPES.TEXT },
+      { key: 'title', label: 'Título (opcional)', type: FIELD_TYPES.TEXT },
       { key: 'subtitle', label: 'Subtítulo (opcional)', type: FIELD_TYPES.TEXT },
-      { key: 'children', label: 'Blocos dentro desta seção', type: FIELD_TYPES.BLOCKS },
+      { key: 'children', label: 'Componentes desta seção', type: FIELD_TYPES.BLOCKS },
     ],
     defaultData: () => ({ type: 'section', label: '', title: '', subtitle: '', children: [] }),
   },

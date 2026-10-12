@@ -3,7 +3,7 @@ import { getSectionDefinition } from '@lesson';
 import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
 
-export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, onAddTitle, onRemoveTitle, nested = false }) {
+export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, nested = false }) {
   const [collapsed, setCollapsed] = useState(false);
   const definition = getSectionDefinition(section.type);
 
@@ -20,7 +20,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
   };
 
   return (
-    <div className={`rounded-xl border bg-white shadow-sm overflow-hidden ${nested ? 'border-lav-bar' : 'border-gray-200'}`}>
+    <div className={`rounded-xl border bg-white shadow-sm overflow-hidden ${nested ? 'border-lav-bar' : 'border-lav-bar border-2'}`}>
       <div className="flex items-center justify-between gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700">
         <button
           type="button"
@@ -29,32 +29,12 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
         >
           <span className="text-lg">{definition.icon}</span>
           <span className="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate">
-            {definition.label}
+            {section.type === 'section' ? `Seção ${index + 1}` : definition.label}
             {section.type === 'section' && section.title ? <span className="font-normal text-gray-500"> — {section.title}</span> : null}
           </span>
           <span className="text-gray-400 text-xs">{collapsed ? 'mostrar' : 'ocultar'}</span>
         </button>
         <div className="flex items-center gap-1.5 shrink-0">
-          {onAddTitle && section.type !== 'section' && (
-            <button
-              type="button"
-              onClick={onAddTitle}
-              title="Coloca um título acima deste bloco"
-              className="mr-1 px-3 h-9 inline-flex items-center gap-1 rounded-lg border border-lav-bar bg-lav text-ink text-[11px] font-bold uppercase tracking-wide hover:bg-lav-mid transition-colors"
-            >
-              + Adicionar título
-            </button>
-          )}
-          {onRemoveTitle && section.type === 'section' && (
-            <button
-              type="button"
-              onClick={onRemoveTitle}
-              title="Remove o título e mantém os blocos dentro dele"
-              className="mr-1 px-3 h-9 inline-flex items-center gap-1 rounded-lg border border-gray-300 text-gray-600 text-[11px] font-bold uppercase tracking-wide hover:bg-gray-100 transition-colors"
-            >
-              Remover título
-            </button>
-          )}
           <HelpButton definition={definition} className="mr-1" />
           <button type="button" disabled={index === 0} onClick={() => onMove(-1)} title="Mover para cima" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↑</button>
           <button type="button" disabled={index === total - 1} onClick={() => onMove(1)} title="Mover para baixo" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↓</button>

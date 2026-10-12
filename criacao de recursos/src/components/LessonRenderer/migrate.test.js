@@ -11,9 +11,10 @@ it('migra blocos antigos para seção + filhos e é idempotente', () => {
     { type: 'dropdown_group', layout: 'grid', items: [] },
   ] };
   const m = migrateLesson(old);
-  expect(m.sections.map((s) => s.type)).toEqual(['section', 'intro', 'section', 'section', 'dropdown_group']);
+  expect(m.sections.map((s) => s.type)).toEqual(['section', 'section', 'section', 'section', 'section']);
   expect(m.sections[2].children).toHaveLength(2);
   expect(m.sections[3].children[0].title).toBeUndefined();
+  expect(m.sections[1].children[0].type).toBe('intro');
   expect(migrateLesson(m)).toBe(m);
   expect(migrateLesson(SAMPLE_LESSON)).toBe(SAMPLE_LESSON);
 });
