@@ -31,7 +31,7 @@ function SpacingSelect({ label, value, onChange }) {
               value={px ?? ''}
               placeholder="Padrão"
               onChange={(e) => set(e.target.value === '' ? undefined : Number(e.target.value))}
-              className="h-9 w-24 rounded-lg border border-gray-300 bg-white pl-2 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="h-9 w-28 rounded-lg border border-gray-300 bg-white pl-2 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">px</span>
           </div>
@@ -157,6 +157,10 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               <span className="text-sm font-bold text-ink">Título da seção</span>
               <span className="text-xs text-gray-500">(opcional — deixe em branco para não mostrar título)</span>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl border-b border-lav pb-3">
+              <SpacingSelect label="↕ Espaço em cima do título" value={section.titleBefore} onChange={(v) => setFieldValue('titleBefore', v)} />
+              <SpacingSelect label="↕ Espaço entre o título e os componentes" value={section.titleAfter} onChange={(v) => setFieldValue('titleAfter', v)} />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_2fr] gap-3">
               {definition.fields.filter((f) => f.key !== 'children').map((field) => (
                 <SchemaField
@@ -167,10 +171,6 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
                   siblingValues={section}
                 />
               ))}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl border-t border-lav pt-3">
-              <SpacingSelect label="↕ Espaço em cima do título" value={section.titleBefore} onChange={(v) => setFieldValue('titleBefore', v)} />
-              <SpacingSelect label="↕ Espaço entre o título e os componentes" value={section.titleAfter} onChange={(v) => setFieldValue('titleAfter', v)} />
             </div>
           </div>
 
