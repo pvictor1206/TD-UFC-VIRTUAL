@@ -3,7 +3,7 @@ import BlockCard from './BlockCard';
 
 // Lista de blocos dentro de uma seção (título). Usa os mesmos cartões de
 // edição da lista principal, mas não permite colocar uma seção dentro de outra.
-export default function NestedBlocks({ value, onChange }) {
+export default function NestedBlocks({ value, onChange, sectionNumber }) {
   const blocks = value || [];
 
   const add = (type) => {
@@ -26,7 +26,7 @@ export default function NestedBlocks({ value, onChange }) {
   };
 
   return (
-    <div className="rounded-lg border-l-4 border-lav-bar bg-lav-soft/60 pl-3 pr-2 py-3 space-y-3">
+    <div className="ml-1 space-y-3 border-l-4 border-lav-bar pl-4">
       {blocks.length === 0 && (
         <p className="text-xs text-gray-500 italic">Nenhum componente nesta seção ainda. Adicione abaixo ou pela barra lateral.</p>
       )}
@@ -37,6 +37,7 @@ export default function NestedBlocks({ value, onChange }) {
           index={i}
           total={blocks.length}
           nested
+          number={sectionNumber ? `${sectionNumber}.${i + 1}` : undefined}
           onChange={(b) => update(i, b)}
           onRemove={() => remove(i)}
           onDuplicate={() => duplicate(i)}

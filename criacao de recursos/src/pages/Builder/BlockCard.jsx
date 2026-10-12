@@ -45,7 +45,7 @@ function SpacingSelect({ label, value, onChange, inline = false }) {
   );
 }
 
-export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, nested = false }) {
+export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, nested = false, number }) {
   const [collapsed, setCollapsed] = useState(false);
   const definition = getSectionDefinition(section.type);
 
@@ -64,8 +64,14 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
   const isSection = section.type === 'section';
 
   return (
-    <div className={`rounded-xl border bg-white shadow-sm ${nested ? 'border-lav-bar' : 'border-lav-bar border-2'}`}>
-      <div className={`flex items-center justify-between gap-3 px-4 py-3 rounded-t-[10px] border-b border-gray-100 ${isSection ? 'bg-gray-100' : 'bg-gray-50'}`}>
+    <div
+      className={`bg-white ${
+        nested
+          ? 'rounded-lg border border-gray-300 shadow-sm'
+          : 'rounded-xl border-2 border-l-[10px] border-blue-700 shadow-md'
+      }`}
+    >
+      <div className={`flex items-center justify-between gap-3 px-4 py-3 ${nested ? 'rounded-t-[7px]' : 'rounded-tr-[9px]'} border-b ${isSection ? 'bg-lav border-lav-bar' : 'bg-white border-gray-200'}`}>
         {isSection ? (
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <button
@@ -73,10 +79,13 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               onClick={() => setCollapsed((c) => !c)}
               aria-expanded={!collapsed}
               title={collapsed ? 'Mostrar conteúdo da seção' : 'Recolher seção'}
-              className="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-200"
+              className="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-lg text-ink hover:bg-lav-bar"
             >
               {collapsed ? '▸' : '▾'}
             </button>
+            <span className="shrink-0 rounded-md bg-blue-700 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wider text-white">
+              Seção {index + 1}
+            </span>
             <label className="flex flex-1 min-w-0 items-center gap-2 rounded-lg border-2 border-gray-300 bg-white px-3 shadow-sm transition-colors hover:border-blue-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200">
               <span aria-hidden className="shrink-0 text-base">✏️</span>
               <input
@@ -89,6 +98,9 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
                 className="min-w-0 flex-1 bg-transparent py-2 text-sm font-bold text-gray-900 placeholder:font-medium placeholder:text-gray-500 focus:outline-none"
               />
             </label>
+            <span className="hidden md:inline shrink-0 text-xs font-semibold text-ink/70">
+              {(section.children || []).length} componente{(section.children || []).length === 1 ? '' : 's'}
+            </span>
           </div>
         ) : (
           <button
@@ -96,6 +108,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
             onClick={() => setCollapsed((c) => !c)}
             className="flex items-center gap-2 text-left flex-1 min-w-0"
           >
+            {number && <span className="shrink-0 rounded bg-gray-200 px-1.5 py-0.5 text-[11px] font-bold text-gray-600">{number}</span>}
             <span className="text-lg">{definition.icon}</span>
             <span className="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate">{definition.label}</span>
             <span className="text-gray-400 text-xs">{collapsed ? 'mostrar' : 'ocultar'}</span>
@@ -142,6 +155,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               <SchemaField
                 key={field.key}
                 field={{ ...field, label: '' }}
+                sectionNumber={index + 1}
                 value={section[field.key]}
                 onChange={(v) => setFieldValue(field.key, v)}
                 siblingValues={section}

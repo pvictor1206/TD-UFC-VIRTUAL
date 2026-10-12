@@ -15,7 +15,7 @@ import LatexField from './LatexField';
 // `value` via `onChange`. `siblingValues` dá acesso aos outros campos do
 // mesmo bloco (usado por `showIf` e pela tabela de dados, cujas linhas
 // dependem da quantidade de colunas definida em outro campo).
-export default function SchemaField({ field, value, onChange, siblingValues = {} }) {
+export default function SchemaField({ field, value, onChange, siblingValues = {}, sectionNumber }) {
   if (field.showIf && siblingValues[field.showIf.field] !== field.showIf.equals) {
     return null;
   }
@@ -75,7 +75,7 @@ export default function SchemaField({ field, value, onChange, siblingValues = {}
       return (
         <div>
           {field.label && <p className="block text-xs font-semibold text-gray-600 mb-1">{field.label}</p>}
-          <NestedBlocks value={value} onChange={onChange} />
+          <NestedBlocks value={value} onChange={onChange} sectionNumber={sectionNumber} />
         </div>
       );
 

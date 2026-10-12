@@ -390,7 +390,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className="space-y-8">
               {lesson.sections.map((section, index) => (
                 <div
                   key={index}
