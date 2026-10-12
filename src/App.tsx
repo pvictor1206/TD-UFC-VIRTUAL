@@ -540,7 +540,7 @@ export default function App() {
       const mine = new Set(getVisibleProfessors().map(u => u.id));
       return disciplines.filter(d => mine.has(d.conteudistaId));
     }
-    if (currentUser.role === 'admin') return [];
+    if (currentUser.role === 'admin') return disciplines;
     return disciplines.filter(d => d.conteudistaId === currentUser.id);
   };
 
@@ -554,7 +554,7 @@ export default function App() {
     if (foundUser) {
       setCurrentUser(foundUser);
       setActiveDisciplineId(null);
-      setSidebarTab(foundUser.role === 'admin' ? 'equipe' : 'dashboard');
+      setSidebarTab('dashboard');
       setLoginError('');
       setLoginUsername('');
       setLoginPassword('');
@@ -870,7 +870,6 @@ export default function App() {
       <nav className="flex-1 px-4 space-y-1">
         <div className="text-[10px] text-white/50 uppercase tracking-widest px-3 mb-2 font-semibold">Navegação</div>
 
-        {currentUser.role !== 'admin' && (
         <button
           onClick={() => { setActiveDisciplineId(null); setSidebarTab('dashboard'); }}
           className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${(sidebarTab === 'dashboard' && !activeDisciplineId) ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
@@ -878,7 +877,6 @@ export default function App() {
           <LayoutDashboard size={18} />
           <span>Painel de Projetos</span>
         </button>
-        )}
 
         {/* Menu do Administrador */}
         {currentUser.role === 'admin' && (
@@ -897,6 +895,13 @@ export default function App() {
             >
               <Users size={18} />
               <span>Professores</span>
+            </button>
+            <button
+              onClick={() => { setActiveDisciplineId(null); setSidebarTab('disciplinas'); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${sidebarTab === 'disciplinas' ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
+            >
+              <FolderPlus size={18} />
+              <span>Nova Disciplina</span>
             </button>
           </>
         )}
@@ -945,7 +950,7 @@ export default function App() {
     <div className="p-8 max-w-5xl">
       <header className="mb-8">
         <h2 className="text-3xl font-extrabold mb-1 text-[#991F50]">Gerenciar Professores Conteudistas</h2>
-        <p className="text-zinc-600 text-sm">{currentUser.role === 'admin' ? 'Cadastre docentes e aloque cada um a um membro da Equipe Técnica, que passa a acompanhá-lo.' : 'Adicione novos docentes e configure credenciais de acesso. Você enxerga apenas os docentes sob sua responsabilidade.'}</p>
+        <p className="text-zinc-600 text-sm">{currentUser.role === 'admin' ? 'Você vê todos os docentes. Cadastre novos e aloque cada um a um membro da Equipe Técnica, que passa a acompanhá-lo.' : 'Adicione novos docentes e configure credenciais de acesso. Você enxerga apenas os docentes sob sua responsabilidade.'}</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1228,6 +1233,11 @@ export default function App() {
                 <p className="text-xs text-zinc-600 mb-4 flex items-center gap-1">
                    <Users size={12}/> Prof(a). {users.find(u => u.id === d.conteudistaId)?.name || 'Docente'}
                 </p>
+                {currentUser.role === 'admin' && (
+                  <p className="text-[11px] text-zinc-500 -mt-3 mb-4">
+                    Equipe: {users.find(u => u.id === users.find(p => p.id === d.conteudistaId)?.createdBy)?.name || '—'}
+                  </p>
+                )}
 
                 <div className="mt-auto pt-4 border-t border-zinc-200">
                   <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1 font-bold">Fase Atual</div>
@@ -1247,7 +1257,7 @@ export default function App() {
   // --- DETALHES DO PROJETO COM AS ABAS ---
   const ProjectDetails = () => {
     if (!activeDiscipline) return null;
-    const isTecnico = currentUser.role === 'tecnico';
+    const isTecnico = currentUser.role === 'tecnico' || currentUser.role === 'admin';
 
     return (
       <div className="flex flex-col h-full">
@@ -1323,10 +1333,10 @@ export default function App() {
       case 'professores':
         return currentUser.role === 'conteudista' ? Dashboard() : TeachersManagement();
       case 'disciplinas':
-        return currentUser.role === 'tecnico' ? DisciplineManagement() : Dashboard();
+        return currentUser.role === 'conteudista' ? Dashboard() : DisciplineManagement();
       case 'dashboard':
       default:
-        return isAdmin ? TeamManagement() : Dashboard();
+        return Dashboard();
     }
   };
 
