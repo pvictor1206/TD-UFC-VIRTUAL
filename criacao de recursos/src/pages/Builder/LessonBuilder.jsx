@@ -63,7 +63,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   const flash = (msg) => {
     setFeedback(msg);
-    setTimeout(() => setFeedback(''), 2500);
+    setTimeout(() => setFeedback(''), 4000);
   };
 
   const updateMeta = (key, value) => setLesson((l) => ({ ...l, [key]: value }));
@@ -96,6 +96,10 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
       sections[i] = { ...sections[i], children: [...(sections[i].children || []), definition.defaultData()] };
       return { ...l, sections };
     });
+    const target = lesson.sections[activeSection];
+    const targetName = target?.name || target?.title || '';
+    flash(`"${definition.label}" adicionado em: Seção ${activeSection + 1}${targetName ? ` — ${targetName}` : ''}`);
+    setScrollToIndex(activeSection);
     setView('editar');
   };
 
