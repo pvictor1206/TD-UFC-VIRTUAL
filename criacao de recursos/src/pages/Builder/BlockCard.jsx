@@ -4,65 +4,49 @@ import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
 
 // Espaçamento vertical em pixels. Vazio = padrão do componente.
-function SpacingSelect({ label, value, onChange }) {
+// `inline`: rótulo à esquerda do campo (usado no rodapé dos componentes).
+function SpacingSelect({ label, value, onChange, inline = false }) {
   const px = spacingPx(value);
   const set = (n) => onChange(n === undefined ? '' : String(Math.max(0, Math.min(SPACING_MAX_PX, n))));
+  const stepBtn = 'h-9 w-9 shrink-0 rounded-lg border border-gray-300 bg-white text-lg leading-none text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400';
   return (
-    <div className="flex flex-col gap-1 text-xs font-semibold text-gray-600">
-      <div>
-        {label}
-        <div className="mt-1 flex items-center gap-1.5 font-normal">
-          <button
-            type="button"
-            aria-label={`Diminuir ${label}`}
-            onClick={() => set(Math.max(0, (px ?? 0) - 4))}
-            className="h-9 w-9 shrink-0 rounded-lg border border-gray-300 bg-white text-lg text-gray-600 hover:bg-gray-50"
-          >
-            −
-          </button>
-          <div className="relative">
-            <input
-              type="number"
-              min="0"
-              max={SPACING_MAX_PX}
-              step="4"
-              inputMode="numeric"
-              aria-label={label}
-              value={px ?? ''}
-              placeholder="Padrão"
-              onChange={(e) => set(e.target.value === '' ? undefined : Number(e.target.value))}
-              className="h-9 w-28 rounded-lg border border-gray-300 bg-white pl-2 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">px</span>
-          </div>
-          <button
-            type="button"
-            aria-label={`Aumentar ${label}`}
-            onClick={() => set((px ?? 0) + 4)}
-            className="h-9 w-9 shrink-0 rounded-lg border border-gray-300 bg-white text-lg text-gray-600 hover:bg-gray-50"
-          >
-            +
-          </button>
-          {px !== undefined && (
-            <button
-              type="button"
-              onClick={() => set(undefined)}
-              title="Voltar ao espaçamento padrão"
-              className="h-9 shrink-0 rounded-lg px-2 text-xs font-semibold text-gray-500 hover:bg-gray-100"
-            >
-              Padrão
-            </button>
-          )}
+    <div className={`text-xs font-semibold text-gray-600 ${inline ? 'flex items-center gap-2' : 'flex flex-col gap-1'}`}>
+      <span className={inline ? 'whitespace-nowrap' : ''}>{label}</span>
+      <div className="flex items-center gap-1.5 font-normal">
+        <button type="button" aria-label={`Diminuir ${label}`} onClick={() => set(Math.max(0, (px ?? 0) - 4))} className={stepBtn}>−</button>
+        <div className="relative">
+          <input
+            type="number"
+            min="0"
+            max={SPACING_MAX_PX}
+            step="4"
+            inputMode="numeric"
+            aria-label={label}
+            value={px ?? ''}
+            placeholder="Padrão"
+            onChange={(e) => set(e.target.value === '' ? undefined : Number(e.target.value))}
+            className="h-9 w-32 rounded-lg border border-gray-300 bg-white pl-3 pr-8 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-500">px</span>
         </div>
+        <button type="button" aria-label={`Aumentar ${label}`} onClick={() => set((px ?? 0) + 4)} className={stepBtn}>+</button>
+        {px !== undefined && (
+          <button
+            type="button"
+            onClick={() => set(undefined)}
+            title="Voltar ao espaçamento padrão"
+            className="h-9 shrink-0 rounded-lg px-2 text-xs font-semibold text-gray-500 hover:bg-gray-100"
+          >
+            Padrão
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
-
 export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, nested = false }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [spacingOpen, setSpacingOpen] = useState(false);
   const definition = getSectionDefinition(section.type);
 
   if (!definition) {
@@ -115,20 +99,6 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
           </button>
         )}
         <div className="flex items-center gap-1.5 shrink-0">
-          {nested && !isSection && (
-            <button
-              type="button"
-              onClick={() => setSpacingOpen((o) => !o)}
-              aria-expanded={spacingOpen}
-              aria-label="Espaçamento vertical deste componente"
-              title="Espaçamento vertical (em cima e em baixo)"
-              className={`w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg transition-colors ${
-                section.spaceBefore || section.spaceAfter ? 'bg-lav text-ink' : 'text-gray-500 hover:bg-gray-200'
-              } ${spacingOpen ? 'ring-2 ring-blue-400' : ''}`}
-            >
-              ↕
-            </button>
-          )}
           <HelpButton definition={definition} className="mr-1" />
           <button type="button" disabled={index === 0} onClick={() => onMove(-1)} title="Mover para cima" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↑</button>
           <button type="button" disabled={index === total - 1} onClick={() => onMove(1)} title="Mover para baixo" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↓</button>
@@ -136,19 +106,6 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
           <button type="button" onClick={onRemove} title="Excluir bloco" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40">🗑</button>
         </div>
       </div>
-
-      {spacingOpen && nested && !isSection && (
-        <div className="flex flex-wrap items-end gap-4 border-b border-lav bg-lav-soft px-4 py-3">
-          <span className="text-xs font-bold text-ink self-center">↕ Espaçamento vertical</span>
-          <div>
-            <SpacingSelect label="Espaço em cima" value={section.spaceBefore} onChange={(v) => setFieldValue('spaceBefore', v)} />
-          </div>
-          <div>
-            <SpacingSelect label="Espaço em baixo" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
-          </div>
-          <span className="text-[11px] text-gray-500 self-center">Em branco ("Padrão") mantém o espaçamento original, em pixels (px).</span>
-        </div>
-      )}
 
       {!collapsed && isSection && (
         <div className="p-4 space-y-4">
@@ -214,6 +171,15 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               siblingValues={section}
             />
           ))}
+        </div>
+      )}
+
+      {/* Espaçamento vertical: sempre visível no componente */}
+      {!collapsed && nested && !isSection && (
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-b-[10px] border-t border-lav bg-lav-soft/70 px-4 py-3">
+          <span className="text-xs font-bold uppercase tracking-wide text-ink">↕ Espaçamento</span>
+          <SpacingSelect inline label="Em cima" value={section.spaceBefore} onChange={(v) => setFieldValue('spaceBefore', v)} />
+          <SpacingSelect inline label="Em baixo" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
         </div>
       )}
     </div>
