@@ -382,7 +382,6 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   section={section}
                   index={index}
                   total={sectionCount}
-                  isActive={index === activeSection && sectionCount > 1}
                   onChange={(s) => updateSection(index, s)}
                   onRemove={() => removeSection(index)}
                   onDuplicate={() => duplicateSection(index)}
