@@ -8,6 +8,7 @@ import {
   DataTableRowsField,
 } from './fieldInputs';
 import NestedBlocks from './NestedBlocks';
+import LatexField from './LatexField';
 
 // Renderiza o campo de formulário correto para um `field` do catálogo
 // (src/components/LessonRenderer/sectionCatalog.js), lendo/gravando em
@@ -66,6 +67,9 @@ export default function SchemaField({ field, value, onChange, siblingValues = {}
           onChange={onChange}
         />
       );
+
+    case FIELD_TYPES.LATEX:
+      return <LatexField label={field.label} help={field.help} value={value} onChange={onChange} />;
 
     case FIELD_TYPES.BLOCKS:
       return (

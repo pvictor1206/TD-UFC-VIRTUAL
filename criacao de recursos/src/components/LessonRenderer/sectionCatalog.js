@@ -14,12 +14,14 @@ export const FIELD_TYPES = {
   STRING_LIST: 'stringList',
   OBJECT_LIST: 'objectList',
   DATA_TABLE_ROWS: 'dataTableRows',
+  LATEX: 'latex', // fórmula (LaTeX) com botões de símbolos e pré-visualização
   BLOCKS: 'blocks', // lista de blocos aninhados (usada pelo bloco "section")
 };
 
 export const GROUPS = [
   { id: 'texto', label: 'Texto' },
   { id: 'estrutura', label: 'Estrutura / Listas' },
+  { id: 'exatas', label: 'Exatas (Cálculo, Física, Química)' },
   { id: 'midia', label: 'Mídia' },
   { id: 'dados', label: 'Dados e Comparações' },
   { id: 'interativo', label: 'Interativo' },
@@ -283,5 +285,124 @@ export const SECTION_CATALOG = [
     defaultData: () => ({ type: 'access_link', label: '', href: '' }),
   },
 ];
+
+// Componentes para disciplinas de exatas. Fórmulas usam LaTeX (com botões de
+// símbolos no editor); reações químicas usam \ce{...}; no texto corrido, $...$.
+SECTION_CATALOG.push(
+  {
+    type: 'formula',
+    label: 'Fórmula / equação',
+    group: 'exatas',
+    icon: '∑',
+    description: 'Fórmula em destaque, centralizada, com número, legenda e explicação das variáveis ("onde...").',
+    fields: [
+      { key: 'latex', label: 'Fórmula', type: FIELD_TYPES.LATEX },
+      { key: 'number', label: 'Número da equação (opcional, ex: 1)', type: FIELD_TYPES.TEXT },
+      { key: 'where', label: 'Onde... (explicação das variáveis, opcional)', type: FIELD_TYPES.TEXTAREA, help: 'Aceita fórmulas no texto entre $ $, ex: $F$ é a força.', rows: 3, rich: true },
+      { key: 'caption', label: 'Legenda (opcional)', type: FIELD_TYPES.TEXT },
+    ],
+    defaultData: () => ({ type: 'formula', latex: '', number: '', where: '', caption: '' }),
+  },
+  {
+    type: 'formula_sheet',
+    label: 'Formulário (lista de fórmulas)',
+    group: 'exatas',
+    icon: '🧮',
+    description: 'Cartões lado a lado, cada um com nome, fórmula e observação — ótimo para resumos e consultas rápidas.',
+    fields: [
+      {
+        key: 'columns',
+        label: 'Colunas',
+        type: FIELD_TYPES.SELECT,
+        options: [
+          { value: '2', label: '2 colunas (padrão)' },
+          { value: '1', label: '1 coluna' },
+          { value: '3', label: '3 colunas' },
+        ],
+      },
+      {
+        key: 'items',
+        label: 'Fórmulas',
+        type: FIELD_TYPES.OBJECT_LIST,
+        addLabel: 'Adicionar fórmula',
+        itemFields: [
+          { key: 'name', label: 'Nome (ex: Lei de Ohm)', type: FIELD_TYPES.TEXT },
+          { key: 'latex', label: 'Fórmula', type: FIELD_TYPES.LATEX },
+          { key: 'note', label: 'Observação (opcional)', type: FIELD_TYPES.TEXT },
+        ],
+      },
+    ],
+    defaultData: () => ({ type: 'formula_sheet', columns: '2', items: [{ name: '', latex: '', note: '' }] }),
+  },
+  {
+    type: 'step_by_step',
+    label: 'Exercício passo a passo',
+    group: 'exatas',
+    icon: '🪜',
+    description: 'Enunciado e resolução revelada um passo por vez: o aluno tenta primeiro e confere depois.',
+    fields: [
+      { key: 'statement', label: 'Enunciado', type: FIELD_TYPES.TEXTAREA, help: 'Aceita fórmulas no texto entre $ $.', rows: 3, rich: true },
+      {
+        key: 'steps',
+        label: 'Passos da resolução',
+        type: FIELD_TYPES.OBJECT_LIST,
+        addLabel: 'Adicionar passo',
+        itemFields: [
+          { key: 'text', label: 'Explicação do passo', type: FIELD_TYPES.TEXTAREA, rows: 2, rich: true },
+          { key: 'latex', label: 'Fórmula do passo (opcional)', type: FIELD_TYPES.LATEX },
+        ],
+      },
+      { key: 'answer', label: 'Resposta final em texto (opcional)', type: FIELD_TYPES.TEXT },
+      { key: 'answerLatex', label: 'Resposta final em fórmula (opcional)', type: FIELD_TYPES.LATEX },
+    ],
+    defaultData: () => ({ type: 'step_by_step', statement: '', steps: [{ text: '', latex: '' }], answer: '', answerLatex: '' }),
+  },
+  {
+    type: 'callout',
+    label: 'Destaque (definição, teorema...)',
+    group: 'destaque',
+    icon: '📌',
+    description: 'Caixa para definições, teoremas, demonstrações, exemplos, observações, dicas e avisos.',
+    fields: [
+      {
+        key: 'kind',
+        label: 'Tipo',
+        type: FIELD_TYPES.SELECT,
+        options: [
+          { value: 'definicao', label: 'Definição' },
+          { value: 'teorema', label: 'Teorema' },
+          { value: 'demonstracao', label: 'Demonstração' },
+          { value: 'exemplo', label: 'Exemplo' },
+          { value: 'observacao', label: 'Observação' },
+          { value: 'dica', label: 'Dica' },
+          { value: 'atencao', label: 'Atenção' },
+        ],
+      },
+      { key: 'title', label: 'Título (opcional, ex: Teorema de Pitágoras)', type: FIELD_TYPES.TEXT },
+      { key: 'text', label: 'Texto', type: FIELD_TYPES.TEXTAREA, help: 'Aceita fórmulas no texto entre $ $.', rows: 4, rich: true },
+    ],
+    defaultData: () => ({ type: 'callout', kind: 'definicao', title: '', text: '' }),
+  },
+  {
+    type: 'glossary',
+    label: 'Glossário',
+    group: 'texto',
+    icon: '🔤',
+    description: 'Lista de termos e definições, em linhas alternadas.',
+    fields: [
+      {
+        key: 'items',
+        label: 'Termos',
+        type: FIELD_TYPES.OBJECT_LIST,
+        addLabel: 'Adicionar termo',
+        itemFields: [
+          { key: 'term', label: 'Termo', type: FIELD_TYPES.TEXT },
+          { key: 'definition', label: 'Definição', type: FIELD_TYPES.TEXTAREA, rows: 2, rich: true },
+        ],
+      },
+    ],
+    defaultData: () => ({ type: 'glossary', items: [{ term: '', definition: '' }] }),
+  },
+);
 
 export const getSectionDefinition = (type) => SECTION_CATALOG.find((s) => s.type === type);

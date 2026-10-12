@@ -13,6 +13,11 @@ import {
   InteractiveQuiz,
   QuestionnairePrompt,
   AccessLink,
+  Formula,
+  FormulaSheet,
+  StepByStep,
+  Callout,
+  Glossary,
 } from '@ui';
 import FormattedText from './FormattedText';
 import { migrateSection, migrateSections } from './migrate';
@@ -232,6 +237,29 @@ export function renderSection(section, index) {
           <QuestionnairePrompt message={section.message} buttonLabel={section.buttonLabel} href={section.href} />
         </div>
       );
+
+    case 'formula':
+      return <Formula key={index} latex={section.latex} number={section.number} where={section.where} caption={section.caption} />;
+
+    case 'formula_sheet':
+      return <FormulaSheet key={index} items={section.items} columns={section.columns} />;
+
+    case 'step_by_step':
+      return (
+        <StepByStep
+          key={index}
+          statement={section.statement}
+          steps={section.steps}
+          answer={section.answer}
+          answerLatex={section.answerLatex}
+        />
+      );
+
+    case 'callout':
+      return <Callout key={index} kind={section.kind} title={section.title} text={section.text} />;
+
+    case 'glossary':
+      return <Glossary key={index} items={section.items} />;
 
     case 'access_link':
       return (

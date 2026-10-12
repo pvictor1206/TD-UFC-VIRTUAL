@@ -17,3 +17,8 @@ export { default as DataTable } from "./Table/DataTable";
 export { default as Table } from "./Table/ComparisonTable";
 export { default as Timeline } from "./Timeline/Timeline";
 export { default as VideoEmbed } from "./Video/VideoEmbed";
+export { default as Formula } from "./Exatas/Formula";
+export { default as FormulaSheet } from "./Exatas/FormulaSheet";
+export { default as StepByStep } from "./Exatas/StepByStep";
+export { default as Callout } from "./Callout/Callout";
+export { default as Glossary } from "./Glossary/Glossary";

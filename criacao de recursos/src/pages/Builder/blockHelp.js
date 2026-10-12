@@ -125,4 +125,39 @@ export const BLOCK_HELP = {
     steps: ['Escreva o texto do link, dizendo o que o aluno vai encontrar.', 'Cole o endereço completo em "Endereço (URL)".'],
     tips: ['O texto deve fazer sentido sozinho: evite "clique aqui".', 'Use https:// no início do endereço.'],
   },
+
+  formula: {
+    what: 'Uma fórmula ou equação em destaque, centralizada, com número, legenda e a explicação das variáveis ("onde...").',
+    when: 'Cálculo, Física, Química, Estatística — sempre que uma equação merecer destaque na aula.',
+    steps: [
+      'Na caixa "Fórmula", clique nos símbolos (frações, raízes, integrais, letras gregas...) ou escreva em LaTeX.',
+      'Confira em "Como vai aparecer". Para reações químicas, use a aba Química (ex: \\ce{2H2 + O2 -> 2H2O}).',
+      'Opcional: número da equação, "onde..." (explicando as letras) e legenda.',
+    ],
+    tips: ['No texto corrido, use $x^2$ para uma fórmula na mesma linha e $$x^2$$ para uma fórmula em bloco.', 'Fórmula inválida aparece em vermelho na pré-visualização.'],
+  },
+  formula_sheet: {
+    what: 'Cartões lado a lado, cada um com o nome, a fórmula e uma observação.',
+    when: 'Resumos e "formulários" de consulta rápida (ex: fórmulas de cinemática, derivadas básicas, constantes).',
+    steps: ['Escolha 1, 2 ou 3 colunas.', 'Adicione uma fórmula por cartão: nome, fórmula e observação opcional.'],
+    tips: ['Use 3 colunas para fórmulas curtas e 1 coluna para fórmulas longas.'],
+  },
+  step_by_step: {
+    what: 'Exercício resolvido que o aluno vê um passo por vez, com botões Próximo passo, Mostrar tudo e Reiniciar.',
+    when: 'Exemplos resolvidos e exercícios em que o raciocínio importa mais que a resposta.',
+    steps: ['Escreva o enunciado.', 'Adicione os passos: explicação e, se quiser, a fórmula daquele passo.', 'Preencha a resposta final (texto ou fórmula).'],
+    tips: ['Quebre a resolução em passos curtos: um raciocínio por passo.', 'A resposta só aparece depois do último passo.'],
+  },
+  callout: {
+    what: 'Caixa de destaque com selo do tipo: Definição, Teorema, Demonstração, Exemplo, Observação, Dica ou Atenção (esta em tom quente).',
+    when: 'Para separar do texto o que o aluno precisa guardar: definições, enunciados de teoremas, avisos de erros comuns.',
+    steps: ['Escolha o tipo.', 'Se quiser, dê um título (ex: Teorema de Pitágoras).', 'Escreva o texto; fórmulas entram entre $ $.'],
+    tips: ['Use poucas caixas por seção para elas continuarem chamando atenção.'],
+  },
+  glossary: {
+    what: 'Lista de termos com suas definições, em linhas alternadas.',
+    when: 'Vocabulário de uma unidade: grandezas, símbolos, conceitos.',
+    steps: ['Adicione um termo por vez e escreva a definição.'],
+    tips: ['Ordene os termos alfabeticamente com as setas ↑ ↓.'],
+  },
 };

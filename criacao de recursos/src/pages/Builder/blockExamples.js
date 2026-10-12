@@ -133,4 +133,70 @@ export const BLOCK_EXAMPLES = {
     sample: { type: 'access_link', label: 'Acessar o artigo completo', href: '#' },
     notes: { label: 'Texto clicável da caixa.', href: 'Endereço de destino (começa com https://).' },
   },
+  formula: {
+    sample: {
+      type: 'formula',
+      latex: 'x = \\frac{-b \\pm \\sqrt{b^{2} - 4ac}}{2a}',
+      number: '1',
+      where: '**Onde:** $a$, $b$ e $c$ são os coeficientes da equação $ax^2 + bx + c = 0$.',
+      caption: 'Fórmula de Bhaskara',
+    },
+    notes: {
+      latex: 'A fórmula, montada com os botões de símbolos (ou escrita em LaTeX).',
+      number: 'Aparece entre parênteses à direita.',
+      where: 'Explica o significado das letras; aceita fórmulas entre $ $.',
+      caption: 'Texto em itálico embaixo da fórmula.',
+    },
+  },
+  formula_sheet: {
+    sample: {
+      type: 'formula_sheet',
+      columns: '2',
+      items: [
+        { name: 'Lei de Ohm', latex: 'V = R\\,i', note: 'Tensão = resistência × corrente' },
+        { name: 'Velocidade média', latex: 'v = \\frac{\\Delta s}{\\Delta t}', note: 'Variação de posição no tempo' },
+        { name: 'Combustão do hidrogênio', latex: '\\ce{2H2 + O2 -> 2H2O}', note: 'Reação balanceada' },
+        { name: 'Derivada da potência', latex: '\\frac{d}{dx}x^{n} = nx^{n-1}', note: 'Regra do tombo' },
+      ],
+    },
+    notes: { columns: 'Quantos cartões por linha.', items: 'Um cartão por fórmula: nome, fórmula e observação.' },
+  },
+  step_by_step: {
+    sample: {
+      type: 'step_by_step',
+      statement: 'Um carro parte do repouso com aceleração $a = 2\\,\\mathrm{m/s^2}$. Qual a velocidade após $t = 5\\,\\mathrm{s}$?',
+      steps: [
+        { text: 'Identifique a equação da velocidade no MRUV.', latex: 'v = v_{0} + a\\,t' },
+        { text: 'Substitua os valores ($v_0 = 0$, pois parte do repouso).', latex: 'v = 0 + 2 \\cdot 5' },
+        { text: 'Calcule.', latex: 'v = 10\\,\\mathrm{m/s}' },
+      ],
+      answer: 'A velocidade após 5 s é de 10 m/s.',
+      answerLatex: '',
+    },
+    notes: {
+      statement: 'O enunciado do exercício.',
+      steps: 'Cada passo é revelado ao clicar em "Próximo passo".',
+      answer: 'Aparece só depois do último passo.',
+      answerLatex: 'Alternativa: resposta final como fórmula.',
+    },
+  },
+  callout: {
+    sample: {
+      type: 'callout',
+      kind: 'teorema',
+      title: 'Teorema de Pitágoras',
+      text: 'Em um triângulo retângulo, $a^2 = b^2 + c^2$, em que $a$ é a hipotenusa.',
+    },
+    notes: { kind: 'Muda o selo e a cor da caixa.', title: 'Título ao lado do selo.', text: 'Conteúdo da caixa; aceita fórmulas entre $ $.' },
+  },
+  glossary: {
+    sample: {
+      type: 'glossary',
+      items: [
+        { term: 'Derivada', definition: 'Taxa de variação instantânea de uma função.' },
+        { term: 'Mol', definition: 'Quantidade de matéria com $6{,}02 \\times 10^{23}$ entidades.' },
+      ],
+    },
+    notes: { items: 'Termo à esquerda e definição à direita, em linhas alternadas.' },
+  },
 };

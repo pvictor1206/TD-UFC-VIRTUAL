@@ -86,5 +86,34 @@ export const SAMPLE_LESSON = {
         { type: 'access_link', label: 'Acessar material complementar', href: '#' },
       ],
     },
+    {
+      type: 'section',
+      title: 'Exatas: fórmulas e resoluções',
+      subtitle: 'Cálculo, Física e Química',
+      children: [
+        { type: 'intro', text: 'No texto corrido, fórmulas ficam entre cifrões: a área é $A = \\pi r^{2}$.' },
+        { type: 'callout', kind: 'teorema', title: 'Teorema de Pitágoras', text: 'Em um triângulo retângulo, $a^2 = b^2 + c^2$, em que $a$ é a hipotenusa.' },
+        { type: 'formula', latex: 'x = \\frac{-b \\pm \\sqrt{b^{2} - 4ac}}{2a}', number: '1', where: '**Onde:** $a$, $b$ e $c$ são os coeficientes de $ax^2 + bx + c = 0$.', caption: 'Fórmula de Bhaskara' },
+        {
+          type: 'formula_sheet',
+          columns: '2',
+          items: [
+            { name: 'Lei de Ohm', latex: 'V = R\\,i', note: 'Tensão = resistência × corrente' },
+            { name: 'Combustão do hidrogênio', latex: '\\ce{2H2 + O2 -> 2H2O}', note: 'Reação balanceada' },
+          ],
+        },
+        {
+          type: 'step_by_step',
+          statement: 'Um carro parte do repouso com $a = 2\\,\\mathrm{m/s^2}$. Qual a velocidade após $5\\,\\mathrm{s}$?',
+          steps: [
+            { text: 'Use a equação da velocidade no MRUV.', latex: 'v = v_{0} + a\\,t' },
+            { text: 'Substitua os valores.', latex: 'v = 0 + 2 \\cdot 5' },
+          ],
+          answer: 'A velocidade é de 10 m/s.',
+          answerLatex: '',
+        },
+        { type: 'glossary', items: [{ term: 'Derivada', definition: 'Taxa de variação instantânea de uma função.' }] },
+      ],
+    },
   ],
 };
