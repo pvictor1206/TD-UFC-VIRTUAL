@@ -82,25 +82,42 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     setView('editar');
   };
 
-  // Componente sempre entra dentro de uma seção já criada pelo usuário
-  const addSection = (type) => {
+  // Componente do menu lateral: o usuário escolhe em qual seção ele entra.
+  // (Com uma única seção não há o que escolher: entra direto nela.)
+  const [pendingType, setPendingType] = useState(null);
+
+  const sectionLabel = (section, i) => {
+    const name = section?.name || section?.title || '';
+    return `Seção ${i + 1}${name ? ` — ${name}` : ''}`;
+  };
+
+  const addBlockToSection = (type, sectionIndex) => {
     const definition = getSectionDefinition(type);
     if (!definition) return;
+    setLesson((l) => {
+      const sections = [...l.sections];
+      const i = Math.min(sectionIndex, sections.length - 1);
+      sections[i] = { ...sections[i], children: [...(sections[i].children || []), definition.defaultData()] };
+      return { ...l, sections };
+    });
+    flash(`"${definition.label}" adicionado em: ${sectionLabel(lesson.sections[sectionIndex], sectionIndex)}`);
+    setActiveIdx(sectionIndex);
+    setScrollToIndex(sectionIndex);
+    setPendingType(null);
+    setView('editar');
+  };
+
+  const addSection = (type) => {
+    if (!getSectionDefinition(type)) return;
     if (lesson.sections.length === 0) {
       flash('Crie uma seção primeiro: clique em "+ Adicionar seção".');
       return;
     }
-    setLesson((l) => {
-      const sections = [...l.sections];
-      const i = Math.min(activeSection, sections.length - 1);
-      sections[i] = { ...sections[i], children: [...(sections[i].children || []), definition.defaultData()] };
-      return { ...l, sections };
-    });
-    const target = lesson.sections[activeSection];
-    const targetName = target?.name || target?.title || '';
-    flash(`"${definition.label}" adicionado em: Seção ${activeSection + 1}${targetName ? ` — ${targetName}` : ''}`);
-    setScrollToIndex(activeSection);
-    setView('editar');
+    if (lesson.sections.length === 1) {
+      addBlockToSection(type, 0);
+      return;
+    }
+    setPendingType(type);
   };
 
   const updateSection = (index, newSection) => {
@@ -349,6 +366,42 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
               + Adicionar seção
             </button>
           </main>
+        </div>
+      )}
+
+      {pendingType && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setPendingType(null); }}
+          onKeyDown={(e) => { if (e.key === 'Escape') setPendingType(null); }}
+        >
+          <div role="dialog" aria-modal="true" aria-label="Escolher seção" className="w-full max-w-md rounded-2xl bg-white shadow-2xl p-5">
+            <h2 className="text-base font-bold text-ink">
+              Em qual seção adicionar {getSectionDefinition(pendingType)?.icon} {getSectionDefinition(pendingType)?.label}?
+            </h2>
+            <div className="mt-3 max-h-[50vh] overflow-y-auto space-y-2">
+              {lesson.sections.map((sec, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  autoFocus={i === activeSection}
+                  onClick={() => addBlockToSection(pendingType, i)}
+                  className={`w-full text-left rounded-xl border-2 px-4 py-3 transition-colors hover:bg-lav-soft ${i === activeSection ? 'border-blue-400 bg-lav-soft' : 'border-gray-200'}`}
+                >
+                  <span className="block text-sm font-bold text-ink">{sectionLabel(sec, i)}</span>
+                  <span className="block text-xs text-gray-500">
+                    {(sec.children || []).length} componente{(sec.children || []).length === 1 ? '' : 's'}
+                    {i === activeSection ? ' · seção selecionada' : ''}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button type="button" onClick={() => setPendingType(null)} className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+                Cancelar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
