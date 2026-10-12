@@ -118,7 +118,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   };
 
   const [downloading, setDownloading] = useState(false);
-  const [showObjetivo, setShowObjetivo] = useState(false);
+  const [showObjetivo, setShowObjetivo] = useState(true);
 
   const handleDownloadSite = async () => {
     setDownloading(true);
