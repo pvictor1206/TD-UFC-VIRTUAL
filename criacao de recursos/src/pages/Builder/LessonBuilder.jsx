@@ -23,7 +23,8 @@ function loadDraft() {
 // - headerExtra: conteúdo extra no início do cabeçalho (ex.: botão voltar)
 // - readOnly: apenas pré-visualização, sem edição
 // - hideFileActions: oculta Abrir projeto, Salvar projeto e Baixar site
-export default function LessonBuilder({ initialLesson, onLessonChange, loadAssets, headerExtra, readOnly = false, hideFileActions = false } = {}) {
+// - hideExample: oculta o botão "Exemplo"
+export default function LessonBuilder({ initialLesson, onLessonChange, loadAssets, headerExtra, readOnly = false, hideFileActions = false, hideExample = false } = {}) {
   const embedded = initialLesson !== undefined;
   const [lesson, setLesson] = useState(() =>
     migrateLesson(embedded ? { ...createBlankLesson(), ...initialLesson } : loadDraft() || createBlankLesson())
@@ -268,7 +269,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
           <div className="flex flex-wrap items-center gap-2">
             {!readOnly && <>
-            <button onClick={handleLoadSample} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Exemplo</button>
+            {!hideExample && <button onClick={handleLoadSample} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Exemplo</button>}
             {!hideFileActions && <button onClick={handleImportClick} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Abrir projeto</button>}
             <input ref={fileInputRef} type="file" accept="application/json" className="hidden" onChange={handleImportFile} />
             </>}
