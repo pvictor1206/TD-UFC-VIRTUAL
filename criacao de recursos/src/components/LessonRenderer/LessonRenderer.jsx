@@ -17,6 +17,7 @@ import {
 import FormattedText from './FormattedText';
 import { migrateSection, migrateSections } from './migrate';
 import { lessonThemeStyle } from './theme';
+import { spacingValue } from './spacing';
 
 // Motor único de renderização de aulas: recebe um JSON de conteúdo
 // (título + objetivo + lista de `sections`) e desenha a página usando os
@@ -39,7 +40,11 @@ export function renderSection(section, index) {
     case 'section':
       // Título como componente separado: agrupa os blocos que vêm dentro dele.
       return (
-        <section key={index} className="space-y-4">
+        <section
+          key={index}
+          className="space-y-4"
+          style={spacingValue(section.spaceAfter) !== undefined ? { marginBottom: spacingValue(section.spaceAfter) } : undefined}
+        >
           {(section.label || section.title || section.subtitle) && (
             <div className="space-y-1">
               {section.label && (
@@ -55,7 +60,19 @@ export function renderSection(section, index) {
               )}
             </div>
           )}
-          {(section.children || []).map((child, i) => renderSection(child, i))}
+          {(section.children || []).map((child, i) => {
+            const element = renderSection(child, i);
+            const gap = spacingValue(section.gap);
+            const own = spacingValue(child.spaceAfter);
+            if (gap === undefined && own === undefined) return element;
+            // Espaçamento escolhido: neutraliza as margens próprias do componente
+            // e aplica a medida definida (do componente, senão a da seção).
+            return (
+              <div key={i} className="[&>*]:my-0! last:mb-0!" style={{ marginBottom: own ?? gap }}>
+                {element}
+              </div>
+            );
+          })}
         </section>
       );
 

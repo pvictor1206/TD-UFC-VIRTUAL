@@ -1,7 +1,25 @@
 import { useState } from 'react';
-import { getSectionDefinition } from '@lesson';
+import { getSectionDefinition, SPACING_OPTIONS } from '@lesson';
 import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
+
+// Seletor de espaçamento vertical (Padrão, Nenhum, Pequeno...).
+function SpacingSelect({ label, value, onChange }) {
+  return (
+    <label className="flex flex-col gap-1 text-xs font-semibold text-gray-600">
+      {label}
+      <select
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm font-normal text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        {SPACING_OPTIONS.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
 
 // Etiqueta que deixa claro o que o aluno enxerga e o que é só do editor.
 function Zone({ visible, children }) {
@@ -121,6 +139,17 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               />
             ))}
           </div>
+
+          <div className="rounded-xl border border-gray-200 p-3">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="text-sm font-bold text-ink">↕ Espaçamento vertical</span>
+              <span className="text-xs text-gray-500">(só altura; "Padrão" mantém o espaçamento original)</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl">
+              <SpacingSelect label="Entre os componentes desta seção" value={section.gap} onChange={(v) => setFieldValue('gap', v)} />
+              <SpacingSelect label="Depois desta seção" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
+            </div>
+          </div>
         </div>
       )}
 
@@ -136,6 +165,15 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               siblingValues={section}
             />
           ))}
+          {nested && (
+            <div className="border-t border-gray-100 pt-3 max-w-xs">
+              <SpacingSelect
+                label="↕ Espaço abaixo deste componente"
+                value={section.spaceAfter}
+                onChange={(v) => setFieldValue('spaceAfter', v)}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
