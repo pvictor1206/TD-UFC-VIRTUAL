@@ -19,6 +19,7 @@ import {
   Send,
   UserPlus,
   PlusCircle,
+  Trash2,
   FolderPlus,
   Lock,
   Wand2,
@@ -136,8 +137,21 @@ const loadSaved = (key, fallback) => {
 
   // --- KANBAN COM CONTROLE DE IDA E VOLTA ---
   const KanbanTab = ({ discipline, isTecnico }) => {
-    const { moveStage } = useContext(ActionsContext);
+    const { moveStage, addTask, updateTask, removeTask } = useContext(ActionsContext);
     const currentStageIndex = KANBAN_STAGES.findIndex(s => s.id === discipline.stage);
+    const tasks = discipline.tasks || [];
+
+    // formulário de nova tarefa (uma etapa por vez)
+    const [addingStage, setAddingStage] = useState(null);
+    const [draft, setDraft] = useState({ title: '', description: '', dueDate: '' });
+    const closeForm = () => { setAddingStage(null); setDraft({ title: '', description: '', dueDate: '' }); };
+    const submitTask = (e, stageId) => {
+      e.preventDefault();
+      if (!draft.title.trim()) return;
+      addTask(discipline.id, { ...draft, title: draft.title.trim(), stage: stageId });
+      closeForm();
+    };
+    const formatDue = (iso) => (iso ? new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR') : '');
 
     return (
       <div className="w-full">
@@ -160,6 +174,110 @@ const loadSaved = (key, fallback) => {
                   {isCurrent && <div className="w-3 h-3 bg-[#FBEEF3]0 rounded-full animate-pulse"></div>}
                   {isPast && <CheckCircle2 size={18} className="text-green-600" />}
                 </div>
+
+                {/* Tarefas desta etapa */}
+                {(() => {
+                  const stageTasks = tasks.filter(t => t.stage === stage.id);
+                  const doneCount = stageTasks.filter(t => t.done).length;
+                  return (
+                    <div className="mb-3 space-y-2">
+                      {stageTasks.length > 0 && (
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 px-1">
+                          Tarefas · {doneCount}/{stageTasks.length} concluída{doneCount === 1 ? '' : 's'}
+                        </div>
+                      )}
+                      {stageTasks.map(t => (
+                        <div key={t.id} className={`bg-white border rounded-xl p-3 text-sm ${t.done ? 'border-green-200 bg-green-50/50' : 'border-[#D9CFC6]'}`}>
+                          <div className="flex items-start gap-2">
+                            <input
+                              type="checkbox"
+                              checked={!!t.done}
+                              disabled={!isTecnico}
+                              onChange={(e) => updateTask(discipline.id, t.id, { done: e.target.checked })}
+                              aria-label={`Concluir tarefa: ${t.title}`}
+                              className="mt-1 h-4 w-4 accent-[#991F50] shrink-0"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className={`font-semibold break-words ${t.done ? 'line-through text-zinc-400' : 'text-zinc-900'}`}>{t.title}</p>
+                              {t.description && <p className="text-xs text-zinc-600 mt-0.5 whitespace-pre-line break-words">{t.description}</p>}
+                              <p className="text-[10px] text-zinc-500 mt-1">
+                                {t.createdBy}{t.dueDate ? ` · prazo ${formatDue(t.dueDate)}` : ''}
+                              </p>
+                            </div>
+                          </div>
+                          {isTecnico && (
+                            <div className="flex items-center justify-end gap-1 mt-2">
+                              <button
+                                type="button"
+                                disabled={index === 0}
+                                onClick={() => updateTask(discipline.id, t.id, { stage: KANBAN_STAGES[index - 1].id })}
+                                title="Mover tarefa para a etapa anterior"
+                                className="w-7 h-7 inline-flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 disabled:opacity-30"
+                              ><ArrowLeft size={14} /></button>
+                              <button
+                                type="button"
+                                disabled={index === KANBAN_STAGES.length - 1}
+                                onClick={() => updateTask(discipline.id, t.id, { stage: KANBAN_STAGES[index + 1].id })}
+                                title="Mover tarefa para a próxima etapa"
+                                className="w-7 h-7 inline-flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 disabled:opacity-30"
+                              ><ArrowRight size={14} /></button>
+                              <button
+                                type="button"
+                                onClick={() => { if (confirm('Excluir esta tarefa?')) removeTask(discipline.id, t.id); }}
+                                title="Excluir tarefa"
+                                className="w-7 h-7 inline-flex items-center justify-center rounded-lg text-red-600 hover:bg-red-50"
+                              ><Trash2 size={14} /></button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+
+                      {isTecnico && (addingStage === stage.id ? (
+                        <form onSubmit={(e) => submitTask(e, stage.id)} className="bg-white border border-iuvi rounded-xl p-3 space-y-2">
+                          <input
+                            autoFocus
+                            required
+                            type="text"
+                            value={draft.title}
+                            onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+                            placeholder="Título da tarefa"
+                            aria-label="Título da tarefa"
+                            className="w-full p-2 border border-[#D9CFC6] rounded-lg text-sm focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20"
+                          />
+                          <textarea
+                            rows={2}
+                            value={draft.description}
+                            onChange={(e) => setDraft({ ...draft, description: e.target.value })}
+                            placeholder="Descrição (opcional)"
+                            aria-label="Descrição da tarefa"
+                            className="w-full p-2 border border-[#D9CFC6] rounded-lg text-sm resize-y focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20"
+                          />
+                          <label className="flex items-center justify-between gap-2 text-xs text-zinc-600">
+                            Prazo (opcional)
+                            <input
+                              type="date"
+                              value={draft.dueDate}
+                              onChange={(e) => setDraft({ ...draft, dueDate: e.target.value })}
+                              className="p-1.5 border border-[#D9CFC6] rounded-lg text-sm"
+                            />
+                          </label>
+                          <div className="flex gap-2">
+                            <button type="submit" className="flex-1 py-2 bg-[#991F50] hover:bg-[#801436] text-white text-sm font-bold rounded-lg transition-colors">Criar tarefa</button>
+                            <button type="button" onClick={closeForm} className="px-3 py-2 border border-[#D9CFC6] rounded-lg text-sm font-bold hover:bg-zinc-100">Cancelar</button>
+                          </div>
+                        </form>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => { setAddingStage(stage.id); setDraft({ title: '', description: '', dueDate: '' }); }}
+                          className="w-full py-2 border-2 border-dashed border-[#D9CFC6] rounded-xl text-sm font-bold text-[#991F50] hover:bg-[#FBEEF3] transition-colors flex items-center justify-center gap-1"
+                        >
+                          <PlusCircle size={16} /> Nova tarefa
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })()}
 
                 {/* Controle exclusivo da equipe técnica */}
                 {isCurrent && (
@@ -669,6 +787,30 @@ export default function App() {
       d.id === disciplineId ? { ...d, stage: newStage } : d
     ));
   };
+
+  // --- TAREFAS DO KANBAN (criadas pela Equipe Técnica / Administrador) ---
+  const patchTasks = (disciplineId, fn) =>
+    setDisciplines(prev => prev.map(d =>
+      d.id === disciplineId ? { ...d, tasks: fn(d.tasks || []) } : d
+    ));
+
+  const addTask = (disciplineId, { title, description, dueDate, stage }) =>
+    patchTasks(disciplineId, list => [...list, {
+      id: Date.now(),
+      title,
+      description: description || '',
+      dueDate: dueDate || '',
+      stage,
+      done: false,
+      createdBy: currentUser.name,
+      createdAt: new Date().toISOString(),
+    }]);
+
+  const updateTask = (disciplineId, taskId, patch) =>
+    patchTasks(disciplineId, list => list.map(t => (t.id === taskId ? { ...t, ...patch } : t)));
+
+  const removeTask = (disciplineId, taskId) =>
+    patchTasks(disciplineId, list => list.filter(t => t.id !== taskId));
 
   const changeMaterialStatus = (disciplineId, materialId, newStatus) => {
     setDisciplines(disciplines.map(d => {
@@ -1341,7 +1483,7 @@ export default function App() {
   };
 
   return (
-    <ActionsContext.Provider value={{ moveStage, changeMaterialStatus, addMaterial, addPendency, resolvePendency, addCommentToPendency, addResource, updateResource, removeResource }}>
+    <ActionsContext.Provider value={{ moveStage, addTask, updateTask, removeTask, changeMaterialStatus, addMaterial, addPendency, resolvePendency, addCommentToPendency, addResource, updateResource, removeResource }}>
     <div className="flex h-screen bg-[#F8F5F1] font-sans text-zinc-900 overflow-hidden">
       {Sidebar()}
       <main className="flex-1 overflow-auto">
