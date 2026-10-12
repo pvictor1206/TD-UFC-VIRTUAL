@@ -23,7 +23,7 @@ export default function SchemaField({ field, value, onChange, siblingValues = {}
       return <TextField label={field.label} help={field.help} value={value} onChange={onChange} />;
 
     case FIELD_TYPES.TEXTAREA:
-      return <TextAreaField label={field.label} help={field.help} value={value} onChange={onChange} rows={field.rows} />;
+      return <TextAreaField label={field.label} help={field.help} value={value} onChange={onChange} rows={field.rows} rich={field.rich} />;
 
     case FIELD_TYPES.SELECT:
       return <SelectField label={field.label} help={field.help} value={value} onChange={onChange} options={field.options} />;
@@ -36,6 +36,7 @@ export default function SchemaField({ field, value, onChange, siblingValues = {}
           value={value}
           onChange={onChange}
           itemType={field.itemType}
+          rich={field.rich}
           addLabel={field.addLabel}
         />
       );

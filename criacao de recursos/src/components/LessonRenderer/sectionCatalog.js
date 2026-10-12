@@ -35,7 +35,7 @@ export const SECTION_CATALOG = [
     icon: '📝',
     description: 'Parágrafo de abertura da aula, logo abaixo do título.',
     fields: [
-      { key: 'text', label: 'Texto de introdução', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao, rows: 5 },
+      { key: 'text', label: 'Texto de introdução', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao, rows: 5, rich: true },
     ],
     defaultData: () => ({ type: 'intro', text: '' }),
   },
@@ -47,7 +47,7 @@ export const SECTION_CATALOG = [
     description: 'Cartão branco com um título em destaque e um texto abaixo.',
     fields: [
       { key: 'title', label: 'Título da seção', type: FIELD_TYPES.TEXT },
-      { key: 'text', label: 'Texto', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao, rows: 6 },
+      { key: 'text', label: 'Texto', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao, rows: 6, rich: true },
     ],
     defaultData: () => ({ type: 'highlight_section', title: '', text: '' }),
   },
@@ -66,6 +66,7 @@ export const SECTION_CATALOG = [
         label: 'Parágrafos',
         type: FIELD_TYPES.STRING_LIST,
         itemType: 'textarea',
+        rich: true,
         addLabel: 'Adicionar parágrafo',
       },
     ],
@@ -152,7 +153,7 @@ export const SECTION_CATALOG = [
         addLabel: 'Adicionar item',
         itemFields: [
           { key: 'title', label: 'Título do item', type: FIELD_TYPES.TEXT },
-          { key: 'content', label: 'Conteúdo', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao },
+          { key: 'content', label: 'Conteúdo', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao, rich: true },
         ],
       },
     ],
@@ -171,6 +172,7 @@ export const SECTION_CATALOG = [
         label: 'Itens',
         type: FIELD_TYPES.STRING_LIST,
         itemType: 'textarea',
+        rich: true,
         addLabel: 'Adicionar card',
       },
     ],

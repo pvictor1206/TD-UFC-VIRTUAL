@@ -1,3 +1,4 @@
+import RichTextEditor from './RichTextEditor';
 // Peças de formulário reaproveitáveis pelo Editor Estrutural.
 // Cada uma edita um pedaço do JSON de uma seção (bloco) da aula.
 
@@ -31,7 +32,14 @@ export function TextField({ label, help, value, onChange, placeholder }) {
   );
 }
 
-export function TextAreaField({ label, help, value, onChange, rows = 4 }) {
+export function TextAreaField({ label, help, value, onChange, rows = 4, rich = false }) {
+  if (rich) {
+    return (
+      <FieldShell label={label} help={help}>
+        <RichTextEditor value={value} onChange={onChange} rows={rows} placeholder={label} />
+      </FieldShell>
+    );
+  }
   return (
     <FieldShell label={label} help={help}>
       <textarea
@@ -85,7 +93,7 @@ export function AddButton({ onClick, label }) {
   );
 }
 
-export function StringListField({ label, help, value = [], onChange, itemType = 'text', addLabel = 'Adicionar item' }) {
+export function StringListField({ label, help, value = [], onChange, itemType = 'text', addLabel = 'Adicionar item', rich = false }) {
   const items = value || [];
   const setItem = (i, v) => {
     const next = [...items];
@@ -100,7 +108,9 @@ export function StringListField({ label, help, value = [], onChange, itemType = 
       <div className="space-y-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-start gap-2">
-            {itemType === 'textarea' ? (
+            {rich ? (
+              <div className="flex-1 min-w-0"><RichTextEditor value={item} onChange={(v) => setItem(i, v)} rows={2} placeholder={label} /></div>
+            ) : itemType === 'textarea' ? (
               <textarea
                 className={`${inputBase} resize-y flex-1`}
                 rows={2}
