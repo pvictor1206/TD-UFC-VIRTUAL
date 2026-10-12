@@ -771,7 +771,7 @@ export default function App() {
               <p>Conteudista: <strong>carlos</strong> ou <strong>mariana</strong> / <strong>123</strong></p>
             </div>
 
-            <div className="mt-10 pt-6 border-t border-[#E6DFD7] flex items-center">
+            <div className="mt-10 pt-6 border-t border-[#E6DFD7] flex items-center justify-center">
               <UfcLogo height={64} />
             </div>
           </div>
