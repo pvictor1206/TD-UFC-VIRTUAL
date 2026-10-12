@@ -176,6 +176,15 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
         </div>
       )}
 
+      {/* Espaçamento vertical: logo abaixo do nome do componente */}
+      {!collapsed && nested && !isSection && (
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-lav bg-lav-soft/70 px-4 py-3">
+          <span className="text-xs font-bold uppercase tracking-wide text-ink">↕ Espaçamento</span>
+          <SpacingSelect inline label="Em cima" value={section.spaceBefore} onChange={(v) => setFieldValue('spaceBefore', v)} />
+          <SpacingSelect inline label="Em baixo" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
+        </div>
+      )}
+
       {!collapsed && !isSection && (
         <div className="p-4 space-y-4">
           <p className="text-xs text-gray-500">{definition.description}</p>
@@ -188,15 +197,6 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               siblingValues={section}
             />
           ))}
-        </div>
-      )}
-
-      {/* Espaçamento vertical: sempre visível no componente */}
-      {!collapsed && nested && !isSection && (
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-b-[10px] border-t border-lav bg-lav-soft/70 px-4 py-3">
-          <span className="text-xs font-bold uppercase tracking-wide text-ink">↕ Espaçamento</span>
-          <SpacingSelect inline label="Em cima" value={section.spaceBefore} onChange={(v) => setFieldValue('spaceBefore', v)} />
-          <SpacingSelect inline label="Em baixo" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
         </div>
       )}
     </div>
