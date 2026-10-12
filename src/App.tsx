@@ -10,6 +10,7 @@ import {
   LogOut, 
   UploadCloud,
   CheckCircle2,
+  Circle,
   MessageSquare,
   Users,
   BookOpen,
@@ -137,7 +138,7 @@ const loadSaved = (key, fallback) => {
 
   // --- KANBAN COM CONTROLE DE IDA E VOLTA ---
   const KanbanTab = ({ discipline, isTecnico }) => {
-    const { moveStage, addTask, updateTask, removeTask } = useContext(ActionsContext);
+    const { moveStage, setStageDone, addTask, updateTask, removeTask } = useContext(ActionsContext);
     const currentStageIndex = KANBAN_STAGES.findIndex(s => s.id === discipline.stage);
     const tasks = discipline.tasks || [];
 
@@ -161,6 +162,8 @@ const loadSaved = (key, fallback) => {
           {KANBAN_STAGES.map((stage, index) => {
             const isCurrent = discipline.stage === stage.id;
             const isPast = index < currentStageIndex;
+            // etapas anteriores contam como concluídas, a menos que desmarcadas; as demais, só se marcadas
+            const isDone = discipline.stageDone && stage.id in discipline.stageDone ? !!discipline.stageDone[stage.id] : isPast;
             
             return (
               <div key={stage.id} className="min-w-[290px] w-72 flex-shrink-0 flex flex-col">
@@ -172,7 +175,20 @@ const loadSaved = (key, fallback) => {
                 `}>
                   <span className="font-bold text-sm">{stage.title}</span>
                   {isCurrent && <div className="w-3 h-3 bg-[#FBEEF3]0 rounded-full animate-pulse"></div>}
-                  {isPast && <CheckCircle2 size={18} className="text-green-600" />}
+                  {isTecnico ? (
+                    <button
+                      type="button"
+                      onClick={() => setStageDone(discipline.id, stage.id, !isDone)}
+                      aria-pressed={isDone}
+                      aria-label={`${isDone ? 'Desmarcar' : 'Marcar como concluída'} a etapa ${stage.title}`}
+                      title={isDone ? 'Etapa concluída — clique para desmarcar' : 'Marcar etapa como concluída'}
+                      className={`shrink-0 rounded-full transition-colors ${isDone ? 'text-green-600 hover:text-green-700' : 'text-zinc-300 hover:text-green-600'}`}
+                    >
+                      {isDone ? <CheckCircle2 size={24} /> : <Circle size={24} />}
+                    </button>
+                  ) : (
+                    isDone && <CheckCircle2 size={18} className="text-green-600" />
+                  )}
                 </div>
 
                 {/* Tarefas desta etapa */}
@@ -295,7 +311,7 @@ const loadSaved = (key, fallback) => {
                       <div className="space-y-2">
                         {index < KANBAN_STAGES.length - 1 && (
                           <button 
-                            onClick={() => moveStage(discipline.id, KANBAN_STAGES[index + 1].id)}
+                            onClick={() => moveStage(discipline.id, KANBAN_STAGES[index + 1].id, stage.id)}
                             className="w-full py-2 bg-[#991F50] hover:bg-[#801436] text-white text-sm font-bold border border-[#D9CFC6] rounded-xl shadow-sm transition-all flex items-center justify-center gap-1"
                           >
                             Avançar <ArrowRight size={16} />
@@ -782,11 +798,24 @@ export default function App() {
     patchResources(disciplineId, list => list.filter(r => r.id !== resourceId));
   };
 
-  const moveStage = (disciplineId, newStage) => {
-    setDisciplines(disciplines.map(d => 
-      d.id === disciplineId ? { ...d, stage: newStage } : d
+  // completeStageId: ao avançar, marca a etapa que está sendo concluída
+  const moveStage = (disciplineId, newStage, completeStageId) => {
+    setDisciplines(prev => prev.map(d =>
+      d.id === disciplineId
+        ? {
+            ...d,
+            stage: newStage,
+            stageDone: completeStageId ? { ...(d.stageDone || {}), [completeStageId]: true } : d.stageDone,
+          }
+        : d
     ));
   };
+
+  // Botão de check de cada etapa do Kanban (Equipe Técnica / Administrador)
+  const setStageDone = (disciplineId, stageId, done) =>
+    setDisciplines(prev => prev.map(d =>
+      d.id === disciplineId ? { ...d, stageDone: { ...(d.stageDone || {}), [stageId]: done } } : d
+    ));
 
   // --- TAREFAS DO KANBAN (criadas pela Equipe Técnica / Administrador) ---
   const patchTasks = (disciplineId, fn) =>
@@ -1483,7 +1512,7 @@ export default function App() {
   };
 
   return (
-    <ActionsContext.Provider value={{ moveStage, addTask, updateTask, removeTask, changeMaterialStatus, addMaterial, addPendency, resolvePendency, addCommentToPendency, addResource, updateResource, removeResource }}>
+    <ActionsContext.Provider value={{ moveStage, setStageDone, addTask, updateTask, removeTask, changeMaterialStatus, addMaterial, addPendency, resolvePendency, addCommentToPendency, addResource, updateResource, removeResource }}>
     <div className="flex h-screen bg-[#F8F5F1] font-sans text-zinc-900 overflow-hidden">
       {Sidebar()}
       <main className="flex-1 overflow-auto">
