@@ -125,12 +125,12 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
 
       {!collapsed && isSection && (
         <div className="p-4 space-y-4">
-          <div className="rounded-xl border-2 border-lav-bar bg-lav-soft/50 p-3 space-y-3">
+          <div className="rounded-xl border-2 border-lav-bar bg-lav p-3 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-bold text-ink">Título da seção</span>
-              <span className="text-xs text-gray-500">(opcional — deixe em branco para não mostrar título)</span>
+              <span className="text-xs text-ink/70">(opcional — deixe em branco para não mostrar título)</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl border-b border-lav pb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl border-b border-lav-bar pb-3">
               <SpacingSelect label="↕ Espaço em cima do título" value={section.titleBefore} onChange={(v) => setFieldValue('titleBefore', v)} />
               <SpacingSelect label="↕ Espaço entre o título e os componentes" value={section.titleAfter} onChange={(v) => setFieldValue('titleAfter', v)} />
             </div>
