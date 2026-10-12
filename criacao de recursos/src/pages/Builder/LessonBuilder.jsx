@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { LessonRenderer, createBlankLesson, SAMPLE_LESSON, getSectionDefinition, migrateLesson } from '@lesson';
-import BlockPalette from './BlockPalette';
+import BlockPalette, { DRAG_TYPE } from './BlockPalette';
 import BlockCard from './BlockCard';
 import ColorPicker from './ColorPicker';
 import { downloadJson, downloadLessonSite, slugify } from './exportSite';
@@ -85,6 +85,13 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   // Componente do menu lateral: o usuário escolhe em qual seção ele entra.
   // (Com uma única seção não há o que escolher: entra direto nela.)
   const [pendingType, setPendingType] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null); // seção sob o componente arrastado
+  useEffect(() => {
+    const clear = () => setDragOverIdx(null);
+    window.addEventListener('dragend', clear);
+    window.addEventListener('drop', clear);
+    return () => { window.removeEventListener('dragend', clear); window.removeEventListener('drop', clear); };
+  }, []);
 
   const sectionLabel = (section, i) => {
     const name = section?.name || section?.title || '';
@@ -342,8 +349,35 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   data-block-index={index}
                   onFocusCapture={() => setActiveIdx(index)}
                   onMouseDownCapture={() => setActiveIdx(index)}
-                  className={index === activeSection && sectionCount > 1 ? 'rounded-xl ring-2 ring-blue-300 ring-offset-2' : ''}
+                  onDragOver={(e) => {
+                    if (!e.dataTransfer.types.includes(DRAG_TYPE)) return;
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'copy';
+                    if (dragOverIdx !== index) setDragOverIdx(index);
+                  }}
+                  onDragLeave={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget)) setDragOverIdx((v) => (v === index ? null : v));
+                  }}
+                  onDrop={(e) => {
+                    const type = e.dataTransfer.getData(DRAG_TYPE);
+                    setDragOverIdx(null);
+                    if (!type) return;
+                    e.preventDefault();
+                    addBlockToSection(type, index);
+                  }}
+                  className={`relative ${
+                    dragOverIdx === index
+                      ? 'rounded-xl ring-4 ring-blue-500 ring-offset-2 bg-lav-soft'
+                      : index === activeSection && sectionCount > 1 ? 'rounded-xl ring-2 ring-blue-300 ring-offset-2' : ''
+                  }`}
                 >
+                {dragOverIdx === index && (
+                  <div className="pointer-events-none absolute inset-x-0 top-2 z-10 flex justify-center">
+                    <span className="rounded-full bg-blue-700 text-white text-xs font-bold px-4 py-1.5 shadow-lg">
+                      Solte para adicionar em {sectionLabel(section, index)}
+                    </span>
+                  </div>
+                )}
                 <BlockCard
                   section={section}
                   index={index}
