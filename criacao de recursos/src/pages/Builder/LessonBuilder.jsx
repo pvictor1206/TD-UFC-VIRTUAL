@@ -82,12 +82,16 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     setView('editar');
   };
 
-  // Componente sempre entra dentro de uma seção (a ativa; cria uma se não houver)
+  // Componente sempre entra dentro de uma seção já criada pelo usuário
   const addSection = (type) => {
     const definition = getSectionDefinition(type);
     if (!definition) return;
+    if (lesson.sections.length === 0) {
+      flash('Crie uma seção primeiro: clique em "+ Adicionar seção".');
+      return;
+    }
     setLesson((l) => {
-      const sections = l.sections.length ? [...l.sections] : [newSectionData()];
+      const sections = [...l.sections];
       const i = Math.min(activeSection, sections.length - 1);
       sections[i] = { ...sections[i], children: [...(sections[i].children || []), definition.defaultData()] };
       return { ...l, sections };
@@ -250,12 +254,12 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
               + Adicionar seção
             </button>
             <h2 className="text-sm font-bold text-gray-700 dark:text-gray-200">Adicionar componente</h2>
-            <p className="text-xs text-gray-500 mb-3">
+            <p className="text-xs text-gray-600 mb-3">
               {sectionCount === 0
-                ? 'Entra em uma nova seção.'
-                : <>Entra na <strong>Seção {activeSection + 1}</strong>{lesson.sections[activeSection]?.title ? ` — ${lesson.sections[activeSection].title}` : ''}. Clique em outra seção para trocar.</>}
+                ? 'Primeiro crie uma seção; depois escolha aqui os componentes que vão dentro dela.'
+                : <>Vai para: <strong>{lesson.sections[activeSection]?.name || `Seção ${activeSection + 1}`}</strong>. Clique em outra seção para mudar.</>}
             </p>
-            <BlockPalette onAdd={addSection} />
+            <BlockPalette onAdd={addSection} disabled={sectionCount === 0} />
           </aside>
 
           <main className="space-y-4">
@@ -323,12 +327,13 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   data-block-index={index}
                   onFocusCapture={() => setActiveIdx(index)}
                   onMouseDownCapture={() => setActiveIdx(index)}
-                  className={index === activeSection ? 'rounded-xl ring-2 ring-blue-300 ring-offset-2' : ''}
+                  className={index === activeSection && sectionCount > 1 ? 'rounded-xl ring-2 ring-blue-300 ring-offset-2' : ''}
                 >
                 <BlockCard
                   section={section}
                   index={index}
                   total={sectionCount}
+                  isActive={index === activeSection && sectionCount > 1}
                   onChange={(s) => updateSection(index, s)}
                   onRemove={() => removeSection(index)}
                   onDuplicate={() => duplicateSection(index)}

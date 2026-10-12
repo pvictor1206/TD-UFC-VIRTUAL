@@ -14,11 +14,11 @@ export const BLOCK_HELP = {
     tips: ['Prefira de 3 a 6 linhas: introduções longas cansam o aluno.', 'Coloque este bloco sempre como o primeiro da lista.'],
   },
   section: {
-    what: 'Agrupa componentes em um trecho da aula. Pode ter um título (com rótulo e subtítulo, todos opcionais) que aparece acima dos componentes.',
+    what: 'Agrupa componentes em um trecho da aula. O nome da seção é só para você se organizar (não aparece para o aluno). O título, o rótulo e o subtítulo são opcionais e, se preenchidos, aparecem acima dos componentes.',
     when: 'Todo componente precisa estar dentro de uma seção. Use uma seção para cada tópico da aula; deixe o título em branco quando o conteúdo não precisar de título.',
     steps: [
       'Clique em "+ Adicionar seção" (na barra lateral ou no fim da lista).',
-      'Preencha o título, se quiser (rótulo e subtítulo também são opcionais).',
+      'Dê um nome à seção no topo do cartão (só você vê). Se quiser um título para o aluno, preencha o campo "Título exibido ao aluno".',
       'Clique na seção para ativá-la e adicione componentes pela barra lateral, ou pela lista dentro da própria seção.',
       'Use os botões do cartão para mover, duplicar ou excluir a seção inteira.',
     ],

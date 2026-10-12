@@ -1,9 +1,9 @@
 import { SECTION_CATALOG, GROUPS } from '@lesson';
 import HelpButton from './HelpButton';
 
-export default function BlockPalette({ onAdd }) {
+export default function BlockPalette({ onAdd, disabled = false }) {
   return (
-    <div className="space-y-5">
+    <div className={`space-y-5 ${disabled ? 'opacity-50' : ''}`} aria-disabled={disabled}>
       {GROUPS.map((group) => {
         const blocks = SECTION_CATALOG.filter((b) => b.group === group.id && b.type !== 'section');
         if (blocks.length === 0) return null;
