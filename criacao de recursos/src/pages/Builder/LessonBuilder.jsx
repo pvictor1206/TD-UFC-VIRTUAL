@@ -253,12 +253,6 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
             >
               + Adicionar seção
             </button>
-            <h2 className="text-sm font-bold text-gray-700 dark:text-gray-200">Adicionar componente</h2>
-            <p className="text-xs text-gray-600 mb-3">
-              {sectionCount === 0
-                ? 'Primeiro crie uma seção; depois escolha aqui os componentes que vão dentro dela.'
-                : <>Vai para: <strong>{lesson.sections[activeSection]?.name || `Seção ${activeSection + 1}`}</strong>. Clique em outra seção para mudar.</>}
-            </p>
             <BlockPalette onAdd={addSection} disabled={sectionCount === 0} />
           </aside>
 
