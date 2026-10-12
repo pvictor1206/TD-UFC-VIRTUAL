@@ -21,7 +21,8 @@ function loadDraft() {
 // - loadAssets: devolve { js, css } do pacote standalone (padrão: fetch)
 // - headerExtra: conteúdo extra no início do cabeçalho (ex.: botão voltar)
 // - readOnly: apenas pré-visualização, sem edição
-export default function LessonBuilder({ initialLesson, onLessonChange, loadAssets, headerExtra, readOnly = false } = {}) {
+// - hideFileActions: oculta Abrir projeto, Salvar projeto e Baixar site
+export default function LessonBuilder({ initialLesson, onLessonChange, loadAssets, headerExtra, readOnly = false, hideFileActions = false } = {}) {
   const embedded = initialLesson !== undefined;
   const [lesson, setLesson] = useState(() =>
     embedded ? { ...createBlankLesson(), ...initialLesson } : loadDraft() || createBlankLesson()
@@ -192,13 +193,13 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
           <div className="flex flex-wrap items-center gap-2">
             {!readOnly && <>
             <button onClick={handleLoadSample} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Exemplo</button>
-            <button onClick={handleImportClick} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Abrir projeto</button>
+            {!hideFileActions && <button onClick={handleImportClick} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Abrir projeto</button>}
             <input ref={fileInputRef} type="file" accept="application/json" className="hidden" onChange={handleImportFile} />
             </>}
-            <button onClick={handleSaveProject} type="button" title="Baixa um arquivo para continuar editando depois" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Salvar projeto</button>
-            <button onClick={handleDownloadSite} disabled={downloading} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg bg-blue-700 text-white hover:bg-blue-800 disabled:opacity-60">
+            {!hideFileActions && <button onClick={handleSaveProject} type="button" title="Baixa um arquivo para continuar editando depois" className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Salvar projeto</button>}
+            {!hideFileActions && <button onClick={handleDownloadSite} disabled={downloading} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg bg-blue-700 text-white hover:bg-blue-800 disabled:opacity-60">
               {downloading ? 'Gerando site…' : '⬇ Baixar site'}
-            </button>
+            </button>}
             {!readOnly && <button onClick={handleNew} type="button" className="text-xs font-semibold px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40">Limpar</button>}
           </div>
         </div>
