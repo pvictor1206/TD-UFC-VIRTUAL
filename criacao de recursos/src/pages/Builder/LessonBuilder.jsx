@@ -61,6 +61,28 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     setScrollToIndex(null);
   }, [scrollToIndex, lesson.sections.length]);
 
+  // Seção visível na tela (acompanha a rolagem) e atalho para ir até uma seção
+  const [viewIdx, setViewIdx] = useState(0);
+  const goToSection = (i) => {
+    setActiveIdx(i);
+    setViewIdx(i);
+    document.querySelector(`[data-block-index="${i}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  useEffect(() => {
+    if (view !== 'editar' || typeof IntersectionObserver === 'undefined') return undefined;
+    const els = Array.from(document.querySelectorAll('[data-block-index]'));
+    if (els.length === 0) return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (hit) setViewIdx(Number(hit.target.getAttribute('data-block-index')));
+      },
+      { rootMargin: '-30% 0px -60% 0px' }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [lesson.sections.length, view]);
+
   const flash = (msg) => {
     setFeedback(msg);
     setTimeout(() => setFeedback(''), 4000);
@@ -328,6 +350,32 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   className="mt-2 w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               )}
+
+              {/* Navegação rápida entre seções (útil quando há muitas) */}
+              {sectionCount > 1 && (
+                <nav aria-label="Ir para a seção" className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
+                  <span className="shrink-0 text-[11px] font-bold uppercase tracking-widest text-gray-500">Ir para</span>
+                  {lesson.sections.map((sec, i) => {
+                    const name = sec.name || sec.title || '';
+                    const short = name.length > 18 ? `${name.slice(0, 17)}…` : name;
+                    const here = i === viewIdx;
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => goToSection(i)}
+                        title={sectionLabel(sec, i)}
+                        aria-current={here ? 'true' : undefined}
+                        className={`shrink-0 rounded-full border px-3 py-1 text-xs font-bold transition-colors ${
+                          here ? 'border-blue-700 bg-blue-700 text-white' : 'border-lav-bar bg-lav-soft text-ink hover:bg-lav'
+                        }`}
+                      >
+                        {i + 1}{short ? ` · ${short}` : ''}
+                      </button>
+                    );
+                  })}
+                </nav>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
@@ -347,6 +395,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                 <div
                   key={index}
                   data-block-index={index}
+                  style={{ scrollMarginTop: 190 }}
                   onFocusCapture={() => setActiveIdx(index)}
                   onMouseDownCapture={() => setActiveIdx(index)}
                   onDragOver={(e) => {
