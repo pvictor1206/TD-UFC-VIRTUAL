@@ -1,4 +1,4 @@
-// Peças de formulário reaproveitáveis pelo Construtor de Aulas.
+// Peças de formulário reaproveitáveis pelo Editor Estrutural.
 // Cada uma edita um pedaço do JSON de uma seção (bloco) da aula.
 
 const inputBase =

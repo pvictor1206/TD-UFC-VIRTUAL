@@ -13,7 +13,7 @@
 Este repositório contém o código-fonte da aplicação web desenvolvida como material de apoio didático. O projeto atua como um **material digital interativo**, permitindo a navegação entre módulos teóricos (*Enfrentamentos*) de forma fluida e organizada.
 
 > **Sobre esta branch (`sistema-construtor-de-aulas`):** aqui o foco é **apenas
-> o Construtor de Aulas** — a ferramenta de montagem de conteúdo. Nenhuma aula
+> o Editor Estrutural** — a ferramenta de montagem de conteúdo. Nenhuma aula
 > específica está publicada nesta branch; ela é a tela inicial da aplicação.
 > Veja [`docs/CONSTRUTOR-DE-AULAS.md`](docs/CONSTRUTOR-DE-AULAS.md).
 
@@ -68,10 +68,10 @@ O diagrama abaixo ilustra como os dados fluem e como a aplicação é estruturad
 
 ---
 
-## Construtor de Aulas (montagem de conteúdo sem código)
+## Editor Estrutural (montagem de conteúdo sem código)
 
 Para montar o conteúdo de uma nova aula sem escrever componentes React,
-use o **Construtor de Aulas**: um formulário visual (tela inicial desta
+use o **Editor Estrutural**: um formulário visual (tela inicial desta
 branch, também em `/construtor`) que gera, com um clique, **um site pronto
 (HTML + CSS + JS)** a partir dos componentes padrão do projeto, com
 pré-visualização ao vivo. Veja o passo a passo em

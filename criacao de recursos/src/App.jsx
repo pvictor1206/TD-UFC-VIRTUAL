@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="absolute top-0 left-0 p-4 pt-[50px] w-full">
       <Routes>
-        {/* ROTA PRINCIPAL: Construtor de Aulas — foco único desta branch */}
+        {/* ROTA PRINCIPAL: Editor Estrutural — foco único desta branch */}
         <Route path="/" element={<LessonBuilder />} />
         <Route path="/construtor" element={<LessonBuilder />} />
 

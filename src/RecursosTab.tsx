@@ -23,7 +23,7 @@ export const RESOURCE_STATUS = {
 
 const formatDate = (iso) => new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 
-// Tela cheia com o Construtor de Aulas (edição ou somente leitura).
+// Tela cheia com o Editor Estrutural (edição ou somente leitura).
 function BuilderOverlay({ resource, readOnly, onClose, onChange }) {
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-white">
@@ -98,7 +98,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
 
   return (
     <div className="max-w-4xl">
-      <h3 className="text-xl font-bold mb-2">Construtor de Aulas</h3>
+      <h3 className="text-xl font-bold mb-2">Editor Estrutural</h3>
       <p className="text-sm text-zinc-600 mb-6">
         {isTecnico
           ? 'Crie recursos você mesmo ou acompanhe os do professor: visualize, edite o conteúdo, baixe o site pronto e aprove ou peça ajustes.'

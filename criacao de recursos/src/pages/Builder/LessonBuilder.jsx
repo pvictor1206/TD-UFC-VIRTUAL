@@ -166,7 +166,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center gap-3">
           {headerExtra}
           <div className="flex-1 min-w-[200px]">
-            <h1 className="font-bold text-ink text-lg leading-tight">Construtor de Aulas</h1>
+            <h1 className="font-bold text-ink text-lg leading-tight">Editor Estrutural</h1>
             <p className="text-xs text-gray-400">Monte o conteúdo da aula com os componentes padrão — sem escrever código.</p>
           </div>
 

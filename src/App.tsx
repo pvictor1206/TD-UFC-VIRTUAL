@@ -564,7 +564,7 @@ export default function App() {
     setSidebarTab('dashboard'); // Retorna à visão geral para ver o novo projeto
   };
 
-  // --- RECURSOS DIDÁTICOS (Construtor de Aulas) ---
+  // --- RECURSOS DIDÁTICOS (Editor Estrutural) ---
 
   const patchResources = (disciplineId, fn) =>
     setDisciplines(prev => prev.map(d =>
@@ -1081,7 +1081,7 @@ export default function App() {
               { id: 'kanban', label: 'Kanban / Processo', icon: KanbanSquare },
               { id: 'materiais', label: 'Materiais de Apoio', icon: FileText },
               { id: 'pendencias', label: 'Pendências e Fórum', icon: AlertCircle },
-              { id: 'recursos', label: 'Construtor de Aulas', icon: Wand2 },
+              { id: 'recursos', label: 'Editor Estrutural', icon: Wand2 },
             ].map(tab => (
               <button
                 key={tab.id}

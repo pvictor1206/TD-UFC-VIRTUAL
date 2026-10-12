@@ -1,4 +1,4 @@
-# Construtor de Aulas
+# Editor Estrutural
 
 Esta branch (`sistema-construtor-de-aulas`) contém **apenas** a ferramenta de
 montagem de conteúdo — nenhuma aula específica está publicada aqui. O foco é
