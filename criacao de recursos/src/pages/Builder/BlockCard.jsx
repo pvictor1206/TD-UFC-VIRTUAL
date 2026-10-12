@@ -1,23 +1,61 @@
 import { useState } from 'react';
-import { getSectionDefinition, SPACING_OPTIONS } from '@lesson';
+import { getSectionDefinition, spacingPx, SPACING_MAX_PX } from '@lesson';
 import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
 
-// Seletor de espaçamento vertical (Padrão, Nenhum, Pequeno...).
+// Espaçamento vertical em pixels. Vazio = padrão do componente.
 function SpacingSelect({ label, value, onChange }) {
+  const px = spacingPx(value);
+  const set = (n) => onChange(n === undefined ? '' : String(Math.max(0, Math.min(SPACING_MAX_PX, n))));
   return (
-    <label className="flex flex-col gap-1 text-xs font-semibold text-gray-600">
-      {label}
-      <select
-        value={value || ''}
-        onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm font-normal text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      >
-        {SPACING_OPTIONS.map((o) => (
-          <option key={o.value} value={o.value}>{o.label}</option>
-        ))}
-      </select>
-    </label>
+    <div className="flex flex-col gap-1 text-xs font-semibold text-gray-600">
+      <div>
+        {label}
+        <div className="mt-1 flex items-center gap-1.5 font-normal">
+          <button
+            type="button"
+            aria-label={`Diminuir ${label}`}
+            onClick={() => set(Math.max(0, (px ?? 0) - 4))}
+            className="h-9 w-9 shrink-0 rounded-lg border border-gray-300 bg-white text-lg text-gray-600 hover:bg-gray-50"
+          >
+            −
+          </button>
+          <div className="relative">
+            <input
+              type="number"
+              min="0"
+              max={SPACING_MAX_PX}
+              step="4"
+              inputMode="numeric"
+              aria-label={label}
+              value={px ?? ''}
+              placeholder="Padrão"
+              onChange={(e) => set(e.target.value === '' ? undefined : Number(e.target.value))}
+              className="h-9 w-24 rounded-lg border border-gray-300 bg-white pl-2 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">px</span>
+          </div>
+          <button
+            type="button"
+            aria-label={`Aumentar ${label}`}
+            onClick={() => set((px ?? 0) + 4)}
+            className="h-9 w-9 shrink-0 rounded-lg border border-gray-300 bg-white text-lg text-gray-600 hover:bg-gray-50"
+          >
+            +
+          </button>
+          {px !== undefined && (
+            <button
+              type="button"
+              onClick={() => set(undefined)}
+              title="Voltar ao espaçamento padrão"
+              className="h-9 shrink-0 rounded-lg px-2 text-xs font-semibold text-gray-500 hover:bg-gray-100"
+            >
+              Padrão
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -121,13 +159,13 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
       {spacingOpen && nested && !isSection && (
         <div className="flex flex-wrap items-end gap-4 border-b border-lav bg-lav-soft px-4 py-3">
           <span className="text-xs font-bold text-ink self-center">↕ Espaçamento vertical</span>
-          <div className="w-44">
+          <div>
             <SpacingSelect label="Espaço em cima" value={section.spaceBefore} onChange={(v) => setFieldValue('spaceBefore', v)} />
           </div>
-          <div className="w-44">
+          <div>
             <SpacingSelect label="Espaço em baixo" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
           </div>
-          <span className="text-[11px] text-gray-500 self-center">"Padrão" mantém o espaçamento original do componente.</span>
+          <span className="text-[11px] text-gray-500 self-center">Em branco ("Padrão") mantém o espaçamento original, em pixels (px).</span>
         </div>
       )}
 
