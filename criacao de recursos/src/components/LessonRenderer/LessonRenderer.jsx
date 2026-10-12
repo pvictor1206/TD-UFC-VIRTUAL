@@ -18,6 +18,9 @@ import {
   StepByStep,
   Callout,
   Glossary,
+  CodeBlock,
+  CodeTabs,
+  CodeQuiz,
 } from '@ui';
 import FormattedText from './FormattedText';
 import { migrateSection, migrateSections } from './migrate';
@@ -258,6 +261,37 @@ export function renderSection(section, index) {
 
     case 'callout':
       return <Callout key={index} kind={section.kind} title={section.title} text={section.text} />;
+
+    case 'code_block':
+      return (
+        <CodeBlock
+          key={index}
+          code={section.code}
+          language={section.language}
+          filename={section.filename}
+          lineNumbers={section.lineNumbers}
+          highlight={section.highlight}
+          output={section.output}
+          runnable={section.runnable}
+          caption={section.caption}
+        />
+      );
+
+    case 'code_tabs':
+      return <CodeTabs key={index} items={section.items} caption={section.caption} lineNumbers={section.lineNumbers} />;
+
+    case 'code_quiz':
+      return (
+        <CodeQuiz
+          key={index}
+          question={section.question}
+          code={section.code}
+          language={section.language}
+          options={section.options}
+          correct={section.correct}
+          explanation={section.explanation}
+        />
+      );
 
     case 'glossary':
       return <Glossary key={index} items={section.items} />;

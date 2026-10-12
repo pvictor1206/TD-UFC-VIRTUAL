@@ -32,11 +32,36 @@ export function TextField({ label, help, value, onChange, placeholder }) {
   );
 }
 
-export function TextAreaField({ label, help, value, onChange, rows = 4, rich = false }) {
+export function TextAreaField({ label, help, value, onChange, rows = 4, rich = false, mono = false }) {
   if (rich) {
     return (
       <FieldShell label={label} help={help}>
         <RichTextEditor value={value} onChange={onChange} rows={rows} placeholder={label} />
+      </FieldShell>
+    );
+  }
+  if (mono) {
+    // campo de código: fonte monoespaçada e Tab insere espaços (não pula de campo)
+    const onKeyDown = (e) => {
+      if (e.key !== 'Tab' || e.shiftKey) return;
+      e.preventDefault();
+      const el = e.currentTarget;
+      const v = value ?? '';
+      const next = v.slice(0, el.selectionStart) + '  ' + v.slice(el.selectionEnd);
+      const pos = el.selectionStart + 2;
+      onChange(next);
+      requestAnimationFrame(() => el.setSelectionRange(pos, pos));
+    };
+    return (
+      <FieldShell label={label} help={help}>
+        <textarea
+          className={`${inputBase} resize-y font-mono text-[13px] leading-relaxed bg-[#1b1b3a] text-[#ece8fb] border-[#2d2a52]`}
+          rows={rows}
+          spellCheck={false}
+          value={value ?? ''}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={onKeyDown}
+        />
       </FieldShell>
     );
   }

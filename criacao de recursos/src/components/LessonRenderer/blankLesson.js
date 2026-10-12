@@ -88,6 +88,17 @@ export const SAMPLE_LESSON = {
     },
     {
       type: 'section',
+      title: 'Programação',
+      subtitle: 'Código, comparação entre linguagens e quiz',
+      children: [
+        { type: 'code_block', language: 'python', filename: 'media.py', code: 'notas = [7.5, 8.0, 6.5]\nsoma = 0\nfor n in notas:\n    soma += n\nprint(soma / len(notas))', lineNumbers: 'sim', highlight: '3-4', output: '7.333333333333333', runnable: 'nao', caption: 'Média de uma lista de notas' },
+        { type: 'code_block', language: 'javascript', code: 'const dobro = (n) => n * 2;\nconsole.log(dobro(21));', lineNumbers: 'sim', highlight: '', output: '', runnable: 'sim', caption: 'Clique em Executar para ver o resultado' },
+        { type: 'code_tabs', lineNumbers: 'sim', caption: 'O mesmo programa em duas linguagens', items: [{ language: 'python', code: 'print("Olá, mundo!")', output: 'Olá, mundo!' }, { language: 'c', code: '#include <stdio.h>\n\nint main(void) {\n    printf("Olá, mundo!\\n");\n    return 0;\n}', output: 'Olá, mundo!' }] },
+        { type: 'code_quiz', question: 'O que este código imprime?', language: 'python', code: 'x = 3\nfor i in range(3):\n    x += i\nprint(x)', options: ['3', '6', '9'], correct: '2', explanation: 'O laço soma 0, 1 e 2 ao valor inicial 3: 3 + 0 + 1 + 2 = **6**.' },
+      ],
+    },
+    {
+      type: 'section',
       title: 'Exatas: fórmulas e resoluções',
       subtitle: 'Cálculo, Física e Química',
       children: [

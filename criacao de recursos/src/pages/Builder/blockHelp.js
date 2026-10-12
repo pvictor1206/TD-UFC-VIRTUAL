@@ -160,4 +160,28 @@ export const BLOCK_HELP = {
     steps: ['Adicione um termo por vez e escreva a definição.'],
     tips: ['Ordene os termos alfabeticamente com as setas ↑ ↓.'],
   },
+
+  code_block: {
+    what: 'Código com as cores da linguagem, números de linha, botão Copiar e, se quiser, a saída esperada e um botão Executar.',
+    when: 'Qualquer exemplo de código: trechos, programas completos, comandos de terminal, consultas SQL, HTML/CSS.',
+    steps: [
+      'Escolha a linguagem (Python, JavaScript, Java, C, C++, SQL, HTML, Terminal e outras).',
+      'Cole o código no campo escuro (a tecla Tab insere espaços).',
+      'Opcional: nome do arquivo, linhas em destaque (ex: 2,4-6), saída esperada e legenda.',
+      'JavaScript e HTML: ative "Executar" para o aluno rodar o código na própria página.',
+    ],
+    tips: ['Destaque as linhas que você vai comentar no texto.', 'A execução do aluno é isolada: não acessa a página nem o computador dele.'],
+  },
+  code_tabs: {
+    what: 'O mesmo exemplo em abas, uma por linguagem. O aluno escolhe a que quer ver.',
+    when: 'Para mostrar o mesmo algoritmo em Python, Java, C... ou comparar sintaxes.',
+    steps: ['Para cada aba, escolha a linguagem e cole o código.', 'Use as setas ↑ ↓ para ordenar as abas.'],
+    tips: ['Mantenha a mesma lógica em todas as abas, para a comparação ser justa.'],
+  },
+  code_quiz: {
+    what: 'Um código e uma pergunta ("o que este código imprime?"). O aluno escolhe a alternativa e vê se acertou, com a sua explicação.',
+    when: 'Para treinar leitura de código, rastreamento de variáveis e depuração.',
+    steps: ['Escreva a pergunta e cole o código.', 'Liste as alternativas e informe o número da correta (1, 2, 3...).', 'Explique o porquê no campo de explicação.'],
+    tips: ['Use alternativas parecidas: o erro comum do aluno é o melhor distrator.'],
+  },
 };

@@ -1,0 +1,41 @@
+/* Tema de código da identidade visual: fundo navy (#1b1b3a) com realces lavanda. */
+.code-surface {
+  background: #1b1b3a;
+  color: #ece8fb;
+  font-family: ui-monospace, SFMono-Regular, 'Cascadia Code', Menlo, Consolas, 'Liberation Mono', monospace;
+  tab-size: 2;
+}
+.code-surface .hljs-comment,
+.code-surface .hljs-quote { color: #8f8ab5; font-style: italic; }
+.code-surface .hljs-keyword,
+.code-surface .hljs-selector-tag,
+.code-surface .hljs-literal,
+.code-surface .hljs-doctag,
+.code-surface .hljs-name { color: #c9a8ff; }
+.code-surface .hljs-string,
+.code-surface .hljs-regexp,
+.code-surface .hljs-addition,
+.code-surface .hljs-attribute,
+.code-surface .hljs-meta .hljs-string { color: #9be3a8; }
+.code-surface .hljs-number,
+.code-surface .hljs-symbol,
+.code-surface .hljs-bullet,
+.code-surface .hljs-variable,
+.code-surface .hljs-template-variable { color: #ffc27a; }
+.code-surface .hljs-title,
+.code-surface .hljs-title.function_,
+.code-surface .hljs-section,
+.code-surface .hljs-selector-id,
+.code-surface .hljs-selector-class { color: #8ec5ff; }
+.code-surface .hljs-type,
+.code-surface .hljs-class .hljs-title,
+.code-surface .hljs-title.class_,
+.code-surface .hljs-built_in,
+.code-surface .hljs-builtin-name { color: #f4b6e4; }
+.code-surface .hljs-params,
+.code-surface .hljs-property,
+.code-surface .hljs-attr { color: #ece8fb; }
+.code-surface .hljs-meta,
+.code-surface .hljs-deletion { color: #ff9fb0; }
+.code-surface .hljs-emphasis { font-style: italic; }
+.code-surface .hljs-strong { font-weight: 700; }

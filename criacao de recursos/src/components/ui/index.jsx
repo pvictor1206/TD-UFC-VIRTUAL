@@ -22,3 +22,6 @@ export { default as FormulaSheet } from "./Exatas/FormulaSheet";
 export { default as StepByStep } from "./Exatas/StepByStep";
 export { default as Callout } from "./Callout/Callout";
 export { default as Glossary } from "./Glossary/Glossary";
+export { default as CodeBlock } from "./Code/CodeBlock";
+export { default as CodeTabs } from "./Code/CodeTabs";
+export { default as CodeQuiz } from "./Code/CodeQuiz";

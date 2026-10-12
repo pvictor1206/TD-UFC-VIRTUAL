@@ -199,4 +199,55 @@ export const BLOCK_EXAMPLES = {
     },
     notes: { items: 'Termo à esquerda e definição à direita, em linhas alternadas.' },
   },
+  code_block: {
+    sample: {
+      type: 'code_block',
+      language: 'python',
+      filename: 'media.py',
+      code: 'notas = [7.5, 8.0, 6.5]\nsoma = 0\nfor n in notas:\n    soma += n\nprint(soma / len(notas))',
+      lineNumbers: 'sim',
+      highlight: '3-4',
+      output: '7.333333333333333',
+      runnable: 'nao',
+      caption: 'Média de uma lista de notas',
+    },
+    notes: {
+      language: 'Define as cores do código.',
+      filename: 'Aparece no topo, ao lado da linguagem.',
+      code: 'O código do exemplo.',
+      highlight: 'Linhas realçadas (aqui, 3 e 4).',
+      output: 'Caixa escura "Saída esperada" abaixo do código.',
+      runnable: 'Em JavaScript/HTML, mostra o botão Executar.',
+    },
+  },
+  code_tabs: {
+    sample: {
+      type: 'code_tabs',
+      lineNumbers: 'sim',
+      caption: 'O mesmo programa em três linguagens',
+      items: [
+        { language: 'python', code: 'print("Olá, mundo!")', output: 'Olá, mundo!' },
+        { language: 'java', code: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Olá, mundo!");\n    }\n}', output: 'Olá, mundo!' },
+        { language: 'c', code: '#include <stdio.h>\n\nint main(void) {\n    printf("Olá, mundo!\\n");\n    return 0;\n}', output: 'Olá, mundo!' },
+      ],
+    },
+    notes: { items: 'Cada linguagem vira uma aba; o aluno escolhe qual ver.' },
+  },
+  code_quiz: {
+    sample: {
+      type: 'code_quiz',
+      question: 'O que este código imprime?',
+      language: 'python',
+      code: 'x = 3\nfor i in range(3):\n    x += i\nprint(x)',
+      options: ['3', '6', '9'],
+      correct: '2',
+      explanation: 'O laço soma 0, 1 e 2 ao valor inicial 3: 3 + 0 + 1 + 2 = **6**.',
+    },
+    notes: {
+      question: 'A pergunta para o aluno.',
+      options: 'As alternativas, na ordem em que aparecem (A, B, C...).',
+      correct: 'Número da correta: 2 = segunda alternativa.',
+      explanation: 'Aparece depois que o aluno responde.',
+    },
+  },
 };

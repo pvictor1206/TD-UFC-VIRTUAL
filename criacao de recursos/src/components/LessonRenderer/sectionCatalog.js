@@ -7,6 +7,8 @@
 // bloco aqui, basta adicionar uma nova entrada nesta lista + o `case`
 // correspondente em LessonRenderer.jsx.
 
+import { LANGUAGES } from './highlight';
+
 export const FIELD_TYPES = {
   TEXT: 'text',
   TEXTAREA: 'textarea',
@@ -22,6 +24,7 @@ export const GROUPS = [
   { id: 'texto', label: 'Texto' },
   { id: 'estrutura', label: 'Estrutura / Listas' },
   { id: 'exatas', label: 'Exatas (Cálculo, Física, Química)' },
+  { id: 'programacao', label: 'Programação' },
   { id: 'midia', label: 'Mídia' },
   { id: 'dados', label: 'Dados e Comparações' },
   { id: 'interativo', label: 'Interativo' },
@@ -402,6 +405,75 @@ SECTION_CATALOG.push(
       },
     ],
     defaultData: () => ({ type: 'glossary', items: [{ term: '', definition: '' }] }),
+  },
+);
+
+// Componentes para o ensino de programação.
+const LANGUAGE_OPTIONS = LANGUAGES.map((l) => ({ value: l.value, label: l.label }));
+const YES_NO = (yes, no) => [{ value: 'sim', label: yes }, { value: 'nao', label: no }];
+
+SECTION_CATALOG.push(
+  {
+    type: 'code_block',
+    label: 'Bloco de código',
+    group: 'programacao',
+    icon: '💻',
+    description: 'Código com cores da linguagem escolhida, números de linha, linhas em destaque, botão copiar e saída esperada. Em JavaScript e HTML o aluno pode executar.',
+    fields: [
+      { key: 'language', label: 'Linguagem', type: FIELD_TYPES.SELECT, options: LANGUAGE_OPTIONS },
+      { key: 'filename', label: 'Nome do arquivo (opcional, ex: main.py)', type: FIELD_TYPES.TEXT },
+      { key: 'code', label: 'Código', type: FIELD_TYPES.TEXTAREA, rows: 8, mono: true },
+      { key: 'lineNumbers', label: 'Números de linha', type: FIELD_TYPES.SELECT, options: YES_NO('Mostrar', 'Ocultar') },
+      { key: 'highlight', label: 'Linhas em destaque (opcional, ex: 2,4-6)', type: FIELD_TYPES.TEXT },
+      { key: 'output', label: 'Saída esperada (opcional)', type: FIELD_TYPES.TEXTAREA, rows: 3, mono: true },
+      {
+        key: 'runnable',
+        label: 'Botão "Executar" para o aluno (só JavaScript e HTML)',
+        type: FIELD_TYPES.SELECT,
+        options: [{ value: 'nao', label: 'Não' }, { value: 'sim', label: 'Sim' }],
+      },
+      { key: 'caption', label: 'Legenda (opcional)', type: FIELD_TYPES.TEXT },
+    ],
+    defaultData: () => ({ type: 'code_block', language: 'python', filename: '', code: '', lineNumbers: 'sim', highlight: '', output: '', runnable: 'nao', caption: '' }),
+  },
+  {
+    type: 'code_tabs',
+    label: 'Código em várias linguagens',
+    group: 'programacao',
+    icon: '🗂️',
+    description: 'O mesmo exemplo em abas (Python, Java, C...): o aluno escolhe a linguagem que quer ver.',
+    fields: [
+      {
+        key: 'items',
+        label: 'Linguagens',
+        type: FIELD_TYPES.OBJECT_LIST,
+        addLabel: 'Adicionar linguagem',
+        itemFields: [
+          { key: 'language', label: 'Linguagem', type: FIELD_TYPES.SELECT, options: LANGUAGE_OPTIONS },
+          { key: 'code', label: 'Código', type: FIELD_TYPES.TEXTAREA, rows: 6, mono: true },
+          { key: 'output', label: 'Saída esperada (opcional)', type: FIELD_TYPES.TEXTAREA, rows: 2, mono: true },
+        ],
+      },
+      { key: 'lineNumbers', label: 'Números de linha', type: FIELD_TYPES.SELECT, options: YES_NO('Mostrar', 'Ocultar') },
+      { key: 'caption', label: 'Legenda (opcional)', type: FIELD_TYPES.TEXT },
+    ],
+    defaultData: () => ({ type: 'code_tabs', lineNumbers: 'sim', caption: '', items: [{ language: 'python', code: '', output: '' }, { language: 'java', code: '', output: '' }] }),
+  },
+  {
+    type: 'code_quiz',
+    label: 'Qual é a saída? (quiz de código)',
+    group: 'programacao',
+    icon: '🧩',
+    description: 'Mostra um código e pergunta o que ele faz; o aluno escolhe a alternativa e vê a explicação.',
+    fields: [
+      { key: 'question', label: 'Pergunta', type: FIELD_TYPES.TEXT },
+      { key: 'language', label: 'Linguagem', type: FIELD_TYPES.SELECT, options: LANGUAGE_OPTIONS },
+      { key: 'code', label: 'Código', type: FIELD_TYPES.TEXTAREA, rows: 6, mono: true },
+      { key: 'options', label: 'Alternativas', type: FIELD_TYPES.STRING_LIST, itemType: 'text', addLabel: 'Adicionar alternativa' },
+      { key: 'correct', label: 'Número da alternativa correta (1 = primeira, 2 = segunda...)', type: FIELD_TYPES.TEXT },
+      { key: 'explanation', label: 'Explicação (aparece depois de responder)', type: FIELD_TYPES.TEXTAREA, rows: 3, rich: true },
+    ],
+    defaultData: () => ({ type: 'code_quiz', question: 'O que este código imprime?', language: 'python', code: '', options: ['', '', ''], correct: '1', explanation: '' }),
   },
 );
 

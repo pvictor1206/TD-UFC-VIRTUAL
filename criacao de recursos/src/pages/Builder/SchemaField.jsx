@@ -25,7 +25,7 @@ export default function SchemaField({ field, value, onChange, siblingValues = {}
       return <TextField label={field.label} help={field.help} value={value} onChange={onChange} />;
 
     case FIELD_TYPES.TEXTAREA:
-      return <TextAreaField label={field.label} help={field.help} value={value} onChange={onChange} rows={field.rows} rich={field.rich} />;
+      return <TextAreaField label={field.label} help={field.help} value={value} onChange={onChange} rows={field.rows} rich={field.rich} mono={field.mono} />;
 
     case FIELD_TYPES.SELECT:
       return <SelectField label={field.label} help={field.help} value={value} onChange={onChange} options={field.options} />;
