@@ -69,11 +69,12 @@ export function renderSection(section, index) {
             const element = renderSection(child, i);
             const gap = spacingValue(section.gap);
             const own = spacingValue(child.spaceAfter);
-            if (gap === undefined && own === undefined) return element;
+            const before = spacingValue(child.spaceBefore);
+            if (gap === undefined && own === undefined && before === undefined) return element;
             // Espaçamento escolhido: neutraliza as margens próprias do componente
             // e aplica a medida definida (do componente, senão a da seção).
             return (
-              <div key={i} className="[&>*]:my-0! last:mb-0!" style={{ marginBottom: own ?? gap }}>
+              <div key={i} className="[&>*]:my-0! last:mb-0!" style={{ paddingTop: before, marginBottom: own ?? gap }}>
                 {element}
               </div>
             );

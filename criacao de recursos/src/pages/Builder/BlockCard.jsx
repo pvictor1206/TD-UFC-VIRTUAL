@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getSectionDefinition, SPACING_OPTIONS } from '@lesson';
 import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
@@ -18,6 +18,49 @@ function SpacingSelect({ label, value, onChange }) {
         ))}
       </select>
     </label>
+  );
+}
+
+// Botão "↕" do cabeçalho: espaçamento vertical acima e abaixo do componente.
+function SpacingMenu({ section, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDown = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const custom = !!(section.spaceBefore || section.spaceAfter);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        title="Espaçamento vertical (acima e abaixo)"
+        aria-label="Espaçamento vertical deste componente"
+        className={`w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg transition-colors ${custom ? 'bg-lav text-ink' : 'text-gray-500 hover:bg-gray-200'} ${open ? 'ring-2 ring-blue-400' : ''}`}
+      >
+        ↕
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-2 z-30 w-60 rounded-xl border border-gray-200 bg-white p-3 shadow-xl space-y-3">
+          <p className="text-xs font-bold text-ink">Espaçamento vertical</p>
+          <SpacingSelect label="Espaço em cima" value={section.spaceBefore} onChange={(v) => onChange({ ...section, spaceBefore: v })} />
+          <SpacingSelect label="Espaço em baixo" value={section.spaceAfter} onChange={(v) => onChange({ ...section, spaceAfter: v })} />
+          <p className="text-[11px] text-gray-500">"Padrão" mantém o espaçamento original do componente.</p>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -54,8 +97,8 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
   const isSection = section.type === 'section';
 
   return (
-    <div className={`rounded-xl border bg-white shadow-sm overflow-hidden ${nested ? 'border-lav-bar' : 'border-lav-bar border-2'}`}>
-      <div className={`flex items-center justify-between gap-3 px-4 py-3 border-b border-gray-100 ${isSection ? 'bg-gray-100' : 'bg-gray-50'}`}>
+    <div className={`rounded-xl border bg-white shadow-sm ${nested ? 'border-lav-bar' : 'border-lav-bar border-2'}`}>
+      <div className={`flex items-center justify-between gap-3 px-4 py-3 rounded-t-[10px] border-b border-gray-100 ${isSection ? 'bg-gray-100' : 'bg-gray-50'}`}>
         {isSection ? (
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <button
@@ -95,6 +138,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
           </button>
         )}
         <div className="flex items-center gap-1.5 shrink-0">
+          {nested && !isSection && <SpacingMenu section={section} onChange={onChange} />}
           <HelpButton definition={definition} className="mr-1" />
           <button type="button" disabled={index === 0} onClick={() => onMove(-1)} title="Mover para cima" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↑</button>
           <button type="button" disabled={index === total - 1} onClick={() => onMove(1)} title="Mover para baixo" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↓</button>
@@ -165,15 +209,6 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               siblingValues={section}
             />
           ))}
-          {nested && (
-            <div className="border-t border-gray-100 pt-3 max-w-xs">
-              <SpacingSelect
-                label="↕ Espaço abaixo deste componente"
-                value={section.spaceAfter}
-                onChange={(v) => setFieldValue('spaceAfter', v)}
-              />
-            </div>
-          )}
         </div>
       )}
     </div>
