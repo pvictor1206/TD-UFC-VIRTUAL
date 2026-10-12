@@ -188,7 +188,7 @@ export default function HelpButton({ definition, className = '' }) {
         }}
         title={`Como usar: ${definition.label}`}
         aria-label={`Ajuda sobre o bloco ${definition.label}`}
-        className={`inline-flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 text-xs font-bold text-gray-500 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 transition-colors shrink-0 ${className}`}
+        className={`inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 text-base font-bold text-gray-500 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 transition-colors shrink-0 ${className}`}
       >
         ?
       </button>
