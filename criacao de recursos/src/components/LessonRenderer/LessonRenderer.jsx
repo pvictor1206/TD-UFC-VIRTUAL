@@ -287,7 +287,9 @@ export default function LessonRenderer({ content, showAccessibilityControls = tr
           </div>
         </header>
 
-        {sections.map(renderSection)}
+        <div className="space-y-8 md:space-y-10" style={{ fontFamily: "'Inter', ui-sans-serif, system-ui, sans-serif" }}>
+          {sections.map(renderSection)}
+        </div>
 
         <footer className="text-center pt-16 border-t border-lav text-ink/50 text-xs font-semibold tracking-widest">
           <p>© MATERIAL DIGITAL UFC • INSTITUTO UFC VIRTUAL (IUVI)</p>
