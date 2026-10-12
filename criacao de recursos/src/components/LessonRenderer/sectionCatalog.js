@@ -31,10 +31,10 @@ const helpFormatacao = 'Use **texto** para negrito, *texto* para itálico e linh
 export const SECTION_CATALOG = [
   {
     type: 'section',
-    label: 'Título (seção)',
+    label: 'Título',
     group: 'estrutura',
     icon: '🔖',
-    description: 'Um título que agrupa outros blocos logo abaixo dele. Use quando o conteúdo precisa de título; blocos sem título ficam soltos na aula.',
+    description: 'Título que fica acima do(s) bloco(s) dentro dele. Criado pelo botão "Adicionar título" de cada bloco.',
     fields: [
       { key: 'label', label: 'Rótulo (opcional, ex: "HISTÓRIA")', type: FIELD_TYPES.TEXT },
       { key: 'title', label: 'Título', type: FIELD_TYPES.TEXT },
@@ -45,7 +45,7 @@ export const SECTION_CATALOG = [
   },
   {
     type: 'intro',
-    label: 'Texto',
+    label: 'Bloco com texto',
     group: 'texto',
     icon: '📝',
     description: 'Texto corrido (parágrafos, negrito, itálico e listas). Sem moldura, direto na página.',

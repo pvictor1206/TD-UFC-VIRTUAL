@@ -96,6 +96,25 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     });
   };
 
+  // "Adicionar título": envolve o bloco em uma seção (título) logo acima dele.
+  const addTitleToSection = (index) => {
+    setScrollToIndex(index);
+    setLesson((l) => {
+      const sections = [...l.sections];
+      sections[index] = { type: 'section', label: '', title: '', subtitle: '', children: [sections[index]] };
+      return { ...l, sections };
+    });
+  };
+
+  // "Remover título": desfaz a seção e mantém os blocos de dentro no lugar.
+  const removeTitleFromSection = (index) => {
+    setLesson((l) => {
+      const sections = [...l.sections];
+      sections.splice(index, 1, ...(sections[index].children || []));
+      return { ...l, sections };
+    });
+  };
+
   const moveSection = (index, dir) => {
     setLesson((l) => {
       const j = index + dir;
@@ -292,6 +311,8 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   onRemove={() => removeSection(index)}
                   onDuplicate={() => duplicateSection(index)}
                   onMove={(dir) => moveSection(index, dir)}
+                  onAddTitle={() => addTitleToSection(index)}
+                  onRemoveTitle={() => removeTitleFromSection(index)}
                 />
                 </div>
               ))}

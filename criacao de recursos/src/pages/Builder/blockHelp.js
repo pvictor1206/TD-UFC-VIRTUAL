@@ -9,7 +9,7 @@
 export const BLOCK_HELP = {
   intro: {
     what: 'Texto corrido, direto na página e sem moldura. Aceita negrito, itálico e listas.',
-    when: 'Use para introduções, explicações e qualquer parágrafo da aula. Para dar um título ao texto, coloque-o dentro de um bloco "Título (seção)".',
+    when: 'Use para introduções, explicações e qualquer parágrafo da aula. Para dar um título ao texto, clique em "Adicionar título" no cartão dele.',
     steps: ['Escreva o texto no campo e use a barra para negrito, itálico e listas.', 'Se quiser destacar uma ideia-chave, coloque-a entre ** **.'],
     tips: ['Prefira de 3 a 6 linhas: introduções longas cansam o aluno.', 'Coloque este bloco sempre como o primeiro da lista.'],
   },
@@ -17,9 +17,9 @@ export const BLOCK_HELP = {
     what: 'Um título (com rótulo e subtítulo opcionais) que agrupa outros blocos logo abaixo dele. O título é um componente separado: os demais blocos não carregam título próprio.',
     when: 'Use quando um conteúdo precisa de título — uma tabela, um grupo de acordeões, uma lista de cards, um trecho de texto. Blocos que não precisam de título ficam soltos, direto na aula.',
     steps: [
+      'Clique em "Adicionar título" no cartão de qualquer bloco: ele passa a ficar dentro do título.',
       'Preencha o "Título" (e, se quiser, o rótulo e o subtítulo).',
-      'Em "Blocos dentro desta seção", escolha na lista o bloco que quer colocar dentro.',
-      'Reordene, duplique ou exclua os blocos de dentro pelos botões de cada cartão.',
+      'Para pôr mais blocos sob o mesmo título, use a lista "Adicionar bloco dentro…". Para desfazer, clique em "Remover título".',
     ],
     tips: ['Uma seção não pode conter outra seção.', 'Para vários tópicos, use várias seções, uma para cada título.'],
   },

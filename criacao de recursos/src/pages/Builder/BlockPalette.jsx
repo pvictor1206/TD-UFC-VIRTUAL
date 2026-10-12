@@ -5,7 +5,7 @@ export default function BlockPalette({ onAdd }) {
   return (
     <div className="space-y-5">
       {GROUPS.map((group) => {
-        const blocks = SECTION_CATALOG.filter((b) => b.group === group.id);
+        const blocks = SECTION_CATALOG.filter((b) => b.group === group.id && b.type !== 'section');
         if (blocks.length === 0) return null;
         return (
           <div key={group.id}>
