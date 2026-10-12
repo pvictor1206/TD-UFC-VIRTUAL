@@ -51,7 +51,8 @@ function BuilderOverlay({ resource, readOnly, hideFileActions, onClose, onChange
 export default function RecursosTab({ discipline, isTecnico, currentUser }) {
   const { addResource, updateResource, removeResource } = useContext(ActionsContext);
   const [openBuilder, setOpenBuilder] = useState(null); // { id, readOnly }
-  const [newTitle, setNewTitle] = useState('');
+  // o título do recurso já vem preenchido com o nome da disciplina (pode ser editado)
+  const [newTitle, setNewTitle] = useState(discipline.title);
   const [newAula, setNewAula] = useState('');
   const [feedbackDraft, setFeedbackDraft] = useState({}); // resourceId -> texto do pedido de ajuste
   const [busy, setBusy] = useState(null);
@@ -65,7 +66,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
     const aula = newAula.trim();
     if (!aula) return; // número da aula é obrigatório
     const id = addResource(discipline.id, title, aula);
-    setNewTitle('');
+    setNewTitle(discipline.title);
     setNewAula('');
     setOpenBuilder({ id, readOnly: false });
   };
@@ -132,6 +133,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder={`Título da aula (ex: ${discipline.title} — Aula 1)`}
+              aria-label="Título do recurso (começa com o título da disciplina)"
               className="flex-1 border border-[#D9CFC6] rounded-xl p-2.5 focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm"
             />
             <button type="submit" className="bg-iuvi-roxo text-white px-6 py-2.5 font-bold flex items-center gap-2 hover:bg-iuvi-roxo-medio text-sm shrink-0">

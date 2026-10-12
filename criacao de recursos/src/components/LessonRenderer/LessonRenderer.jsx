@@ -54,7 +54,13 @@ export function renderSection(section, index) {
           style={spacingValue(section.spaceAfter) !== undefined ? { marginBottom: spacingValue(section.spaceAfter) } : undefined}
         >
           {(section.label || section.title || section.subtitle) && (
-            <div className="space-y-1">
+            <div
+              className="space-y-1"
+              style={{
+                paddingTop: spacingValue(section.titleBefore),
+                marginBottom: spacingValue(section.titleAfter),
+              }}
+            >
               {section.label && (
                 <p className="text-blue-600 text-[0.7em] font-bold uppercase tracking-widest">{section.label}</p>
               )}

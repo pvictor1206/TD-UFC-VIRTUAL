@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { getSectionDefinition, SPACING_OPTIONS } from '@lesson';
 import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
@@ -21,49 +21,6 @@ function SpacingSelect({ label, value, onChange }) {
   );
 }
 
-// Botão "↕" do cabeçalho: espaçamento vertical acima e abaixo do componente.
-function SpacingMenu({ section, onChange }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDown = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
-    document.addEventListener('mousedown', onDown);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDown);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-
-  const custom = !!(section.spaceBefore || section.spaceAfter);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        title="Espaçamento vertical (acima e abaixo)"
-        aria-label="Espaçamento vertical deste componente"
-        className={`w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg transition-colors ${custom ? 'bg-lav text-ink' : 'text-gray-500 hover:bg-gray-200'} ${open ? 'ring-2 ring-blue-400' : ''}`}
-      >
-        ↕
-      </button>
-      {open && (
-        <div className="absolute right-0 top-full mt-2 z-30 w-60 rounded-xl border border-gray-200 bg-white p-3 shadow-xl space-y-3">
-          <p className="text-xs font-bold text-ink">Espaçamento vertical</p>
-          <SpacingSelect label="Espaço em cima" value={section.spaceBefore} onChange={(v) => onChange({ ...section, spaceBefore: v })} />
-          <SpacingSelect label="Espaço em baixo" value={section.spaceAfter} onChange={(v) => onChange({ ...section, spaceAfter: v })} />
-          <p className="text-[11px] text-gray-500">"Padrão" mantém o espaçamento original do componente.</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
 // Etiqueta que deixa claro o que o aluno enxerga e o que é só do editor.
 function Zone({ visible, children }) {
   return (
@@ -80,6 +37,7 @@ function Zone({ visible, children }) {
 
 export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, nested = false, isActive = false }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [spacingOpen, setSpacingOpen] = useState(false);
   const definition = getSectionDefinition(section.type);
 
   if (!definition) {
@@ -138,7 +96,20 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
           </button>
         )}
         <div className="flex items-center gap-1.5 shrink-0">
-          {nested && !isSection && <SpacingMenu section={section} onChange={onChange} />}
+          {nested && !isSection && (
+            <button
+              type="button"
+              onClick={() => setSpacingOpen((o) => !o)}
+              aria-expanded={spacingOpen}
+              aria-label="Espaçamento vertical deste componente"
+              title="Espaçamento vertical (em cima e em baixo)"
+              className={`w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg transition-colors ${
+                section.spaceBefore || section.spaceAfter ? 'bg-lav text-ink' : 'text-gray-500 hover:bg-gray-200'
+              } ${spacingOpen ? 'ring-2 ring-blue-400' : ''}`}
+            >
+              ↕
+            </button>
+          )}
           <HelpButton definition={definition} className="mr-1" />
           <button type="button" disabled={index === 0} onClick={() => onMove(-1)} title="Mover para cima" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↑</button>
           <button type="button" disabled={index === total - 1} onClick={() => onMove(1)} title="Mover para baixo" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↓</button>
@@ -146,6 +117,19 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
           <button type="button" onClick={onRemove} title="Excluir bloco" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40">🗑</button>
         </div>
       </div>
+
+      {spacingOpen && nested && !isSection && (
+        <div className="flex flex-wrap items-end gap-4 border-b border-lav bg-lav-soft px-4 py-3">
+          <span className="text-xs font-bold text-ink self-center">↕ Espaçamento vertical</span>
+          <div className="w-44">
+            <SpacingSelect label="Espaço em cima" value={section.spaceBefore} onChange={(v) => setFieldValue('spaceBefore', v)} />
+          </div>
+          <div className="w-44">
+            <SpacingSelect label="Espaço em baixo" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
+          </div>
+          <span className="text-[11px] text-gray-500 self-center">"Padrão" mantém o espaçamento original do componente.</span>
+        </div>
+      )}
 
       {!collapsed && isSection && (
         <div className="p-4 space-y-4">
@@ -165,6 +149,10 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
                   siblingValues={section}
                 />
               ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl border-t border-lav pt-3">
+              <SpacingSelect label="↕ Espaço em cima do título" value={section.titleBefore} onChange={(v) => setFieldValue('titleBefore', v)} />
+              <SpacingSelect label="↕ Espaço entre o título e os componentes" value={section.titleAfter} onChange={(v) => setFieldValue('titleAfter', v)} />
             </div>
           </div>
 
