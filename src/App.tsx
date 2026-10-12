@@ -714,7 +714,7 @@ export default function App() {
         {/* Formulário */}
         <div className="flex flex-col items-center justify-center p-6 sm:p-12">
           <div className="w-full max-w-sm">
-            <div className="mb-8"><IuviLogo height={60} id="g-login-m" /></div>
+            <div className="mb-8 lg:hidden"><IuviLogo height={60} id="g-login-m" /></div>
             <h1 className="text-3xl font-extrabold text-iuvi mb-1">Acesse o painel</h1>
             <p className="text-zinc-500 mb-8">Entre com seu usuário e senha.</p>
 
@@ -771,9 +771,8 @@ export default function App() {
               <p>Conteudista: <strong>carlos</strong> ou <strong>mariana</strong> / <strong>123</strong></p>
             </div>
 
-            <div className="mt-10 pt-6 border-t border-[#E6DFD7] flex items-center gap-4">
-              <UfcLogo height={44} />
-              <span className="text-xs text-zinc-500 leading-snug">Universidade Federal do Ceará<br />Instituto UFC Virtual</span>
+            <div className="mt-10 pt-6 border-t border-[#E6DFD7] flex items-center">
+              <UfcLogo height={64} />
             </div>
           </div>
         </div>
