@@ -756,12 +756,12 @@ export default function App() {
       d.id === disciplineId ? { ...d, resources: fn(d.resources || []) } : d
     ));
 
-  const addResource = (disciplineId, title) => {
+  const addResource = (disciplineId, title, aula = '') => {
     const id = Date.now();
     const now = new Date().toISOString();
     patchResources(disciplineId, list => [...list, {
       id,
-      lesson: { aula: '', titulo: title, objetivo: '', sections: [] },
+      lesson: { aula, titulo: title, objetivo: '', sections: [] },
       status: 'rascunho',
       feedback: '',
       author: currentUser.name,

@@ -52,6 +52,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
   const { addResource, updateResource, removeResource } = useContext(ActionsContext);
   const [openBuilder, setOpenBuilder] = useState(null); // { id, readOnly }
   const [newTitle, setNewTitle] = useState('');
+  const [newAula, setNewAula] = useState('');
   const [feedbackDraft, setFeedbackDraft] = useState({}); // resourceId -> texto do pedido de ajuste
   const [busy, setBusy] = useState(null);
 
@@ -61,8 +62,11 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
   const handleCreate = (e) => {
     e.preventDefault();
     const title = newTitle.trim() || discipline.title;
-    const id = addResource(discipline.id, title);
+    const aula = newAula.trim();
+    if (!aula) return; // número da aula é obrigatório
+    const id = addResource(discipline.id, title, aula);
     setNewTitle('');
+    setNewAula('');
     setOpenBuilder({ id, readOnly: false });
   };
 
@@ -115,13 +119,23 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
           <div className="flex gap-3">
             <input
               type="text"
+              required
+              value={newAula}
+              onChange={(e) => setNewAula(e.target.value)}
+              placeholder="Nº da aula *"
+              aria-label="Número da aula (obrigatório)"
+              title="Número da aula (obrigatório)"
+              className="w-32 shrink-0 border border-[#D9CFC6] rounded-xl p-2.5 text-center font-semibold focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm"
+            />
+            <input
+              type="text"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder={`Título da aula (ex: ${discipline.title} — Aula 1)`}
               className="flex-1 border border-[#D9CFC6] rounded-xl p-2.5 focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm"
             />
             <button type="submit" className="bg-iuvi-roxo text-white px-6 py-2.5 font-bold flex items-center gap-2 hover:bg-iuvi-roxo-medio text-sm shrink-0">
-              <PlusCircle size={18} /> Criar e abrir construtor
+              <PlusCircle size={18} /> Criar e abrir editor
             </button>
           </div>
         </form>
