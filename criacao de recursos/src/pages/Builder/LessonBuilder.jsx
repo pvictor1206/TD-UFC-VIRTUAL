@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { LessonRenderer, createBlankLesson, SAMPLE_LESSON, getSectionDefinition } from '@lesson';
 import BlockPalette from './BlockPalette';
 import BlockCard from './BlockCard';
-import { TextField, TextAreaField } from './fieldInputs';
 import { downloadJson, downloadLessonSite, slugify } from './exportSite';
 
 const DRAFT_KEY = 'construtor-de-aulas:rascunho';
@@ -119,6 +118,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   };
 
   const [downloading, setDownloading] = useState(false);
+  const [showObjetivo, setShowObjetivo] = useState(false);
 
   const handleDownloadSite = async () => {
     setDownloading(true);
@@ -224,13 +224,48 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
           </aside>
 
           <main className="space-y-4">
-            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 space-y-3">
-              <h2 className="text-sm font-bold text-gray-700 dark:text-gray-200">Dados da aula</h2>
-              <div className="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-3">
-                <TextField label="Número da aula" value={lesson.aula} onChange={(v) => updateMeta('aula', v)} placeholder="17" />
-                <TextField label="Título" value={lesson.titulo} onChange={(v) => updateMeta('titulo', v)} placeholder="Título da aula" />
+            {/* Dados da aula: barra compacta, fixa no topo ao rolar */}
+            <div className="sticky top-[72px] z-20 bg-white/95 backdrop-blur rounded-xl border border-lav shadow-sm px-3 py-2">
+              <div className="flex items-center gap-2">
+                <span className="hidden sm:block text-[11px] font-bold uppercase tracking-widest text-blue-600 shrink-0">Aula</span>
+                <input
+                  type="text"
+                  aria-label="Número da aula"
+                  title="Número da aula"
+                  placeholder="Nº"
+                  value={lesson.aula ?? ''}
+                  onChange={(e) => updateMeta('aula', e.target.value)}
+                  className="w-14 shrink-0 rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <input
+                  type="text"
+                  aria-label="Título da aula"
+                  title="Título da aula"
+                  placeholder="Título da aula"
+                  value={lesson.titulo ?? ''}
+                  onChange={(e) => updateMeta('titulo', e.target.value)}
+                  className="flex-1 min-w-0 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowObjetivo((v) => !v)}
+                  aria-expanded={showObjetivo}
+                  title="Objetivo (subtítulo, opcional)"
+                  className={`shrink-0 text-xs font-semibold px-3 py-2 rounded-lg border transition-colors ${showObjetivo ? 'bg-lav border-lav-bar text-ink' : 'border-gray-300 text-gray-600 hover:bg-lav-soft'}`}
+                >
+                  Objetivo{lesson.objetivo ? ' •' : ''} {showObjetivo ? '▴' : '▾'}
+                </button>
               </div>
-              <TextAreaField label="Objetivo (subtítulo, opcional)" value={lesson.objetivo} onChange={(v) => updateMeta('objetivo', v)} rows={2} />
+              {showObjetivo && (
+                <textarea
+                  aria-label="Objetivo (subtítulo, opcional)"
+                  placeholder="Objetivo (subtítulo, opcional)"
+                  rows={2}
+                  value={lesson.objetivo ?? ''}
+                  onChange={(e) => updateMeta('objetivo', e.target.value)}
+                  className="mt-2 w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              )}
             </div>
 
             <div className="flex items-center justify-between">
