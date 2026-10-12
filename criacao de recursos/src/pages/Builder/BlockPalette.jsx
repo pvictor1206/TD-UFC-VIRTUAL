@@ -17,7 +17,7 @@ export default function BlockPalette({ onAdd }) {
                   type="button"
                   onClick={() => onAdd(block.type)}
                   title={block.description}
-                  className="flex flex-1 min-w-0 items-center gap-2 text-left rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
+                  className="flex flex-1 min-w-0 items-center gap-2 text-left rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm hover:border-blue-300 hover:bg-lav-soft dark:hover:bg-blue-950/30 transition-colors"
                 >
                   <span className="text-base">{block.icon}</span>
                   <span className="text-gray-700 dark:text-gray-200 font-medium">{block.label}</span>

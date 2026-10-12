@@ -1,0 +1,20 @@
+/* Identidade visual (anexo): lavanda + navy, fonte Inter.
+   Substitui a escala "blue" do Tailwind, recolorindo Construtor e aula. */
+@theme {
+  --color-blue-50: #f4f1fd;
+  --color-blue-100: #e8e3f9;
+  --color-blue-200: #d9d3f5;
+  --color-blue-300: #c8c0ee;
+  --color-blue-400: #a99fe0;
+  --color-blue-500: #8678cf;
+  --color-blue-600: #5f52b5;
+  --color-blue-700: #433a8f;
+  --color-blue-800: #2d2a66;
+  --color-blue-900: #1b1b3a;
+  --color-blue-950: #12122b;
+  --color-ink: #1b1b3a;
+  --color-lav: #d9d3f5;
+  --color-lav-soft: #f4f1fd;
+  --color-lav-mid: #e4def8;
+  --color-lav-bar: #c8c0ee;
+}

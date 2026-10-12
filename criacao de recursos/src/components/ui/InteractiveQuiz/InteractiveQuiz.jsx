@@ -89,9 +89,9 @@ const ResultsScreen = ({ score, total, onRestart, buttonBgColor, buttonTextColor
  */
 const InteractiveQuiz = ({
   questions = [],
-  progressColor = '#2563EB', // Azul, inspirado no tema padrão
-  buttonBgColor = '#EFF6FF',
-  buttonTextColor = '#0C1E33',
+  progressColor = "#8678cf", // Azul, inspirado no tema padrão
+  buttonBgColor = "#f4f1fd",
+  buttonTextColor = "#1b1b3a",
 }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({}); // { questionIndex: 'selectedOption' }

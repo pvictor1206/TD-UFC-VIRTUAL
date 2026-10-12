@@ -1,10 +1,10 @@
 export default function QuoteCard({ quote, author }) {
   return (
-    <div className="rounded-[24px] border border-[#93C5FD] bg-[#EFF6FF] p-6 shadow-sm">
-      <p className="text-left text-[16px] md:text-[18px] leading-relaxed font-medium text-[#1e3a8a] mb-5">
+    <div className="rounded-[6px] border-l-[6px] border-[#c8c0ee] bg-[#f4f1fd] p-5 md:p-6">
+      <p className="text-center text-[15px] md:text-[16px] leading-relaxed italic text-[#1b1b3a] mb-3">
         {quote}
       </p>
-      <p className="text-left text-sm text-[#1e40af]">{author}</p>
+      {author && <p className="text-right text-sm italic text-[#1b1b3a]/70">{author}</p>}
     </div>
   );
 }

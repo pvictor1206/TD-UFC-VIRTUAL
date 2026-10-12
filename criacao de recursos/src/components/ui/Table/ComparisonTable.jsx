@@ -6,13 +6,13 @@ export default function ComparisonTable({
   rows = [],
   className = "",
   colors = {
-    headBg: "#BFDBFE",   // azul do cabeçalho
-    headText: "#343A40",
-    zebra: "#DBEAFE",    // faixa clara alternada
-    zebra_two: "#EFF6FF",    // faixa clara alternada
-    border: "#93C5FD",   // divisões horizontais
+    headBg: "#d9d3f5",   // azul do cabeçalho
+    headText: "#1b1b3a",
+    zebra: "#e4def8",    // faixa clara alternada
+    zebra_two: "#f4f1fd",    // faixa clara alternada
+    border: "#f4f1fd",   // divisões horizontais
     divider: "#FFF",  // linha vertical entre colunas
-    caption: "#0C1E33",
+    caption: "#1b1b3a",
   },
   
   // --- Novos Parâmetros de Fonte (Responsivos) ---
@@ -40,14 +40,14 @@ export default function ComparisonTable({
     >
       {title && (
         <h3 
-          className="text-left pb-[12px] font-semibold text-[#0C1E33] mb-2 text-[length:var(--title-fs-mob)] md:text-[length:var(--title-fs-desk)]"
+          className="text-left pb-[12px] font-semibold text-[#1b1b3a] mb-2 text-[length:var(--title-fs-mob)] md:text-[length:var(--title-fs-desk)]"
         >
           {title}
         </h3>
       )}
 
       {/* Sem ring (remove a borda preta). Mantém cantos e clipping. */}
-      <div className="rounded-md overflow-hidden bg-white">
+      <div className="overflow-hidden bg-white text-[#1b1b3a]">
         {/* Cabeçalho */}
         <div
           className="grid grid-cols-2 text-center font-semibold text-[length:var(--head-fs-mob)] md:text-[length:var(--head-fs-desk)]"

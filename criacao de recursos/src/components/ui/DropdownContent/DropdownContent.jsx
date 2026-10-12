@@ -8,12 +8,12 @@ export default function DropdownContent({
   altText,
 
   // --- Cores Customizáveis ---
-  bgColor = "#FAFBFF",         // Fundo bem claro para bater com a imagem
-  hoverBgColor = "#EFF6FF",    // Leve destaque ao passar o mouse
-  borderColor = "#BFDBFE",     // Linha divisória em tom azul claro
-  titleTextColor = "#333333",  // Cor do título
-  contentTextColor = "#333333", // Cor do texto interno
-  iconColor = "#1e40af",       // Azul escuro para o ícone
+  bgColor = "#f4f1fd",         // Fundo bem claro para bater com a imagem
+  hoverBgColor = "#e8e3f9",    // Leve destaque ao passar o mouse
+  borderColor = "#d9d3f5",     // Linha divisória em tom azul claro
+  titleTextColor = "#1b1b3a",  // Cor do título
+  contentTextColor = "#1b1b3a", // Cor do texto interno
+  iconColor = "#5f52b5",       // Azul escuro para o ícone
 
   // --- Tamanhos de Fonte Responsivos ---
   titleFontSizeMobile = "14px",
@@ -47,7 +47,7 @@ export default function DropdownContent({
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex justify-between items-center px-6 py-4 bg-[color:var(--dropdown-bg)] hover:bg-[color:var(--dropdown-hover)] text-[color:var(--dropdown-title-color)] transition-colors"
         >
-          <span className="text-left font-medium text-[length:var(--title-fs-mob)] md:text-[length:var(--title-fs-desk)]">
+          <span className="text-left font-semibold text-[length:var(--title-fs-mob)] md:text-[length:var(--title-fs-desk)]">
             {title}
           </span>
           {/* Englobando o ícone para simular o círculo da sua imagem */}

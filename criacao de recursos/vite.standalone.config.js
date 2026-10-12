@@ -34,6 +34,7 @@ export default defineConfig({
   build: {
     outDir: 'public/standalone',
     emptyOutDir: true,
+    assetsInlineLimit: 10000000, // embute as fontes no CSS (o .zip só tem 3 arquivos)
     copyPublicDir: false, // evita copiar o resto de public/ para dentro de public/standalone
     cssCodeSplit: false,
     minify: true,

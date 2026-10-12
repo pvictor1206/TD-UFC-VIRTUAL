@@ -10,9 +10,9 @@ export default function AccessLink({
   widthClass = "",                 // opcional: para customizar as larguras
   // --- Novos Parâmetros de Estilo ---
   colors = {
-    bg: "#EFF6FF",      // Fundo da caixa
-    icon: "#93C5FD",    // Cor do ícone
-    text: "#0C1E33",    // Cor do texto
+    bg: "#f4f1fd",      // Fundo da caixa
+    icon: "#c8c0ee",    // Cor do ícone
+    text: "#1b1b3a",    // Cor do texto
   },
   fontSizeMobile = "14px",
   fontSizeDesktop = "16px",
@@ -22,14 +22,14 @@ export default function AccessLink({
 
   const Box = (
     <div 
-      className="flex items-center gap-3 rounded-[7px] p-3 sm:p-4 shadow-md transition-colors"
+      className="flex items-center gap-3 rounded-[7px] p-3 sm:p-4 transition-colors"
       style={{ backgroundColor: colors.bg }}
     >
       {/* Aplicamos a cor direto na prop do ícone */}
       <FaLink color={colors.icon} size={18} className="flex-shrink-0" />
       
       {/* Texto com cores e tamanhos dinâmicos */}
-      <p className="font-semibold break-words" style={{ color: colors.text }}>
+      <p className="font-bold uppercase underline underline-offset-4 break-words" style={{ color: colors.text }}>
         
         {/* Renderiza apenas no Mobile (< 640px) */}
         <span className="sm:hidden" style={{ fontSize: fontSizeMobile }}>
@@ -46,7 +46,7 @@ export default function AccessLink({
   );
 
   return (
-    <section className={`pt-[70px] pb-[80px] ${className}`}>
+    <section className={`py-6 ${className}`}>
       <div className={`mx-auto ${containerWidth}`}>
         {href ? (
           <a

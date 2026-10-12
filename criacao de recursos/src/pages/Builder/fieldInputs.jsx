@@ -2,7 +2,7 @@
 // Cada uma edita um pedaço do JSON de uma seção (bloco) da aula.
 
 const inputBase =
-  'w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  'w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400';
 
 const labelBase = 'block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1';
 const helpBase = 'mt-1 text-[11px] text-gray-400 dark:text-gray-500';

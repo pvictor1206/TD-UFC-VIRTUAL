@@ -29,28 +29,27 @@ import FormattedText from './FormattedText';
 export function renderSection(section, index) {
   switch (section.type) {
     case 'intro':
+      // Texto corrido, sem container (identidade visual do anexo).
       return (
-        <section key={index} className="bg-white dark:bg-gray-800 p-5 md:p-12 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-2 bg-blue-600" />
-          <FormattedText
-            text={section.text}
-            className="max-w-none text-gray-700 dark:text-gray-300 leading-relaxed text-left font-medium"
-            style={{ fontSize: '1em' }}
-          />
-        </section>
+        <FormattedText
+          key={index}
+          text={section.text}
+          className="max-w-none text-ink text-justify leading-[1.75]"
+          style={{ fontSize: '1em' }}
+        />
       );
 
     case 'highlight_section':
       return (
-        <section key={index} className="bg-white dark:bg-gray-800 p-5 md:p-12 rounded-3xl border-l-[12px] border-blue-800 shadow-sm space-y-8">
+        <section key={index} className="space-y-4">
           {section.title && (
-            <h2 className="font-bold text-blue-900 dark:text-blue-400 text-left" style={{ fontSize: 'clamp(1.3em, 5vw, 1.8em)' }}>
+            <h2 className="font-bold text-ink text-left" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>
               {section.title}
             </h2>
           )}
           <FormattedText
             text={section.text}
-            className="max-w-none text-gray-800 dark:text-gray-300 whitespace-pre-line text-left font-medium"
+            className="max-w-none text-ink text-justify leading-[1.75]"
             style={{ fontSize: '1em' }}
           />
         </section>
@@ -58,24 +57,24 @@ export function renderSection(section, index) {
 
     case 'story':
       return (
-        <section key={index} className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="bg-blue-900 px-5 py-5 md:px-8 md:py-6">
+        <section key={index} className="space-y-4">
+          <div className="space-y-1">
             {section.label && (
-              <p className="text-blue-300 text-xs font-bold uppercase tracking-widest">{section.label}</p>
+              <p className="text-blue-600 text-[0.7em] font-bold uppercase tracking-widest">{section.label}</p>
             )}
             {section.title && (
-              <h2 className="text-white font-bold mt-1 leading-tight" style={{ fontSize: 'clamp(1.2em, 5vw, 1.5em)' }}>{section.title}</h2>
+              <h2 className="text-ink font-bold leading-tight" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>{section.title}</h2>
             )}
             {section.warning && (
-              <p className="text-blue-200 italic mt-2" style={{ fontSize: '0.9em' }}>{section.warning}</p>
+              <p className="text-ink/70 italic" style={{ fontSize: '0.9em' }}>{section.warning}</p>
             )}
           </div>
-          <div className="p-5 md:p-12 space-y-4">
+          <div className="space-y-4">
             {(section.paragraphs || []).map((para, i) => (
               <FormattedText
                 key={i}
                 text={para}
-                className="text-gray-800 dark:text-gray-200 leading-relaxed text-left font-serif"
+                className="text-ink text-justify leading-[1.75]"
               />
             ))}
           </div>
@@ -87,7 +86,7 @@ export function renderSection(section, index) {
         <figure key={index} className="flex flex-col items-center mt-8 mb-16">
           <ImageLightbox src={section.src} alt={section.alt} className="w-full max-w-full lg:max-w-3xl" />
           {section.caption && (
-            <figcaption className="mt-4 text-center text-gray-500 dark:text-gray-400 italic font-medium" style={{ fontSize: '1em' }}>
+            <figcaption className="mt-3 text-center text-ink/70 italic" style={{ fontSize: '1em' }}>
               {section.caption}
             </figcaption>
           )}
@@ -97,9 +96,9 @@ export function renderSection(section, index) {
     case 'video': {
       const isDrive = section.source === 'drive';
       return (
-        <section key={index} className="my-8 rounded-2xl overflow-hidden shadow-md">
+        <section key={index} className="my-4 overflow-hidden rounded-[10px]">
           {section.title && (
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-800 bg-blue-50 px-4 py-2 text-left">
+            <p className="text-xs font-bold uppercase tracking-wide text-ink bg-lav px-4 py-2 text-left">
               {section.title}
             </p>
           )}
@@ -126,13 +125,13 @@ export function renderSection(section, index) {
 
     case 'dropdown_group': {
       const isVertical = section.layout === 'vertical';
-      const gridClassName = isVertical ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4';
+      const gridClassName = isVertical ? 'grid grid-cols-1 gap-2' : 'grid grid-cols-1 md:grid-cols-2 gap-2';
       return (
-        <section key={index} className="space-y-8 my-12 bg-white dark:bg-gray-800 p-5 md:p-12 rounded-3xl border border-gray-100 dark:border-gray-700">
+        <section key={index} className="space-y-4">
           {(section.title || section.subtitle) && (
-            <div className="text-center">
-              {section.title && <h2 className="font-bold text-gray-900 dark:text-white" style={{ fontSize: 'clamp(1.3em, 5vw, 1.8em)' }}>{section.title}</h2>}
-              {section.subtitle && <p className="mt-2 text-gray-500 text-base">{section.subtitle}</p>}
+            <div className="text-left">
+              {section.title && <h2 className="font-bold text-ink" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>{section.title}</h2>}
+              {section.subtitle && <p className="mt-1 text-ink/70 text-base">{section.subtitle}</p>}
             </div>
           )}
           <div className={gridClassName}>
@@ -152,19 +151,19 @@ export function renderSection(section, index) {
 
     case 'bullet_cards':
       return (
-        <section key={index} className="space-y-6 my-12">
+        <section key={index} className="space-y-4">
           {section.title && (
-            <h2 className="font-bold text-gray-900 dark:text-white text-left" style={{ fontSize: 'clamp(1.2em, 5vw, 1.5em)' }}>
+            <h2 className="font-bold text-ink text-left" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>
               {section.title}
             </h2>
           )}
           <div className="grid grid-cols-1 gap-4">
             {(section.items || []).map((itemText, i) => (
-              <div key={i} className="flex gap-3 rounded-2xl border border-[#BFDBFE] bg-[#EFF6FF] dark:bg-blue-950/30 dark:border-blue-900 p-4 md:p-6">
-                <div className="w-1.5 rounded-full self-stretch bg-[#1e40af]" />
+              <div key={i} className="flex gap-3 rounded-[6px] bg-lav-soft p-4 md:p-5">
+                <div className="w-1.5 rounded-full self-stretch bg-lav-bar" />
                 <FormattedText
                   text={itemText}
-                  className="flex-1 text-left leading-relaxed text-gray-800 dark:text-gray-200"
+                  className="flex-1 text-left leading-relaxed text-ink"
                   style={{ fontSize: '1em' }}
                 />
               </div>
@@ -261,18 +260,18 @@ export default function LessonRenderer({ content, showAccessibilityControls = tr
 
   return (
     <div
-      className="w-full bg-[#f8fafc] dark:bg-gray-900 min-h-screen transition-all duration-300"
+      className="w-full bg-white min-h-screen transition-all duration-300 text-ink"
       style={{ fontSize: `${fontSize}px` }}
     >
       {showAccessibilityControls && (
         <AccessibilityControls fontSize={fontSize} setFontSize={setFontSize} defaultSize={16} />
       )}
 
-      <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-8 md:py-12 space-y-10 md:space-y-16">
-        <header className="relative py-8 px-5 md:py-16 md:px-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-l-[10px] border-blue-800 overflow-hidden">
+      <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-8 md:py-12 space-y-8 md:space-y-10">
+        <header className="relative py-8 px-5 md:py-16 md:px-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-l-[10px] border-[#1e40af] overflow-hidden">
           <div className="relative z-10 space-y-4 md:space-y-6">
             <div className="flex items-center gap-3 text-base">
-              <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-bold uppercase tracking-widest rounded">
+              <span className="px-3 py-1 bg-[#eff6ff] text-[#1e40af] text-xs font-bold uppercase tracking-widest rounded">
                 Aula {content.aula}
               </span>
               <div className="h-px flex-grow bg-gray-100 dark:bg-gray-700" />
@@ -290,7 +289,7 @@ export default function LessonRenderer({ content, showAccessibilityControls = tr
 
         {sections.map(renderSection)}
 
-        <footer className="text-center pt-16 border-t border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 text-sm font-semibold tracking-widest">
+        <footer className="text-center pt-16 border-t border-lav text-ink/50 text-xs font-semibold tracking-widest">
           <p>© MATERIAL DIGITAL UFC • INSTITUTO UFC VIRTUAL (IUVI)</p>
         </footer>
       </div>

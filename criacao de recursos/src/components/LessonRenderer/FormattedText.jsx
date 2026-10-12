@@ -28,9 +28,9 @@ export default function FormattedText({ text, className = '', style = {} }) {
         if (trimmed.startsWith('•')) {
           return (
             <div key={index} className="flex items-start gap-3 ml-4 mb-3">
-              <span className="text-blue-800 font-bold mt-1.5 text-[8px]">●</span>
+              <span className="text-blue-400 font-bold mt-1.5 text-[8px]">●</span>
               <span
-                className="flex-1 text-left"
+                className="flex-1 text-justify"
                 dangerouslySetInnerHTML={{ __html: toHtml(trimmed.substring(1).trim()) }}
               />
             </div>
@@ -39,7 +39,7 @@ export default function FormattedText({ text, className = '', style = {} }) {
         return (
           <p
             key={index}
-            className={`${trimmed === '' ? 'h-4' : 'mb-4'} text-left leading-relaxed`}
+            className={`${trimmed === '' ? 'h-4' : 'mb-4'} text-justify leading-relaxed`}
             dangerouslySetInnerHTML={{ __html: toHtml(line) }}
           />
         );

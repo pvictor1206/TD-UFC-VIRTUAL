@@ -161,12 +161,12 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   const previewContent = useMemo(() => lesson, [lesson]);
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] dark:bg-gray-950">
+    <div className="min-h-screen bg-lav-soft font-[Inter] text-ink">
       <header className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 md:px-6 py-3">
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center gap-3">
           {headerExtra}
           <div className="flex-1 min-w-[200px]">
-            <h1 className="font-bold text-gray-900 dark:text-white text-lg leading-tight">Construtor de Aulas</h1>
+            <h1 className="font-bold text-ink text-lg leading-tight">Construtor de Aulas</h1>
             <p className="text-xs text-gray-400">Monte o conteúdo da aula com os componentes padrão — sem escrever código.</p>
           </div>
 
@@ -203,15 +203,15 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
           </div>
         </div>
         {feedback && (
-          <div className="max-w-[1600px] mx-auto mt-2 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 rounded-md px-3 py-1.5 inline-block">
+          <div className="max-w-[1600px] mx-auto mt-2 text-xs font-semibold text-ink bg-lav border border-lav-bar rounded-md px-3 py-1.5 inline-block">
             {feedback}
           </div>
         )}
       </header>
 
       {view === 'preview' ? (
-        <div className="border-t-4 border-blue-600">
-          <div className="bg-amber-50 border-b border-amber-200 text-amber-800 text-xs font-semibold text-center py-1.5">
+        <div className="border-t-4 border-lav-bar">
+          <div className="bg-lav border-b border-lav-bar text-ink text-xs font-semibold text-center py-1.5">
             Modo pré-visualização — é exatamente assim que a aula vai aparecer para o aluno
           </div>
           <LessonRenderer content={previewContent} />
