@@ -65,7 +65,7 @@ export function SelectField({ label, help, value, onChange, options }) {
 }
 
 const smallBtn =
-  'inline-flex items-center justify-center rounded-md text-xs font-semibold px-2 py-1 transition-colors';
+  'inline-flex items-center justify-center rounded-lg text-xl font-semibold w-9 h-9 shrink-0 transition-colors';
 
 export function RemoveButton({ onClick, label = 'Remover' }) {
   return (
@@ -86,7 +86,7 @@ export function AddButton({ onClick, label }) {
     <button
       type="button"
       onClick={onClick}
-      className="mt-2 inline-flex items-center gap-1 rounded-lg border border-dashed border-blue-400 text-blue-700 dark:text-blue-300 px-3 py-1.5 text-xs font-semibold hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors"
+      className="mt-2 inline-flex items-center gap-1 rounded-lg border border-dashed border-blue-400 text-blue-700 dark:text-blue-300 px-4 py-2 text-sm font-semibold hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors"
     >
       + {label}
     </button>
@@ -158,10 +158,10 @@ export function ObjectListField({ label, help, value = [], onChange, itemFields,
         {items.map((item, i) => (
           <div key={i} className="rounded-lg border border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800/60">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold text-gray-400">#{i + 1}</span>
-              <div className="flex items-center gap-1">
-                <button type="button" onClick={() => move(i, -1)} className="text-xs text-gray-400 hover:text-gray-700 px-1" title="Mover para cima">↑</button>
-                <button type="button" onClick={() => move(i, 1)} className="text-xs text-gray-400 hover:text-gray-700 px-1" title="Mover para baixo">↓</button>
+              <span className="text-xs font-bold text-gray-500">#{i + 1}</span>
+              <div className="flex items-center gap-1.5">
+                <button type="button" onClick={() => move(i, -1)} className={`${smallBtn} text-gray-500 hover:bg-gray-200`} title="Mover para cima">↑</button>
+                <button type="button" onClick={() => move(i, 1)} className={`${smallBtn} text-gray-500 hover:bg-gray-200`} title="Mover para baixo">↓</button>
                 <RemoveButton onClick={() => removeItem(i)} />
               </div>
             </div>
