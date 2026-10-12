@@ -28,11 +28,32 @@ import {
 
 // --- DADOS INICIAIS ---
 
+// Perfis: 'admin' (Administrador), 'tecnico' (Equipe Técnica) e 'conteudista' (Professor).
+// - O administrador cria perfis da Equipe Técnica e cria professores alocando-os a alguém da equipe.
+// - Cada professor tem `createdBy` = id de quem responde por ele (membro da Equipe Técnica);
+//   a Equipe Técnica só enxerga os professores que lhe pertencem e o conteúdo deles.
+const ADMIN_USER = { id: 4, name: 'Administrador', role: 'admin', username: 'administrador', password: '123' };
+
 const INITIAL_USERS = [
-  { id: 1, name: 'Equipe Técnica EAD', role: 'tecnico', username: 'admin', password: '123' },
-  { id: 2, name: 'Prof. Carlos Silva', role: 'conteudista', username: 'carlos', password: '123' },
-  { id: 3, name: 'Profa. Mariana Costa', role: 'conteudista', username: 'mariana', password: '123' }
+  ADMIN_USER,
+  { id: 1, name: 'Equipe Técnica EAD', role: 'tecnico', username: 'admin', password: '123', createdBy: 4 },
+  { id: 2, name: 'Prof. Carlos Silva', role: 'conteudista', username: 'carlos', password: '123', createdBy: 1 },
+  { id: 3, name: 'Profa. Mariana Costa', role: 'conteudista', username: 'mariana', password: '123', createdBy: 1 }
 ];
+
+// Dados salvos antes dos perfis: garante um administrador e dá um responsável a cada professor.
+const normalizeUsers = (list) => {
+  let users = Array.isArray(list) && list.length ? list : INITIAL_USERS;
+  if (!users.some(u => u.role === 'admin')) {
+    const idTaken = users.some(u => u.id === ADMIN_USER.id);
+    const nameTaken = users.some(u => u.username === ADMIN_USER.username);
+    users = [{ ...ADMIN_USER, id: idTaken ? Date.now() : ADMIN_USER.id, username: nameTaken ? 'administrador1' : ADMIN_USER.username }, ...users];
+  }
+  const firstTecnico = users.find(u => u.role === 'tecnico');
+  return users.map(u =>
+    u.role === 'conteudista' && u.createdBy == null && firstTecnico ? { ...u, createdBy: firstTecnico.id } : u
+  );
+};
 
 const KANBAN_STAGES = [
   { id: 'recebimento', title: 'Recebimento' },
@@ -465,7 +486,7 @@ const loadSaved = (key, fallback) => {
 // --- COMPONENTE PRINCIPAL ---
 
 export default function App() {
-  const [users, setUsers] = useState(() => loadSaved('users', INITIAL_USERS));
+  const [users, setUsers] = useState(() => normalizeUsers(loadSaved('users', INITIAL_USERS)));
   const [currentUser, setCurrentUser] = useState(null);
   const [disciplines, setDisciplines] = useState(() => loadSaved('disciplines', INITIAL_DATA));
 
@@ -493,14 +514,33 @@ export default function App() {
   const [newProfName, setNewProfName] = useState('');
   const [newProfUser, setNewProfUser] = useState('');
   const [newProfPass, setNewProfPass] = useState('');
+  const [newProfOwner, setNewProfOwner] = useState(''); // administrador: membro da Equipe Técnica responsável
+
+  const [newTecName, setNewTecName] = useState('');
+  const [newTecUser, setNewTecUser] = useState('');
+  const [newTecPass, setNewTecPass] = useState('');
   
   const [newDiscTitle, setNewDiscTitle] = useState('');
   const [newDiscTeacherId, setNewDiscTeacherId] = useState('');
 
+  // Professores que o usuário logado pode ver: o administrador vê todos;
+  // a Equipe Técnica vê só os que ela mesma (ou o administrador, em nome dela) cadastrou.
+  const getVisibleProfessors = () => {
+    if (!currentUser) return [];
+    const professors = users.filter(u => u.role === 'conteudista');
+    if (currentUser.role === 'admin') return professors;
+    if (currentUser.role === 'tecnico') return professors.filter(u => u.createdBy === currentUser.id);
+    return [];
+  };
+
   // Filtra as disciplinas com base no papel do usuário logado
   const getVisibleDisciplines = () => {
     if (!currentUser) return [];
-    if (currentUser.role === 'tecnico') return disciplines;
+    if (currentUser.role === 'tecnico') {
+      const mine = new Set(getVisibleProfessors().map(u => u.id));
+      return disciplines.filter(d => mine.has(d.conteudistaId));
+    }
+    if (currentUser.role === 'admin') return [];
     return disciplines.filter(d => d.conteudistaId === currentUser.id);
   };
 
@@ -513,6 +553,8 @@ export default function App() {
     const foundUser = users.find(u => u.username === loginUsername && u.password === loginPassword);
     if (foundUser) {
       setCurrentUser(foundUser);
+      setActiveDisciplineId(null);
+      setSidebarTab(foundUser.role === 'admin' ? 'equipe' : 'dashboard');
       setLoginError('');
       setLoginUsername('');
       setLoginPassword('');
@@ -524,7 +566,9 @@ export default function App() {
   const handleCreateProfessor = (e) => {
     e.preventDefault();
     if (!newProfName || !newProfUser || !newProfPass) return;
-    
+    const isAdmin = currentUser.role === 'admin';
+    if (isAdmin && !newProfOwner) return;
+
     // Evita duplicados básicos
     if (users.find(u => u.username === newProfUser)) {
       alert('Este nome de usuário já está sendo utilizado!');
@@ -536,13 +580,36 @@ export default function App() {
       name: newProfName,
       role: 'conteudista',
       username: newProfUser,
-      password: newProfPass
+      password: newProfPass,
+      // administrador escolhe a quem alocar; a Equipe Técnica fica responsável pelos que cadastra
+      createdBy: isAdmin ? parseInt(newProfOwner) : currentUser.id
     };
 
     setUsers([...users, newProf]);
     setNewProfName('');
     setNewProfUser('');
     setNewProfPass('');
+    setNewProfOwner('');
+  };
+
+  const handleCreateTecnico = (e) => {
+    e.preventDefault();
+    if (!newTecName || !newTecUser || !newTecPass) return;
+    if (users.find(u => u.username === newTecUser)) {
+      alert('Este nome de usuário já está sendo utilizado!');
+      return;
+    }
+    setUsers([...users, {
+      id: Date.now(),
+      name: newTecName,
+      role: 'tecnico',
+      username: newTecUser,
+      password: newTecPass,
+      createdBy: currentUser.id
+    }]);
+    setNewTecName('');
+    setNewTecUser('');
+    setNewTecPass('');
   };
 
   const handleCreateDiscipline = (e) => {
@@ -767,6 +834,7 @@ export default function App() {
 
             <div className="bg-[#FBF3E4] border border-bege rounded-lg p-4 text-xs text-zinc-700">
               <h4 className="font-bold text-iuvi-escuro mb-1.5">Acesso rápido para testes</h4>
+              <p>Administrador: <strong>administrador</strong> / <strong>123</strong></p>
               <p>Equipe técnica: <strong>admin</strong> / <strong>123</strong></p>
               <p>Conteudista: <strong>carlos</strong> ou <strong>mariana</strong> / <strong>123</strong></p>
             </div>
@@ -795,13 +863,14 @@ export default function App() {
           {currentUser.name}
         </div>
         <div className="text-xs text-bege mt-1">
-          {currentUser.role === 'tecnico' ? 'Administrador EAD' : 'Docente / Conteudista'}
+          {currentUser.role === 'admin' ? 'Administrador' : currentUser.role === 'tecnico' ? 'Equipe Técnica' : 'Docente / Conteudista'}
         </div>
       </div>
 
       <nav className="flex-1 px-4 space-y-1">
         <div className="text-[10px] text-white/50 uppercase tracking-widest px-3 mb-2 font-semibold">Navegação</div>
 
+        {currentUser.role !== 'admin' && (
         <button
           onClick={() => { setActiveDisciplineId(null); setSidebarTab('dashboard'); }}
           className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${(sidebarTab === 'dashboard' && !activeDisciplineId) ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
@@ -809,6 +878,28 @@ export default function App() {
           <LayoutDashboard size={18} />
           <span>Painel de Projetos</span>
         </button>
+        )}
+
+        {/* Menu do Administrador */}
+        {currentUser.role === 'admin' && (
+          <>
+            <div className="text-[10px] text-white/50 uppercase tracking-widest px-3 pt-2 mb-2 font-semibold">Administração</div>
+            <button
+              onClick={() => { setActiveDisciplineId(null); setSidebarTab('equipe'); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${sidebarTab === 'equipe' ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
+            >
+              <UserPlus size={18} />
+              <span>Equipe Técnica</span>
+            </button>
+            <button
+              onClick={() => { setActiveDisciplineId(null); setSidebarTab('professores'); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${sidebarTab === 'professores' ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
+            >
+              <Users size={18} />
+              <span>Professores</span>
+            </button>
+          </>
+        )}
 
         {/* Menus administrativos exclusivos da Equipe Técnica */}
         {currentUser.role === 'tecnico' && (
@@ -854,7 +945,7 @@ export default function App() {
     <div className="p-8 max-w-5xl">
       <header className="mb-8">
         <h2 className="text-3xl font-extrabold mb-1 text-[#991F50]">Gerenciar Professores Conteudistas</h2>
-        <p className="text-zinc-600 text-sm">Adicione novos docentes da instituição e configure credenciais de acesso ao sistema.</p>
+        <p className="text-zinc-600 text-sm">{currentUser.role === 'admin' ? 'Cadastre docentes e aloque cada um a um membro da Equipe Técnica, que passa a acompanhá-lo.' : 'Adicione novos docentes e configure credenciais de acesso. Você enxerga apenas os docentes sob sua responsabilidade.'}</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -887,10 +978,26 @@ export default function App() {
                 className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm font-mono"
               />
             </div>
+            {currentUser.role === 'admin' && (
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1">Alocar para (Equipe Técnica)</label>
+                <select
+                  required
+                  value={newProfOwner}
+                  onChange={(e) => setNewProfOwner(e.target.value)}
+                  className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm bg-white"
+                >
+                  <option value="">Selecione um membro da equipe...</option>
+                  {users.filter(u => u.role === 'tecnico').map(u => (
+                    <option key={u.id} value={u.id}>{u.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider mb-1">Senha de Acesso</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 required
                 value={newProfPass}
                 onChange={(e) => setNewProfPass(e.target.value)}
@@ -914,13 +1021,19 @@ export default function App() {
             Professores Cadastrados
           </h3>
           <div className="space-y-3">
-            {users.filter(u => u.role === 'conteudista').map(prof => (
+            {getVisibleProfessors().length === 0 && (
+              <p className="text-sm text-zinc-500">Nenhum professor cadastrado ainda.</p>
+            )}
+            {getVisibleProfessors().map(prof => (
               <div key={prof.id} className="p-4 border border-zinc-300 hover:border-iuvi transition-all bg-zinc-50 flex items-center justify-between">
                 <div>
                   <h4 className="font-bold text-zinc-900">{prof.name}</h4>
                   <div className="flex items-center gap-4 mt-1 text-xs text-zinc-500">
                     <span>Login: <strong className="font-mono">{prof.username}</strong></span>
                     <span>Senha: <strong className="font-mono">{prof.password}</strong></span>
+                    {currentUser.role === 'admin' && (
+                      <span>Equipe: <strong>{users.find(u => u.id === prof.createdBy)?.name || '—'}</strong></span>
+                    )}
                   </div>
                 </div>
                 <div className="bg-[#FBEEF3] p-2 border border-[#F0CFDB]">
@@ -928,6 +1041,93 @@ export default function App() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // --- SUB-TELA (ADMINISTRADOR): EQUIPE TÉCNICA ---
+  const TeamManagement = () => (
+    <div className="p-8 max-w-5xl">
+      <header className="mb-8">
+        <h2 className="text-3xl font-extrabold mb-1 text-[#991F50]">Equipe Técnica</h2>
+        <p className="text-zinc-600 text-sm">Crie os perfis da Equipe Técnica. Cada membro acompanha apenas os professores alocados a ele.</p>
+      </header>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="bg-white border border-[#D9CFC6] rounded-xl p-6 shadow-sm h-fit">
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <UserPlus className="text-[#991F50]" size={20} />
+            Cadastrar Membro
+          </h3>
+          <form onSubmit={handleCreateTecnico} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1">Nome Completo</label>
+              <input
+                type="text"
+                required
+                value={newTecName}
+                onChange={(e) => setNewTecName(e.target.value)}
+                placeholder="Ex: Ana Souza (Design Educacional)"
+                className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1">Usuário de Login</label>
+              <input
+                type="text"
+                required
+                value={newTecUser}
+                onChange={(e) => setNewTecUser(e.target.value)}
+                placeholder="Ex: ana"
+                className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1">Senha de Acesso</label>
+              <input
+                type="text"
+                required
+                value={newTecPass}
+                onChange={(e) => setNewTecPass(e.target.value)}
+                placeholder="Ex: ana2026"
+                className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 bg-iuvi-roxo text-white hover:bg-iuvi-roxo-medio transition-colors font-bold text-sm flex items-center justify-center gap-2"
+            >
+              <PlusCircle size={16} /> Salvar Cadastro
+            </button>
+          </form>
+        </div>
+
+        <div className="lg:col-span-2 bg-white border border-[#D9CFC6] rounded-xl p-6 shadow-sm">
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+            <Users className="text-[#991F50]" size={20} />
+            Membros da Equipe Técnica
+          </h3>
+          <div className="space-y-3">
+            {users.filter(u => u.role === 'tecnico').map(t => {
+              const profs = users.filter(u => u.role === 'conteudista' && u.createdBy === t.id);
+              return (
+                <div key={t.id} className="p-4 border border-zinc-300 bg-zinc-50 flex items-center justify-between gap-4">
+                  <div>
+                    <h4 className="font-bold text-zinc-900">{t.name}</h4>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-xs text-zinc-500">
+                      <span>Login: <strong className="font-mono">{t.username}</strong></span>
+                      <span>Senha: <strong className="font-mono">{t.password}</strong></span>
+                      <span>Professores: <strong>{profs.length}</strong></span>
+                    </div>
+                  </div>
+                  <div className="bg-[#FBEEF3] p-2 border border-[#F0CFDB] shrink-0">
+                    <span className="text-xs font-bold text-[#991F50] uppercase">Equipe</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -969,7 +1169,7 @@ export default function App() {
               className="w-full p-3 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 bg-white"
             >
               <option value="">Selecione um docente da lista...</option>
-              {users.filter(u => u.role === 'conteudista').map(u => (
+              {getVisibleProfessors().map(u => (
                 <option key={u.id} value={u.id}>{u.name}</option>
               ))}
             </select>
@@ -1116,14 +1316,17 @@ export default function App() {
     if (activeDisciplineId) {
       return ProjectDetails();
     }
+    const isAdmin = currentUser.role === 'admin';
     switch (sidebarTab) {
+      case 'equipe':
+        return isAdmin ? TeamManagement() : Dashboard();
       case 'professores':
-        return TeachersManagement();
+        return currentUser.role === 'conteudista' ? Dashboard() : TeachersManagement();
       case 'disciplinas':
-        return DisciplineManagement();
+        return currentUser.role === 'tecnico' ? DisciplineManagement() : Dashboard();
       case 'dashboard':
       default:
-        return Dashboard();
+        return isAdmin ? TeamManagement() : Dashboard();
     }
   };
 
