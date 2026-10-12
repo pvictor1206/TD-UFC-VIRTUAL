@@ -48,11 +48,7 @@ export function renderSection(section, index) {
     case 'section':
       // Título como componente separado: agrupa os blocos que vêm dentro dele.
       return (
-        <section
-          key={index}
-          className="space-y-4"
-          style={spacingValue(section.spaceAfter) !== undefined ? { marginBottom: spacingValue(section.spaceAfter) } : undefined}
-        >
+        <section key={index} className="space-y-4">
           {(section.label || section.title || section.subtitle) && (
             <div
               className="space-y-1"
@@ -76,14 +72,13 @@ export function renderSection(section, index) {
           )}
           {(section.children || []).map((child, i) => {
             const element = renderSection(child, i);
-            const gap = spacingValue(section.gap);
             const own = spacingValue(child.spaceAfter);
             const before = spacingValue(child.spaceBefore);
-            if (gap === undefined && own === undefined && before === undefined) return element;
+            if (own === undefined && before === undefined) return element;
             // Espaçamento escolhido: neutraliza as margens próprias do componente
-            // e aplica a medida definida (do componente, senão a da seção).
+            // e aplica a medida definida no próprio componente (em cima / em baixo).
             return (
-              <div key={i} className="[&>*]:my-0! last:mb-0!" style={{ paddingTop: before, marginBottom: own ?? gap }}>
+              <div key={i} className="[&>*]:my-0! last:mb-0!" style={{ paddingTop: before, marginBottom: own }}>
                 {element}
               </div>
             );

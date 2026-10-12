@@ -162,17 +162,6 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               />
             ))}
           </div>
-
-          <div className="rounded-xl border border-gray-200 p-3">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="text-sm font-bold text-ink">↕ Espaçamento vertical</span>
-              <span className="text-xs text-gray-500">(só altura; "Padrão" mantém o espaçamento original)</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl">
-              <SpacingSelect label="Entre os componentes desta seção" value={section.gap} onChange={(v) => setFieldValue('gap', v)} />
-              <SpacingSelect label="Depois desta seção" value={section.spaceAfter} onChange={(v) => setFieldValue('spaceAfter', v)} />
-            </div>
-          </div>
         </div>
       )}
 
