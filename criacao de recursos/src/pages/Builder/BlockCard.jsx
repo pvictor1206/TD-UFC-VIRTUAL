@@ -3,7 +3,7 @@ import { getSectionDefinition } from '@lesson';
 import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
 
-export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate }) {
+export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, nested = false }) {
   const [collapsed, setCollapsed] = useState(false);
   const definition = getSectionDefinition(section.type);
 
@@ -20,7 +20,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
   };
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
+    <div className={`rounded-xl border bg-white shadow-sm overflow-hidden ${nested ? 'border-lav-bar' : 'border-gray-200'}`}>
       <div className="flex items-center justify-between gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700">
         <button
           type="button"
@@ -30,6 +30,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
           <span className="text-lg">{definition.icon}</span>
           <span className="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate">
             {definition.label}
+            {section.type === 'section' && section.title ? <span className="font-normal text-gray-500"> — {section.title}</span> : null}
           </span>
           <span className="text-gray-400 text-xs">{collapsed ? 'mostrar' : 'ocultar'}</span>
         </button>

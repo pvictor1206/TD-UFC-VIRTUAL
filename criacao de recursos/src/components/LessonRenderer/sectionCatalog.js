@@ -14,6 +14,7 @@ export const FIELD_TYPES = {
   STRING_LIST: 'stringList',
   OBJECT_LIST: 'objectList',
   DATA_TABLE_ROWS: 'dataTableRows',
+  BLOCKS: 'blocks', // lista de blocos aninhados (usada pelo bloco "section")
 };
 
 export const GROUPS = [
@@ -29,48 +30,29 @@ const helpFormatacao = 'Use **texto** para negrito, *texto* para itálico e linh
 
 export const SECTION_CATALOG = [
   {
+    type: 'section',
+    label: 'Título (seção)',
+    group: 'estrutura',
+    icon: '🔖',
+    description: 'Um título que agrupa outros blocos logo abaixo dele. Use quando o conteúdo precisa de título; blocos sem título ficam soltos na aula.',
+    fields: [
+      { key: 'label', label: 'Rótulo (opcional, ex: "HISTÓRIA")', type: FIELD_TYPES.TEXT },
+      { key: 'title', label: 'Título', type: FIELD_TYPES.TEXT },
+      { key: 'subtitle', label: 'Subtítulo (opcional)', type: FIELD_TYPES.TEXT },
+      { key: 'children', label: 'Blocos dentro desta seção', type: FIELD_TYPES.BLOCKS },
+    ],
+    defaultData: () => ({ type: 'section', label: '', title: '', subtitle: '', children: [] }),
+  },
+  {
     type: 'intro',
-    label: 'Introdução',
+    label: 'Texto',
     group: 'texto',
     icon: '📝',
-    description: 'Parágrafo de abertura da aula, logo abaixo do título.',
+    description: 'Texto corrido (parágrafos, negrito, itálico e listas). Sem moldura, direto na página.',
     fields: [
       { key: 'text', label: 'Texto de introdução', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao, rows: 5, rich: true },
     ],
     defaultData: () => ({ type: 'intro', text: '' }),
-  },
-  {
-    type: 'highlight_section',
-    label: 'Bloco com título',
-    group: 'texto',
-    icon: '📘',
-    description: 'Cartão branco com um título em destaque e um texto abaixo.',
-    fields: [
-      { key: 'title', label: 'Título da seção', type: FIELD_TYPES.TEXT },
-      { key: 'text', label: 'Texto', type: FIELD_TYPES.TEXTAREA, help: helpFormatacao, rows: 6, rich: true },
-    ],
-    defaultData: () => ({ type: 'highlight_section', title: '', text: '' }),
-  },
-  {
-    type: 'story',
-    label: 'História / narrativa',
-    group: 'texto',
-    icon: '📖',
-    description: 'Bloco escuro para narrativas, histórias e exemplos ficcionais.',
-    fields: [
-      { key: 'label', label: 'Rótulo (opcional, ex: "HISTÓRIA")', type: FIELD_TYPES.TEXT },
-      { key: 'title', label: 'Título', type: FIELD_TYPES.TEXT },
-      { key: 'warning', label: 'Aviso/subtítulo (opcional)', type: FIELD_TYPES.TEXT },
-      {
-        key: 'paragraphs',
-        label: 'Parágrafos',
-        type: FIELD_TYPES.STRING_LIST,
-        itemType: 'textarea',
-        rich: true,
-        addLabel: 'Adicionar parágrafo',
-      },
-    ],
-    defaultData: () => ({ type: 'story', label: '', title: '', warning: '', paragraphs: [''] }),
   },
   {
     type: 'image',
@@ -135,8 +117,6 @@ export const SECTION_CATALOG = [
     icon: '🗂️',
     description: 'Lista de itens que abrem e fecham ao clicar (perguntas, tópicos numerados...).',
     fields: [
-      { key: 'title', label: 'Título do grupo', type: FIELD_TYPES.TEXT },
-      { key: 'subtitle', label: 'Subtítulo (opcional)', type: FIELD_TYPES.TEXT },
       {
         key: 'layout',
         label: 'Disposição',
@@ -157,16 +137,15 @@ export const SECTION_CATALOG = [
         ],
       },
     ],
-    defaultData: () => ({ type: 'dropdown_group', title: '', subtitle: '', layout: 'grid', items: [] }),
+    defaultData: () => ({ type: 'dropdown_group', layout: 'grid', items: [] }),
   },
   {
     type: 'bullet_cards',
     label: 'Lista de cards',
     group: 'estrutura',
     icon: '🔷',
-    description: 'Lista vertical de cartões azuis em destaque — bom para itens numerados.',
+    description: 'Lista vertical de cartões em destaque — bom para itens numerados.',
     fields: [
-      { key: 'title', label: 'Título da lista', type: FIELD_TYPES.TEXT },
       {
         key: 'items',
         label: 'Itens',
@@ -176,7 +155,7 @@ export const SECTION_CATALOG = [
         addLabel: 'Adicionar card',
       },
     ],
-    defaultData: () => ({ type: 'bullet_cards', title: '', items: [''] }),
+    defaultData: () => ({ type: 'bullet_cards', items: [''] }),
   },
   {
     type: 'timeline',
@@ -206,11 +185,10 @@ export const SECTION_CATALOG = [
     icon: '📊',
     description: 'Tabela com cabeçalho e várias linhas/colunas.',
     fields: [
-      { key: 'title', label: 'Título da tabela (opcional)', type: FIELD_TYPES.TEXT },
       { key: 'headers', label: 'Colunas', type: FIELD_TYPES.STRING_LIST, itemType: 'text', addLabel: 'Adicionar coluna' },
       { key: 'rows', label: 'Linhas', type: FIELD_TYPES.DATA_TABLE_ROWS, headersKey: 'headers' },
     ],
-    defaultData: () => ({ type: 'data_table', title: '', headers: ['Coluna 1', 'Coluna 2'], rows: [['', '']] }),
+    defaultData: () => ({ type: 'data_table', headers: ['Coluna 1', 'Coluna 2'], rows: [['', '']] }),
   },
   {
     type: 'comparison_table',
@@ -219,7 +197,6 @@ export const SECTION_CATALOG = [
     icon: '⚖️',
     description: 'Duas colunas lado a lado para comparar conceitos (ex: Presencial x EaD).',
     fields: [
-      { key: 'title', label: 'Título (opcional)', type: FIELD_TYPES.TEXT },
       { key: 'leftHeader', label: 'Título da coluna esquerda', type: FIELD_TYPES.TEXT },
       { key: 'rightHeader', label: 'Título da coluna direita', type: FIELD_TYPES.TEXT },
       {
@@ -233,7 +210,7 @@ export const SECTION_CATALOG = [
         ],
       },
     ],
-    defaultData: () => ({ type: 'comparison_table', title: '', leftHeader: 'Presencial', rightHeader: 'EaD', rows: [] }),
+    defaultData: () => ({ type: 'comparison_table', leftHeader: 'Presencial', rightHeader: 'EaD', rows: [] }),
   },
   {
     type: 'reference_box',

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import {
   HighlightBlock,
   QuoteCard,
@@ -15,6 +15,7 @@ import {
   AccessLink,
 } from '@ui';
 import FormattedText from './FormattedText';
+import { migrateSection, migrateSections } from './migrate';
 
 // Motor único de renderização de aulas: recebe um JSON de conteúdo
 // (título + objetivo + lista de `sections`) e desenha a página usando os
@@ -27,7 +28,36 @@ import FormattedText from './FormattedText';
 // funciona aqui — não é necessário criar um novo componente React por aula.
 
 export function renderSection(section, index) {
+  // Aulas no formato antigo (blocos com título embutido) são convertidas na hora.
+  const migrated = migrateSection(section);
+  if (migrated.length !== 1 || migrated[0] !== section) {
+    return <Fragment key={index}>{migrated.map((m, i) => renderSection(m, i))}</Fragment>;
+  }
+
   switch (section.type) {
+    case 'section':
+      // Título como componente separado: agrupa os blocos que vêm dentro dele.
+      return (
+        <section key={index} className="space-y-4">
+          {(section.label || section.title || section.subtitle) && (
+            <div className="space-y-1">
+              {section.label && (
+                <p className="text-blue-600 text-[0.7em] font-bold uppercase tracking-widest">{section.label}</p>
+              )}
+              {section.title && (
+                <h2 className="font-bold text-ink text-left leading-tight" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>
+                  {section.title}
+                </h2>
+              )}
+              {section.subtitle && (
+                <p className="text-ink/70 italic" style={{ fontSize: '0.9em' }}>{section.subtitle}</p>
+              )}
+            </div>
+          )}
+          {(section.children || []).map((child, i) => renderSection(child, i))}
+        </section>
+      );
+
     case 'intro':
       // Texto corrido, sem container (identidade visual do anexo).
       return (
@@ -37,48 +67,6 @@ export function renderSection(section, index) {
           className="max-w-none text-ink text-justify leading-[1.75]"
           style={{ fontSize: '1em' }}
         />
-      );
-
-    case 'highlight_section':
-      return (
-        <section key={index} className="space-y-4">
-          {section.title && (
-            <h2 className="font-bold text-ink text-left" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>
-              {section.title}
-            </h2>
-          )}
-          <FormattedText
-            text={section.text}
-            className="max-w-none text-ink text-justify leading-[1.75]"
-            style={{ fontSize: '1em' }}
-          />
-        </section>
-      );
-
-    case 'story':
-      return (
-        <section key={index} className="space-y-4">
-          <div className="space-y-1">
-            {section.label && (
-              <p className="text-blue-600 text-[0.7em] font-bold uppercase tracking-widest">{section.label}</p>
-            )}
-            {section.title && (
-              <h2 className="text-ink font-bold leading-tight" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>{section.title}</h2>
-            )}
-            {section.warning && (
-              <p className="text-ink/70 italic" style={{ fontSize: '0.9em' }}>{section.warning}</p>
-            )}
-          </div>
-          <div className="space-y-4">
-            {(section.paragraphs || []).map((para, i) => (
-              <FormattedText
-                key={i}
-                text={para}
-                className="text-ink text-justify leading-[1.75]"
-              />
-            ))}
-          </div>
-        </section>
       );
 
     case 'image':
@@ -128,12 +116,6 @@ export function renderSection(section, index) {
       const gridClassName = isVertical ? 'grid grid-cols-1 gap-2' : 'grid grid-cols-1 md:grid-cols-2 gap-2';
       return (
         <section key={index} className="space-y-4">
-          {(section.title || section.subtitle) && (
-            <div className="text-left">
-              {section.title && <h2 className="font-bold text-ink" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>{section.title}</h2>}
-              {section.subtitle && <p className="mt-1 text-ink/70 text-base">{section.subtitle}</p>}
-            </div>
-          )}
           <div className={gridClassName}>
             {(section.items || []).map((item, i) => (
               <DropdownContent
@@ -152,11 +134,6 @@ export function renderSection(section, index) {
     case 'bullet_cards':
       return (
         <section key={index} className="space-y-4">
-          {section.title && (
-            <h2 className="font-bold text-ink text-left" style={{ fontSize: 'clamp(1.15em, 4vw, 1.4em)' }}>
-              {section.title}
-            </h2>
-          )}
           <div className="grid grid-cols-1 gap-4">
             {(section.items || []).map((itemText, i) => (
               <div key={i} className="flex gap-3 rounded-[6px] bg-lav-soft p-4 md:p-5">
@@ -184,7 +161,6 @@ export function renderSection(section, index) {
       return (
         <section key={index} className="my-8">
           <DataTable
-            title={section.title}
             headers={section.headers || []}
             data={(section.rows || []).map((row) =>
               row.map((cell) => <FormattedText key={cell} text={cell} className="text-left" />)
@@ -197,7 +173,6 @@ export function renderSection(section, index) {
       return (
         <section key={index} className="my-8">
           <ComparisonTable
-            title={section.title}
             leftHeader={section.leftHeader}
             rightHeader={section.rightHeader}
             rows={section.rows || []}
@@ -255,8 +230,9 @@ export function renderSection(section, index) {
 export default function LessonRenderer({ content, showAccessibilityControls = true }) {
   const [fontSize, setFontSize] = useState(16);
 
+  const sections = useMemo(() => migrateSections(content?.sections || []), [content]);
+
   if (!content) return null;
-  const sections = content.sections || [];
 
   return (
     <div

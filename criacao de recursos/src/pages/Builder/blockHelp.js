@@ -8,26 +8,20 @@
 
 export const BLOCK_HELP = {
   intro: {
-    what: 'Parágrafo de abertura da aula, em um cartão com uma faixa lateral colorida. Aparece logo abaixo do título e do objetivo.',
-    when: 'Use uma única vez, no começo da aula, para contextualizar o tema e motivar a leitura.',
-    steps: ['Escreva 1 ou 2 parágrafos curtos no campo "Texto de introdução".', 'Se quiser destacar uma ideia-chave, coloque-a entre ** **.'],
+    what: 'Texto corrido, direto na página e sem moldura. Aceita negrito, itálico e listas.',
+    when: 'Use para introduções, explicações e qualquer parágrafo da aula. Para dar um título ao texto, coloque-o dentro de um bloco "Título (seção)".',
+    steps: ['Escreva o texto no campo e use a barra para negrito, itálico e listas.', 'Se quiser destacar uma ideia-chave, coloque-a entre ** **.'],
     tips: ['Prefira de 3 a 6 linhas: introduções longas cansam o aluno.', 'Coloque este bloco sempre como o primeiro da lista.'],
   },
-  highlight_section: {
-    what: 'Cartão branco com um título em destaque e um texto logo abaixo. É o bloco de conteúdo mais versátil.',
-    when: 'Use para apresentar um tópico, um conceito ou uma explicação com título próprio.',
-    steps: ['Preencha "Título da seção" com o nome do tópico.', 'Escreva o conteúdo em "Texto". Aceita negrito, itálico e listas.'],
-    tips: ['Um tópico por bloco; para vários tópicos, adicione vários blocos.', 'Para listas, comece cada linha com •.'],
-  },
-  story: {
-    what: 'Bloco escuro com destaque para narrativas, histórias e exemplos. O rótulo aparece como uma etiqueta acima do título.',
-    when: 'Use para contar um caso, uma situação-problema ou um exemplo fictício que ilustre o conteúdo.',
+  section: {
+    what: 'Um título (com rótulo e subtítulo opcionais) que agrupa outros blocos logo abaixo dele. O título é um componente separado: os demais blocos não carregam título próprio.',
+    when: 'Use quando um conteúdo precisa de título — uma tabela, um grupo de acordeões, uma lista de cards, um trecho de texto. Blocos que não precisam de título ficam soltos, direto na aula.',
     steps: [
-      'Preencha o rótulo (opcional), por exemplo HISTÓRIA ou CASO.',
-      'Informe o título e, se precisar, um aviso/subtítulo.',
-      'Em "Parágrafos", clique em adicionar e escreva um parágrafo por campo.',
+      'Preencha o "Título" (e, se quiser, o rótulo e o subtítulo).',
+      'Em "Blocos dentro desta seção", escolha na lista o bloco que quer colocar dentro.',
+      'Reordene, duplique ou exclua os blocos de dentro pelos botões de cada cartão.',
     ],
-    tips: ['Cada campo vira um parágrafo separado: não precisa pular linhas.', 'Use o aviso para lembrar que o exemplo é fictício.'],
+    tips: ['Uma seção não pode conter outra seção.', 'Para vários tópicos, use várias seções, uma para cada título.'],
   },
   image: {
     what: 'Uma imagem centralizada, com legenda opcional. O aluno pode ampliar clicando nela.',
@@ -63,7 +57,6 @@ export const BLOCK_HELP = {
     what: 'Lista de itens que abrem e fecham ao clicar (acordeão). O aluno só vê o conteúdo do item que abrir.',
     when: 'Use para perguntas frequentes, tópicos numerados ou textos longos que ficam melhor organizados em partes.',
     steps: [
-      'Dê um título ao grupo (e um subtítulo, se quiser).',
       'Escolha a disposição: duas colunas ou uma coluna.',
       'Em "Itens do acordeão", adicione um item para cada tópico, com título e conteúdo.',
     ],
@@ -72,7 +65,7 @@ export const BLOCK_HELP = {
   bullet_cards: {
     what: 'Lista vertical de cartões em destaque, um por item.',
     when: 'Use para listas curtas e importantes: objetivos, etapas, características.',
-    steps: ['Dê um título à lista.', 'Em "Itens", adicione um card por campo.', 'Use **negrito** no início de cada item para criar um "rótulo".'],
+    steps: ['Em "Itens", adicione um card por campo.', 'Use **negrito** no início de cada item para criar um "rótulo".'],
     tips: ['Escreva itens de tamanho parecido.', 'Para itens longos, prefira o acordeão.'],
   },
   timeline: {
@@ -84,7 +77,7 @@ export const BLOCK_HELP = {
   data_table: {
     what: 'Tabela com cabeçalho e várias linhas e colunas.',
     when: 'Use para organizar dados, definições ou qualquer informação que fique mais clara em colunas.',
-    steps: ['Dê um título à tabela (opcional).', 'Em "Colunas", defina os nomes das colunas.', 'Em "Linhas", preencha uma célula por coluna e adicione quantas linhas precisar.'],
+    steps: ['Em "Colunas", defina os nomes das colunas.', 'Em "Linhas", preencha uma célula por coluna e adicione quantas linhas precisar.'],
     tips: ['Se mudar o número de colunas, confira as linhas depois.', 'Mantenha o texto das células curto.'],
   },
   comparison_table: {

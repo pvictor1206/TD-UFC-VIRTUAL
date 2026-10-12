@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { LessonRenderer, createBlankLesson, SAMPLE_LESSON, getSectionDefinition } from '@lesson';
+import { LessonRenderer, createBlankLesson, SAMPLE_LESSON, getSectionDefinition, migrateLesson } from '@lesson';
 import BlockPalette from './BlockPalette';
 import BlockCard from './BlockCard';
 import { downloadJson, downloadLessonSite, slugify } from './exportSite';
@@ -25,7 +25,7 @@ function loadDraft() {
 export default function LessonBuilder({ initialLesson, onLessonChange, loadAssets, headerExtra, readOnly = false, hideFileActions = false } = {}) {
   const embedded = initialLesson !== undefined;
   const [lesson, setLesson] = useState(() =>
-    embedded ? { ...createBlankLesson(), ...initialLesson } : loadDraft() || createBlankLesson()
+    migrateLesson(embedded ? { ...createBlankLesson(), ...initialLesson } : loadDraft() || createBlankLesson())
   );
   const [view, setView] = useState(readOnly ? 'preview' : 'editar'); // 'editar' | 'preview'
   const [feedback, setFeedback] = useState('');
@@ -148,7 +148,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     reader.onload = () => {
       try {
         const parsed = JSON.parse(reader.result);
-        setLesson({ aula: '', titulo: '', objetivo: '', sections: [], ...parsed });
+        setLesson(migrateLesson({ aula: '', titulo: '', objetivo: '', sections: [], ...parsed }));
         flash('Projeto aberto com sucesso.');
       } catch {
         flash('Arquivo inválido: não é um projeto de aula reconhecível.');

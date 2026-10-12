@@ -7,6 +7,7 @@ import {
   ObjectListField,
   DataTableRowsField,
 } from './fieldInputs';
+import NestedBlocks from './NestedBlocks';
 
 // Renderiza o campo de formulário correto para um `field` do catálogo
 // (src/components/LessonRenderer/sectionCatalog.js), lendo/gravando em
@@ -64,6 +65,14 @@ export default function SchemaField({ field, value, onChange, siblingValues = {}
           value={value}
           onChange={onChange}
         />
+      );
+
+    case FIELD_TYPES.BLOCKS:
+      return (
+        <div>
+          {field.label && <p className="block text-xs font-semibold text-gray-600 mb-1">{field.label}</p>}
+          <NestedBlocks value={value} onChange={onChange} />
+        </div>
       );
 
     default:

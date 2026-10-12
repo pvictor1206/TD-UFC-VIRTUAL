@@ -10,32 +10,24 @@ const svg = (bg, fg, label) =>
 export const BLOCK_EXAMPLES = {
   intro: {
     sample: { type: 'intro', text: 'Nesta aula vamos entender como a tecnologia transforma a forma de **aprender** e de ensinar.' },
-    notes: { text: 'Vira o parágrafo de abertura, ao lado da faixa colorida. Use ** ** para destacar palavras.' },
+    notes: { text: 'Vira um parágrafo de texto corrido. Use ** ** para destacar palavras.' },
   },
-  highlight_section: {
+  section: {
     sample: {
-      type: 'highlight_section',
-      title: 'O que é Educação a Distância?',
-      text: 'Modalidade em que professores e alunos interagem **mediados por tecnologia**.\n• Estudo em horários flexíveis\n• Materiais digitais interativos',
-    },
-    notes: {
-      title: 'Aparece grande, no topo do cartão.',
-      text: 'Texto do cartão. Linhas que começam com • viram lista.',
-    },
-  },
-  story: {
-    sample: {
-      type: 'story',
+      type: 'section',
       label: 'CASO',
       title: 'A turma que mudou de plataforma',
-      warning: 'Exemplo fictício',
-      paragraphs: ['Em 2020, a professora Ana precisou migrar todas as suas aulas para o ambiente virtual.', 'No começo, o desafio foi manter os alunos engajados.'],
+      subtitle: 'Exemplo fictício',
+      children: [
+        { type: 'intro', text: 'Em 2020, a professora Ana precisou migrar todas as suas aulas para o ambiente virtual.' },
+        { type: 'bullet_cards', items: ['**Desafio:** manter os alunos engajados.', '**Solução:** atividades curtas e interativas.'] },
+      ],
     },
     notes: {
       label: 'Etiqueta pequena acima do título.',
-      title: 'Título da narrativa.',
-      warning: 'Aviso discreto abaixo do título.',
-      paragraphs: 'Cada campo vira um parágrafo.',
+      title: 'O título da seção.',
+      subtitle: 'Linha discreta abaixo do título.',
+      children: 'Os blocos que ficam sob este título.',
     },
   },
   image: {
@@ -69,8 +61,6 @@ export const BLOCK_EXAMPLES = {
   dropdown_group: {
     sample: {
       type: 'dropdown_group',
-      title: 'Perguntas frequentes',
-      subtitle: 'Clique em cada item para abrir',
       layout: 'grid',
       items: [
         { title: '1. O que é transhumanismo?', content: 'Movimento que defende usar a **tecnologia** para superar limites do corpo humano.' },
@@ -78,8 +68,6 @@ export const BLOCK_EXAMPLES = {
       ],
     },
     notes: {
-      title: 'Título acima da lista.',
-      subtitle: 'Frase menor logo abaixo do título.',
       layout: 'Duas colunas ou uma coluna.',
       items: 'Cada item é uma "gaveta": o título fica visível e o conteúdo aparece ao clicar.',
     },
@@ -87,10 +75,9 @@ export const BLOCK_EXAMPLES = {
   bullet_cards: {
     sample: {
       type: 'bullet_cards',
-      title: 'Objetivos da aula',
       items: ['**Compreender** o conceito de EaD.', '**Comparar** modelos presencial e a distância.', '**Aplicar** boas práticas de estudo online.'],
     },
-    notes: { title: 'Título acima dos cards.', items: 'Um card por item. Comece com **negrito** para criar um rótulo.' },
+    notes: { items: 'Um card por item. Comece com **negrito** para criar um rótulo.' },
   },
   timeline: {
     sample: {
@@ -105,21 +92,19 @@ export const BLOCK_EXAMPLES = {
   data_table: {
     sample: {
       type: 'data_table',
-      title: 'Conceitos-chave',
       headers: ['Conceito', 'Definição'],
       rows: [['Síncrono', 'Acontece em tempo real'], ['Assíncrono', 'O aluno acessa quando quiser']],
     },
-    notes: { title: 'Título acima da tabela.', headers: 'Nomes das colunas (linha de cabeçalho).', rows: 'Uma célula por coluna, uma linha por vez.' },
+    notes: { headers: 'Nomes das colunas (linha de cabeçalho).', rows: 'Uma célula por coluna, uma linha por vez.' },
   },
   comparison_table: {
     sample: {
       type: 'comparison_table',
-      title: 'Presencial x EaD',
       leftHeader: 'Presencial',
       rightHeader: 'EaD',
       rows: [{ left: 'Encontro em horário fixo', right: 'Horário flexível' }, { left: 'Sala de aula', right: 'Ambiente virtual' }],
     },
-    notes: { title: 'Título acima da tabela.', leftHeader: 'Cabeçalho da coluna da esquerda.', rightHeader: 'Cabeçalho da coluna da direita.', rows: 'Cada linha compara o mesmo aspecto dos dois lados.' },
+    notes: { leftHeader: 'Cabeçalho da coluna da esquerda.', rightHeader: 'Cabeçalho da coluna da direita.', rows: 'Cada linha compara o mesmo aspecto dos dois lados.' },
   },
   reference_box: {
     sample: { type: 'reference_box', text: 'A técnica nunca é neutra: ela é histórica e social.', citation: 'Álvaro Vieira Pinto, 2005' },
