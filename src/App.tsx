@@ -175,21 +175,26 @@ const loadSaved = (key, fallback) => {
                 `}>
                   <span className="font-bold text-sm">{stage.title}</span>
                   {isCurrent && <div className="w-3 h-3 bg-[#FBEEF3]0 rounded-full animate-pulse"></div>}
-                  {isTecnico ? (
-                    <button
-                      type="button"
-                      onClick={() => setStageDone(discipline.id, stage.id, !isDone)}
-                      aria-pressed={isDone}
-                      aria-label={`${isDone ? 'Desmarcar' : 'Marcar como concluída'} a etapa ${stage.title}`}
-                      title={isDone ? 'Etapa concluída — clique para desmarcar' : 'Marcar etapa como concluída'}
-                      className={`shrink-0 rounded-full transition-colors ${isDone ? 'text-green-600 hover:text-green-700' : 'text-zinc-300 hover:text-green-600'}`}
-                    >
-                      {isDone ? <CheckCircle2 size={24} /> : <Circle size={24} />}
-                    </button>
-                  ) : (
-                    isDone && <CheckCircle2 size={18} className="text-green-600" />
-                  )}
+                  {isDone && <CheckCircle2 size={20} className="text-green-600 shrink-0" aria-label="Etapa concluída" />}
                 </div>
+
+                {/* Botão de check: marcar / desmarcar a etapa como concluída */}
+                {isTecnico && (
+                  <button
+                    type="button"
+                    onClick={() => setStageDone(discipline.id, stage.id, !isDone)}
+                    aria-pressed={isDone}
+                    title={isDone ? 'Clique para desmarcar esta etapa' : 'Clique para marcar esta etapa como concluída'}
+                    className={`mb-3 w-full flex items-center justify-center gap-2 rounded-xl border-2 py-2 text-sm font-bold transition-colors ${
+                      isDone
+                        ? 'border-green-600 bg-green-600 text-white hover:bg-green-700 hover:border-green-700'
+                        : 'border-green-600 bg-white text-green-700 hover:bg-green-50'
+                    }`}
+                  >
+                    {isDone ? <CheckCircle2 size={18} /> : <Circle size={18} />}
+                    {isDone ? 'Etapa concluída' : 'Marcar como concluída'}
+                  </button>
+                )}
 
                 {/* Tarefas desta etapa */}
                 {(() => {
