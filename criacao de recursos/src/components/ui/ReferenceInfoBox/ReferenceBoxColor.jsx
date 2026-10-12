@@ -2,8 +2,8 @@ export default function ReferenceBoxColor({
   quote,
 
   // --- Parâmetros de Cor ---
-  bgColor = "#f4f1fd",       // Fundo lavanda claro
-  borderColor = "#c8c0ee",   // Borda lateral lavanda
+  bgColor = "var(--color-lav-soft)",       // Fundo lavanda claro
+  borderColor = "var(--color-lav-bar)",   // Borda lateral lavanda
   textColor = "#1b1b3a",     // Navy
 
   // --- Parâmetros de Fonte (Responsivos) ---

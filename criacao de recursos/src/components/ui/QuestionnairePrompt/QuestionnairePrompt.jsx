@@ -6,9 +6,9 @@ export default function QuestionnairePrompt({
   className = "", // opcional, para estilização extra
   
   // --- Parâmetros de Cor ---
-  topBgColor = "#d9d3f5",       // Fundo da caixa de texto
+  topBgColor = "var(--color-lav)",       // Fundo da caixa de texto
   topTextColor = "#1b1b3a",     // Cor do texto da mensagem
-  buttonBgColor = "#f4f1fd",    // Fundo do botão
+  buttonBgColor = "var(--color-lav-soft)",    // Fundo do botão
   buttonTextColor = "#1b1b3a",  // Cor do texto do botão
 
   // --- Novos Parâmetros de Fonte (Responsivos) ---
@@ -58,7 +58,7 @@ export default function QuestionnairePrompt({
             block text-center select-none font-bold uppercase tracking-wide
             rounded-b-[14px]
             h-12 sm:h-[50px] leading-[48px] sm:leading-[50px]
-            focus:outline-none focus:ring-2 focus:ring-[#c8c0ee]
+            focus:outline-none focus:ring-2 focus:ring-lav-bar
             hover:brightness-95 transition
             text-[length:var(--btn-fs-mob)] md:text-[length:var(--btn-fs-desk)]
           "

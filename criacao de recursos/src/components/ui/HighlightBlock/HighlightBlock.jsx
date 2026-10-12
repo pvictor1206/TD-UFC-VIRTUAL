@@ -1,6 +1,6 @@
-export default function HighlightBlock({ text, children, accentColor = "#c8c0ee" }) {
+export default function HighlightBlock({ text, children, accentColor = "var(--color-lav-bar)" }) {
   return (
-    <div className="rounded-[6px] bg-[#f4f1fd] p-5 md:p-6">
+    <div className="rounded-[6px] bg-lav-soft p-5 md:p-6">
       <div className="flex gap-4">
         <div className="min-h-[40px] w-1.5 rounded-full" style={{ backgroundColor: accentColor }} />
         <div className="flex-1">

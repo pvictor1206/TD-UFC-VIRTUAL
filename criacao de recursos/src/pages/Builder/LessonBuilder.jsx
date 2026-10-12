@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { LessonRenderer, createBlankLesson, SAMPLE_LESSON, getSectionDefinition, migrateLesson } from '@lesson';
 import BlockPalette from './BlockPalette';
 import BlockCard from './BlockCard';
+import ColorPicker from './ColorPicker';
 import { downloadJson, downloadLessonSite, slugify } from './exportSite';
 
 const DRAFT_KEY = 'construtor-de-aulas:rascunho';
@@ -133,7 +134,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   const handleLoadSample = () => {
     if (lesson.sections.length > 0 && !confirm('Isso vai substituir o conteúdo atual pelo exemplo. Deseja continuar?')) return;
-    setLesson(JSON.parse(JSON.stringify(SAMPLE_LESSON)));
+    setLesson({ ...JSON.parse(JSON.stringify(SAMPLE_LESSON)), cor: lesson.cor || '' });
     flash('Exemplo carregado.');
   };
 
@@ -266,6 +267,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   onChange={(e) => updateMeta('titulo', e.target.value)}
                   className="flex-1 min-w-0 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
+                <ColorPicker value={lesson.cor || ''} onChange={(v) => updateMeta('cor', v)} />
                 <button
                   type="button"
                   onClick={() => setShowObjetivo((v) => !v)}

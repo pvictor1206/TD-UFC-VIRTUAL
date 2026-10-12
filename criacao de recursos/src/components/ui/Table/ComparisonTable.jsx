@@ -6,11 +6,11 @@ export default function ComparisonTable({
   rows = [],
   className = "",
   colors = {
-    headBg: "#d9d3f5",   // azul do cabeçalho
+    headBg: "var(--color-lav)",   // azul do cabeçalho
     headText: "#1b1b3a",
-    zebra: "#e4def8",    // faixa clara alternada
-    zebra_two: "#f4f1fd",    // faixa clara alternada
-    border: "#f4f1fd",   // divisões horizontais
+    zebra: "var(--color-lav-mid)",    // faixa clara alternada
+    zebra_two: "var(--color-lav-soft)",    // faixa clara alternada
+    border: "var(--color-lav-soft)",   // divisões horizontais
     divider: "#FFF",  // linha vertical entre colunas
     caption: "#1b1b3a",
   },

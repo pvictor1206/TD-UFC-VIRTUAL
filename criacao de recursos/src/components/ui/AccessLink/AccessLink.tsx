@@ -10,8 +10,8 @@ export default function AccessLink({
   widthClass = "",                 // opcional: para customizar as larguras
   // --- Novos Parâmetros de Estilo ---
   colors = {
-    bg: "#f4f1fd",      // Fundo da caixa
-    icon: "#c8c0ee",    // Cor do ícone
+    bg: "var(--color-lav-soft)",      // Fundo da caixa
+    icon: "var(--color-lav-bar)",    // Cor do ícone
     text: "#1b1b3a",    // Cor do texto
   },
   fontSizeMobile = "14px",

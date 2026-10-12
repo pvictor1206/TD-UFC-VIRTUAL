@@ -8,12 +8,12 @@ export default function DropdownContent({
   altText,
 
   // --- Cores Customizáveis ---
-  bgColor = "#f4f1fd",         // Fundo bem claro para bater com a imagem
-  hoverBgColor = "#e8e3f9",    // Leve destaque ao passar o mouse
-  borderColor = "#d9d3f5",     // Linha divisória em tom azul claro
+  bgColor = "var(--color-lav-soft)",         // Fundo bem claro para bater com a imagem
+  hoverBgColor = "var(--color-blue-100)",    // Leve destaque ao passar o mouse
+  borderColor = "var(--color-lav)",     // Linha divisória em tom azul claro
   titleTextColor = "#1b1b3a",  // Cor do título
   contentTextColor = "#1b1b3a", // Cor do texto interno
-  iconColor = "#5f52b5",       // Azul escuro para o ícone
+  iconColor = "var(--color-blue-600)",       // Azul escuro para o ícone
 
   // --- Tamanhos de Fonte Responsivos ---
   titleFontSizeMobile = "14px",

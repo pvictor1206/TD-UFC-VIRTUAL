@@ -16,6 +16,7 @@ import {
 } from '@ui';
 import FormattedText from './FormattedText';
 import { migrateSection, migrateSections } from './migrate';
+import { lessonThemeStyle } from './theme';
 
 // Motor único de renderização de aulas: recebe um JSON de conteúdo
 // (título + objetivo + lista de `sections`) e desenha a página usando os
@@ -237,17 +238,17 @@ export default function LessonRenderer({ content, showAccessibilityControls = tr
   return (
     <div
       className="w-full bg-white min-h-screen transition-all duration-300 text-ink"
-      style={{ fontSize: `${fontSize}px` }}
+      style={{ fontSize: `${fontSize}px`, ...lessonThemeStyle(content.cor) }}
     >
       {showAccessibilityControls && (
         <AccessibilityControls fontSize={fontSize} setFontSize={setFontSize} defaultSize={16} />
       )}
 
       <div className="max-w-[1000px] mx-auto px-4 md:px-8 py-8 md:py-12 space-y-8 md:space-y-10">
-        <header className="relative py-5 px-5 md:py-8 md:px-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-l-[10px] border-[#1e40af] overflow-hidden">
+        <header className="relative py-5 px-5 md:py-8 md:px-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-l-[10px] border-[color:var(--lesson-accent,#1e40af)] overflow-hidden">
           <div className="relative z-10 space-y-3 md:space-y-4">
             <div className="flex items-center gap-3 text-base">
-              <span className="px-3 py-1 bg-[#eff6ff] text-[#1e40af] text-xs font-bold uppercase tracking-widest rounded">
+              <span className="px-3 py-1 bg-[color:var(--lesson-accent-soft,#eff6ff)] text-[color:var(--lesson-accent,#1e40af)] text-xs font-bold uppercase tracking-widest rounded">
                 Aula {content.aula}
               </span>
               <div className="h-px flex-grow bg-gray-100 dark:bg-gray-700" />

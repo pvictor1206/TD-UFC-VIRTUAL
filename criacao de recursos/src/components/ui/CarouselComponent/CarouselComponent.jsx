@@ -5,10 +5,10 @@ export default function CarouselCoverflow({
   images = [],
   // --- Parâmetros de Cores ---
   colors = {
-    arrowBg: "#5f52b5",        // Azul escuro do fundo da seta
+    arrowBg: "var(--color-blue-600)",        // Azul escuro do fundo da seta
     arrowIcon: "#FFFFFF",      // Branco do ícone da seta
-    dotActive: "#5f52b5",      // Azul escuro do traço ativo
-    dotInactive: "#d9d3f5",    // Azul claro dos traços inativos
+    dotActive: "var(--color-blue-600)",      // Azul escuro do traço ativo
+    dotInactive: "var(--color-lav)",    // Azul claro dos traços inativos
   },
   // --- Tamanhos de Fonte Responsivos (usados no Lightbox) ---
   titleFontSizeMobile = "14px",

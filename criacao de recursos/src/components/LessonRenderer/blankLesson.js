@@ -2,6 +2,7 @@ export const createBlankLesson = () => ({
   aula: '',
   titulo: '',
   objetivo: '',
+  cor: '', // cor base da aula (hex); vazio = tema padrão
   sections: [],
 });
 
