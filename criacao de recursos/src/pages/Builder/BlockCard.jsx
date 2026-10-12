@@ -77,15 +77,18 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
             >
               {collapsed ? '▸' : '▾'}
             </button>
-            <input
-              type="text"
-              value={section.name ?? ''}
-              onChange={(e) => setFieldValue('name', e.target.value)}
-              placeholder={`Seção ${index + 1} — nome interno (opcional)`}
-              aria-label="Nome da seção (não aparece para o aluno)"
-              title="Nome da seção: só aparece no editor, não aparece para o aluno"
-              className="flex-1 min-w-0 rounded-lg border border-transparent hover:border-gray-300 focus:border-blue-400 bg-transparent px-2 py-1.5 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 truncate"
-            />
+            <label className="flex flex-1 min-w-0 items-center gap-2 rounded-lg border-2 border-gray-300 bg-white px-3 shadow-sm transition-colors hover:border-blue-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200">
+              <span aria-hidden className="shrink-0 text-base">✏️</span>
+              <input
+                type="text"
+                value={section.name ?? ''}
+                onChange={(e) => setFieldValue('name', e.target.value)}
+                placeholder={`Seção ${index + 1} — clique aqui e escreva um nome`}
+                aria-label="Nome da seção (só você vê, não aparece para o aluno)"
+                title="Nome da seção: só aparece no editor, não aparece para o aluno"
+                className="min-w-0 flex-1 bg-transparent py-2 text-sm font-bold text-gray-900 placeholder:font-medium placeholder:text-gray-500 focus:outline-none"
+              />
+            </label>
           </div>
         ) : (
           <button
