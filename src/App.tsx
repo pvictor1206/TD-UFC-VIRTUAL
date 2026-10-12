@@ -24,6 +24,7 @@ import {
   FolderPlus,
   Lock,
   Wand2,
+  PlayCircle,
   Eye,
   EyeOff
 } from 'lucide-react';
@@ -648,6 +649,14 @@ export default function App() {
   const [loginPassword, setLoginPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [guideOpen, setGuideOpen] = useState(false);
+
+  useEffect(() => {
+    if (!guideOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setGuideOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [guideOpen]);
 
   // Formulários Administrativos
   const [newProfName, setNewProfName] = useState('');
@@ -1482,6 +1491,15 @@ export default function App() {
                 )}
               </button>
             ))}
+            {/* Botão vermelho: guia em vídeo, ao lado da aba Editor Estrutural */}
+            <button
+              type="button"
+              onClick={() => setGuideOpen(true)}
+              title="Assistir ao guia em vídeo do Editor Estrutural"
+              className="-ml-3 mb-3 flex h-8 items-center gap-1.5 self-center rounded-full bg-red-600 px-3.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm transition-colors hover:bg-red-700"
+            >
+              <PlayCircle size={15} /> Vídeo
+            </button>
           </div>
         </div>
 
@@ -1523,6 +1541,40 @@ export default function App() {
       <main className="flex-1 overflow-auto">
         {renderMainContent()}
       </main>
+
+      {/* Guia em vídeo do Editor Estrutural (arquivo guia-editor-estrutural.html na raiz do site) */}
+      {guideOpen && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-3 sm:p-6"
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setGuideOpen(false); }}
+        >
+          <div role="dialog" aria-modal="true" aria-label="Guia em vídeo do Editor Estrutural" className="flex h-full max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-zinc-200 px-4 py-2.5">
+              <span className="flex items-center gap-2 font-bold text-zinc-900">
+                <PlayCircle size={18} className="text-red-600" /> Guia em vídeo — Editor Estrutural
+              </span>
+              <div className="flex items-center gap-2">
+                <a
+                  href="./guia-editor-estrutural.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-bold hover:bg-zinc-100"
+                >
+                  Abrir em nova aba
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setGuideOpen(false)}
+                  className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-zinc-700"
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+            <iframe title="Guia em vídeo do Editor Estrutural" src="./guia-editor-estrutural.html" className="min-h-0 w-full flex-1 border-0" />
+          </div>
+        </div>
+      )}
     </div>
     </ActionsContext.Provider>
   );
