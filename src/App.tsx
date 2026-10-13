@@ -694,6 +694,7 @@ export default function App() {
   
   const [newDiscTitle, setNewDiscTitle] = useState('');
   const [newDiscTeacherId, setNewDiscTeacherId] = useState('');
+  const [newDiscTeamId, setNewDiscTeamId] = useState(''); // administrador escolhe a equipe; o suporte técnico usa a própria
 
   // Professores que o usuário logado pode ver: o administrador vê todos;
   // o suporte técnico vê os conteudistas da própria equipe (e de nenhuma outra).
@@ -805,6 +806,7 @@ export default function App() {
     setDisciplines([...disciplines, newDisc]);
     setNewDiscTitle('');
     setNewDiscTeacherId('');
+    setNewDiscTeamId('');
     setSidebarTab('dashboard'); // Retorna à visão geral para ver o novo projeto
   };
 
@@ -1435,20 +1437,49 @@ export default function App() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-bold uppercase tracking-wider mb-1">Selecione o Professor Conteudista</label>
-            <select 
-              required
-              value={newDiscTeacherId}
-              onChange={(e) => setNewDiscTeacherId(e.target.value)}
-              className="w-full p-3 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 bg-white"
-            >
-              <option value="">Selecione um docente da lista...</option>
-              {getVisibleProfessors().map(u => (
-                <option key={u.id} value={u.id}>{u.name}{currentUser.role === 'admin' ? ` — ${teamName(u.teamId)}` : ''}</option>
-              ))}
-            </select>
-          </div>
+          {(() => {
+            // equipe efetiva: o administrador escolhe; o suporte técnico fica na própria equipe
+            const isAdmin = currentUser.role === 'admin';
+            const teamId = isAdmin ? (newDiscTeamId === '' ? null : Number(newDiscTeamId)) : currentUser.teamId;
+            const docentes = users.filter(u => u.role === 'conteudista' && u.teamId === teamId);
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-bold uppercase tracking-wider mb-1" htmlFor="disc-team">1. Equipe</label>
+                  <select
+                    id="disc-team"
+                    required
+                    disabled={!isAdmin}
+                    value={isAdmin ? newDiscTeamId : String(currentUser.teamId)}
+                    onChange={(e) => { setNewDiscTeamId(e.target.value); setNewDiscTeacherId(''); }}
+                    className="w-full p-3 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 bg-white disabled:bg-zinc-100 disabled:text-zinc-600"
+                  >
+                    <option value="">Selecione a equipe...</option>
+                    {(isAdmin ? teams : teams.filter(t => t.id === currentUser.teamId)).map(t => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                  {!isAdmin && <p className="mt-1 text-xs text-zinc-500">Você cria disciplinas para a sua equipe.</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-bold uppercase tracking-wider mb-1" htmlFor="disc-teacher">2. Docente</label>
+                  <select
+                    id="disc-teacher"
+                    required
+                    disabled={teamId === null}
+                    value={newDiscTeacherId}
+                    onChange={(e) => setNewDiscTeacherId(e.target.value)}
+                    className="w-full p-3 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 bg-white disabled:bg-zinc-100 disabled:text-zinc-500"
+                  >
+                    <option value="">{teamId === null ? 'Escolha a equipe primeiro' : docentes.length ? 'Selecione o docente...' : 'Esta equipe ainda não tem docentes'}</option>
+                    {docentes.map(u => (
+                      <option key={u.id} value={u.id}>{u.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            );
+          })()}
 
           <div className="bg-[#FBEEF3] border border-[#F0CFDB] p-4 text-xs text-zinc-600">
             <strong>Fase Inicial Automática:</strong> Ao criar a nova disciplina, ela será adicionada automaticamente à primeira etapa do Kanban de Implantação: <strong>Recebimento</strong>.
