@@ -31,31 +31,51 @@ import {
 
 // --- DADOS INICIAIS ---
 
-// Perfis: 'admin' (Administrador), 'tecnico' (Equipe Técnica) e 'conteudista' (Professor).
-// - O administrador cria perfis da Equipe Técnica e cria professores alocando-os a alguém da equipe.
-// - Cada professor tem `createdBy` = id de quem responde por ele (membro da Equipe Técnica);
-//   a Equipe Técnica só enxerga os professores que lhe pertencem e o conteúdo deles.
+// Perfis: 'admin' (Administrador), 'tecnico' (Suporte técnico) e 'conteudista' (Professor).
+// EQUIPES: o administrador cria equipes. Cada equipe tem suportes técnicos e conteudistas (user.teamId).
+// Todos os suportes técnicos de uma equipe enxergam as disciplinas e os conteudistas dessa equipe, e de nenhuma outra.
+// A dinâmica suporte técnico x conteudista continua a mesma dentro de cada equipe.
 const ADMIN_USER = { id: 4, name: 'Administrador', role: 'admin', username: 'administrador', password: '123' };
+
+const INITIAL_TEAMS = [{ id: 1, name: 'Equipe EAD' }];
 
 const INITIAL_USERS = [
   ADMIN_USER,
-  { id: 1, name: 'Equipe Técnica EAD', role: 'tecnico', username: 'admin', password: '123', createdBy: 4 },
-  { id: 2, name: 'Prof. Carlos Silva', role: 'conteudista', username: 'carlos', password: '123', createdBy: 1 },
-  { id: 3, name: 'Profa. Mariana Costa', role: 'conteudista', username: 'mariana', password: '123', createdBy: 1 }
+  { id: 1, name: 'Suporte Técnico EAD', role: 'tecnico', username: 'admin', password: '123', teamId: 1 },
+  { id: 2, name: 'Prof. Carlos Silva', role: 'conteudista', username: 'carlos', password: '123', teamId: 1 },
+  { id: 3, name: 'Profa. Mariana Costa', role: 'conteudista', username: 'mariana', password: '123', teamId: 1 }
 ];
 
-// Dados salvos antes dos perfis: garante um administrador e dá um responsável a cada professor.
-const normalizeUsers = (list) => {
-  let users = Array.isArray(list) && list.length ? list : INITIAL_USERS;
+// Dados salvos antes das equipes: cada suporte técnico vira uma equipe própria, com os professores
+// que já eram dele (assim ninguém passa a enxergar o que não via).
+const normalizeAccess = (savedUsers, savedTeams) => {
+  const fresh = !(Array.isArray(savedUsers) && savedUsers.length);
+  let users = fresh ? INITIAL_USERS : savedUsers;
+  let teams = Array.isArray(savedTeams) && savedTeams.length ? savedTeams : null;
+
   if (!users.some(u => u.role === 'admin')) {
     const idTaken = users.some(u => u.id === ADMIN_USER.id);
     const nameTaken = users.some(u => u.username === ADMIN_USER.username);
     users = [{ ...ADMIN_USER, id: idTaken ? Date.now() : ADMIN_USER.id, username: nameTaken ? 'administrador1' : ADMIN_USER.username }, ...users];
   }
-  const firstTecnico = users.find(u => u.role === 'tecnico');
-  return users.map(u =>
-    u.role === 'conteudista' && u.createdBy == null && firstTecnico ? { ...u, createdBy: firstTecnico.id } : u
-  );
+
+  if (!teams) {
+    if (fresh) {
+      teams = INITIAL_TEAMS;
+    } else {
+      const tecs = users.filter(u => u.role === 'tecnico');
+      teams = tecs.length ? tecs.map(t => ({ id: t.id, name: 'Equipe ' + t.name })) : [{ id: 1, name: 'Equipe Principal' }];
+      users = users.map(u => {
+        if (u.teamId != null) return u;
+        if (u.role === 'tecnico') return { ...u, teamId: u.id };
+        if (u.role === 'conteudista') return { ...u, teamId: teams.some(t => t.id === u.createdBy) ? u.createdBy : teams[0].id };
+        return u;
+      });
+    }
+  }
+  // qualquer membro sem equipe vai para a primeira
+  users = users.map(u => (u.role !== 'admin' && u.teamId == null ? { ...u, teamId: teams[0].id } : u));
+  return { users, teams };
 };
 
 const KANBAN_STAGES = [
@@ -626,18 +646,21 @@ const loadSaved = (key, fallback) => {
 // --- COMPONENTE PRINCIPAL ---
 
 export default function App() {
-  const [users, setUsers] = useState(() => normalizeUsers(loadSaved('users', INITIAL_USERS)));
+  const [initialAccess] = useState(() => normalizeAccess(loadSaved('users', null), loadSaved('teams', null)));
+  const [users, setUsers] = useState(initialAccess.users);
+  const [teams, setTeams] = useState(initialAccess.teams);
   const [currentUser, setCurrentUser] = useState(null);
   const [disciplines, setDisciplines] = useState(() => loadSaved('disciplines', INITIAL_DATA));
 
   useEffect(() => {
     try {
       localStorage.setItem(`${STORAGE_KEY}:users`, JSON.stringify(users));
+      localStorage.setItem(`${STORAGE_KEY}:teams`, JSON.stringify(teams));
       localStorage.setItem(`${STORAGE_KEY}:disciplines`, JSON.stringify(disciplines));
     } catch {
       // armazenamento indisponível ou cheio — segue só em memória
     }
-  }, [users, disciplines]);
+  }, [users, teams, disciplines]);
   
   // Controle de Navegação e Modais
   const [activeDisciplineId, setActiveDisciplineId] = useState(null);
@@ -662,22 +685,23 @@ export default function App() {
   const [newProfName, setNewProfName] = useState('');
   const [newProfUser, setNewProfUser] = useState('');
   const [newProfPass, setNewProfPass] = useState('');
-  const [newProfOwner, setNewProfOwner] = useState(''); // administrador: membro da Equipe Técnica responsável
 
-  const [newTecName, setNewTecName] = useState('');
-  const [newTecUser, setNewTecUser] = useState('');
-  const [newTecPass, setNewTecPass] = useState('');
+  // Equipes (administrador)
+  const [newTeamName, setNewTeamName] = useState('');
+  const [memberTeamId, setMemberTeamId] = useState(null); // equipe com o formulário de membro aberto
+  const [memberDraft, setMemberDraft] = useState({ name: '', username: '', password: '', role: 'tecnico' });
+  const teamName = (id) => teams.find(t => t.id === id)?.name || '—';
   
   const [newDiscTitle, setNewDiscTitle] = useState('');
   const [newDiscTeacherId, setNewDiscTeacherId] = useState('');
 
   // Professores que o usuário logado pode ver: o administrador vê todos;
-  // a Equipe Técnica vê só os que ela mesma (ou o administrador, em nome dela) cadastrou.
+  // o suporte técnico vê os conteudistas da própria equipe (e de nenhuma outra).
   const getVisibleProfessors = () => {
     if (!currentUser) return [];
     const professors = users.filter(u => u.role === 'conteudista');
     if (currentUser.role === 'admin') return professors;
-    if (currentUser.role === 'tecnico') return professors.filter(u => u.createdBy === currentUser.id);
+    if (currentUser.role === 'tecnico') return professors.filter(u => u.teamId === currentUser.teamId);
     return [];
   };
 
@@ -714,9 +738,6 @@ export default function App() {
   const handleCreateProfessor = (e) => {
     e.preventDefault();
     if (!newProfName || !newProfUser || !newProfPass) return;
-    const isAdmin = currentUser.role === 'admin';
-    if (isAdmin && !newProfOwner) return;
-
     // Evita duplicados básicos
     if (users.find(u => u.username === newProfUser)) {
       alert('Este nome de usuário já está sendo utilizado!');
@@ -729,35 +750,43 @@ export default function App() {
       role: 'conteudista',
       username: newProfUser,
       password: newProfPass,
-      // administrador escolhe a quem alocar; a Equipe Técnica fica responsável pelos que cadastra
-      createdBy: isAdmin ? parseInt(newProfOwner) : currentUser.id
+      teamId: currentUser.teamId // o professor entra na equipe de quem o cadastra
     };
 
     setUsers([...users, newProf]);
     setNewProfName('');
     setNewProfUser('');
     setNewProfPass('');
-    setNewProfOwner('');
   };
 
-  const handleCreateTecnico = (e) => {
+  const handleCreateTeam = (e) => {
     e.preventDefault();
-    if (!newTecName || !newTecUser || !newTecPass) return;
-    if (users.find(u => u.username === newTecUser)) {
+    const name = newTeamName.trim();
+    if (!name) return;
+    const id = Date.now();
+    setTeams([...teams, { id, name }]);
+    setNewTeamName('');
+    setMemberTeamId(id); // já abre o cadastro de membros da nova equipe
+    setMemberDraft({ name: '', username: '', password: '', role: 'tecnico' });
+  };
+
+  const handleCreateMember = (e) => {
+    e.preventDefault();
+    const d = memberDraft;
+    if (!d.name.trim() || !d.username.trim() || !d.password) return;
+    if (users.find(u => u.username === d.username.trim())) {
       alert('Este nome de usuário já está sendo utilizado!');
       return;
     }
     setUsers([...users, {
       id: Date.now(),
-      name: newTecName,
-      role: 'tecnico',
-      username: newTecUser,
-      password: newTecPass,
-      createdBy: currentUser.id
+      name: d.name.trim(),
+      role: d.role,
+      username: d.username.trim(),
+      password: d.password,
+      teamId: memberTeamId
     }]);
-    setNewTecName('');
-    setNewTecUser('');
-    setNewTecPass('');
+    setMemberDraft({ name: '', username: '', password: '', role: d.role });
   };
 
   const handleCreateDiscipline = (e) => {
@@ -1020,7 +1049,7 @@ export default function App() {
             <div className="bg-[#FBF3E4] border border-bege rounded-lg p-4 text-xs text-zinc-700">
               <h4 className="font-bold text-iuvi-escuro mb-1.5">Acesso rápido para testes</h4>
               <p>Administrador: <strong>administrador</strong> / <strong>123</strong></p>
-              <p>Equipe técnica: <strong>admin</strong> / <strong>123</strong></p>
+              <p>Suporte técnico: <strong>admin</strong> / <strong>123</strong></p>
               <p>Conteudista: <strong>carlos</strong> ou <strong>mariana</strong> / <strong>123</strong></p>
             </div>
 
@@ -1048,8 +1077,11 @@ export default function App() {
           {currentUser.name}
         </div>
         <div className="text-xs text-bege mt-1">
-          {currentUser.role === 'admin' ? 'Administrador' : currentUser.role === 'tecnico' ? 'Equipe Técnica' : 'Docente / Conteudista'}
+          {currentUser.role === 'admin' ? 'Administrador' : currentUser.role === 'tecnico' ? 'Suporte Técnico' : 'Docente / Conteudista'}
         </div>
+        {currentUser.role !== 'admin' && (
+          <div className="text-[11px] text-white/70 mt-0.5">Equipe: {teamName(currentUser.teamId)}</div>
+        )}
       </div>
 
       <nav className="flex-1 px-4 space-y-1">
@@ -1071,15 +1103,8 @@ export default function App() {
               onClick={() => { setActiveDisciplineId(null); setSidebarTab('equipe'); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${sidebarTab === 'equipe' ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <UserPlus size={18} />
-              <span>Equipe Técnica</span>
-            </button>
-            <button
-              onClick={() => { setActiveDisciplineId(null); setSidebarTab('professores'); }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${sidebarTab === 'professores' ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
-            >
               <Users size={18} />
-              <span>Professores</span>
+              <span>Equipes</span>
             </button>
             <button
               onClick={() => { setActiveDisciplineId(null); setSidebarTab('disciplinas'); }}
@@ -1135,7 +1160,7 @@ export default function App() {
     <div className="p-8 max-w-5xl">
       <header className="mb-8">
         <h2 className="text-3xl font-extrabold mb-1 text-[#991F50]">Gerenciar Professores Conteudistas</h2>
-        <p className="text-zinc-600 text-sm">{currentUser.role === 'admin' ? 'Você vê todos os docentes. Cadastre novos e aloque cada um a um membro da Equipe Técnica, que passa a acompanhá-lo.' : 'Adicione novos docentes e configure credenciais de acesso. Você enxerga apenas os docentes sob sua responsabilidade.'}</p>
+        <p className="text-zinc-600 text-sm">{`Docentes da ${teamName(currentUser.teamId)}. Todos os suportes técnicos desta equipe veem estes docentes e as disciplinas deles; outras equipes não.`}</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1168,22 +1193,6 @@ export default function App() {
                 className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm font-mono"
               />
             </div>
-            {currentUser.role === 'admin' && (
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1">Alocar para (Equipe Técnica)</label>
-                <select
-                  required
-                  value={newProfOwner}
-                  onChange={(e) => setNewProfOwner(e.target.value)}
-                  className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm bg-white"
-                >
-                  <option value="">Selecione um membro da equipe...</option>
-                  {users.filter(u => u.role === 'tecnico').map(u => (
-                    <option key={u.id} value={u.id}>{u.name}</option>
-                  ))}
-                </select>
-              </div>
-            )}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider mb-1">Senha de Acesso</label>
               <input
@@ -1221,9 +1230,6 @@ export default function App() {
                   <div className="flex items-center gap-4 mt-1 text-xs text-zinc-500">
                     <span>Login: <strong className="font-mono">{prof.username}</strong></span>
                     <span>Senha: <strong className="font-mono">{prof.password}</strong></span>
-                    {currentUser.role === 'admin' && (
-                      <span>Equipe: <strong>{users.find(u => u.id === prof.createdBy)?.name || '—'}</strong></span>
-                    )}
                   </div>
                 </div>
                 <div className="bg-[#FBEEF3] p-2 border border-[#F0CFDB]">
@@ -1237,51 +1243,32 @@ export default function App() {
     </div>
   );
 
-  // --- SUB-TELA (ADMINISTRADOR): EQUIPE TÉCNICA ---
-  const TeamManagement = () => (
-    <div className="p-8 max-w-5xl">
+  // --- SUB-TELA (ADMINISTRADOR): EQUIPES ---
+  const TeamsManagement = () => (
+    <div className="p-8 max-w-6xl">
       <header className="mb-8">
-        <h2 className="text-3xl font-extrabold mb-1 text-[#991F50]">Equipe Técnica</h2>
-        <p className="text-zinc-600 text-sm">Crie os perfis da Equipe Técnica. Cada membro acompanha apenas os professores alocados a ele.</p>
+        <h2 className="text-3xl font-extrabold mb-1 text-[#991F50]">Equipes</h2>
+        <p className="text-zinc-600 text-sm">
+          Cada equipe reúne suportes técnicos e conteudistas. Todos os suportes técnicos de uma equipe enxergam as disciplinas e os conteudistas dessa equipe, e de nenhuma outra.
+        </p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="bg-white border border-[#D9CFC6] rounded-xl p-6 shadow-sm h-fit">
           <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-            <UserPlus className="text-[#991F50]" size={20} />
-            Cadastrar Membro
+            <PlusCircle className="text-[#991F50]" size={20} />
+            Nova equipe
           </h3>
-          <form onSubmit={handleCreateTecnico} className="space-y-4">
+          <form onSubmit={handleCreateTeam} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1">Nome Completo</label>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1" htmlFor="team-name">Nome da equipe</label>
               <input
+                id="team-name"
                 type="text"
                 required
-                value={newTecName}
-                onChange={(e) => setNewTecName(e.target.value)}
-                placeholder="Ex: Ana Souza (Design Educacional)"
-                className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1">Usuário de Login</label>
-              <input
-                type="text"
-                required
-                value={newTecUser}
-                onChange={(e) => setNewTecUser(e.target.value)}
-                placeholder="Ex: ana"
-                className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm font-mono"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1">Senha de Acesso</label>
-              <input
-                type="text"
-                required
-                value={newTecPass}
-                onChange={(e) => setNewTecPass(e.target.value)}
-                placeholder="Ex: ana2026"
+                value={newTeamName}
+                onChange={(e) => setNewTeamName(e.target.value)}
+                placeholder="Ex: Equipe de Exatas"
                 className="w-full p-2 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm"
               />
             </div>
@@ -1289,36 +1276,134 @@ export default function App() {
               type="submit"
               className="w-full py-2 bg-iuvi-roxo text-white hover:bg-iuvi-roxo-medio transition-colors font-bold text-sm flex items-center justify-center gap-2"
             >
-              <PlusCircle size={16} /> Salvar Cadastro
+              <PlusCircle size={16} /> Criar equipe
             </button>
           </form>
         </div>
 
-        <div className="lg:col-span-2 bg-white border border-[#D9CFC6] rounded-xl p-6 shadow-sm">
-          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-            <Users className="text-[#991F50]" size={20} />
-            Membros da Equipe Técnica
-          </h3>
-          <div className="space-y-3">
-            {users.filter(u => u.role === 'tecnico').map(t => {
-              const profs = users.filter(u => u.role === 'conteudista' && u.createdBy === t.id);
-              return (
-                <div key={t.id} className="p-4 border border-zinc-300 bg-zinc-50 flex items-center justify-between gap-4">
-                  <div>
-                    <h4 className="font-bold text-zinc-900">{t.name}</h4>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-xs text-zinc-500">
-                      <span>Login: <strong className="font-mono">{t.username}</strong></span>
-                      <span>Senha: <strong className="font-mono">{t.password}</strong></span>
-                      <span>Professores: <strong>{profs.length}</strong></span>
-                    </div>
-                  </div>
-                  <div className="bg-[#FBEEF3] p-2 border border-[#F0CFDB] shrink-0">
-                    <span className="text-xs font-bold text-[#991F50] uppercase">Equipe</span>
+        <div className="lg:col-span-2 space-y-6">
+          {teams.length === 0 && (
+            <p className="text-sm text-zinc-500">Nenhuma equipe ainda. Crie a primeira ao lado.</p>
+          )}
+          {teams.map(team => {
+            const techs = users.filter(u => u.role === 'tecnico' && u.teamId === team.id);
+            const profs = users.filter(u => u.role === 'conteudista' && u.teamId === team.id);
+            const profIds = new Set(profs.map(p => p.id));
+            const discCount = disciplines.filter(d => profIds.has(d.conteudistaId)).length;
+            const open = memberTeamId === team.id;
+            const member = (u) => (
+              <div key={u.id} className="p-3 border border-zinc-200 bg-zinc-50 rounded-lg">
+                <div className="font-bold text-sm text-zinc-900">{u.name}</div>
+                <div className="mt-0.5 flex flex-wrap gap-x-4 text-xs text-zinc-500">
+                  <span>Login: <strong className="font-mono">{u.username}</strong></span>
+                  <span>Senha: <strong className="font-mono">{u.password}</strong></span>
+                </div>
+              </div>
+            );
+            return (
+              <div key={team.id} className="bg-white border border-[#D9CFC6] rounded-xl p-6 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h3 className="font-extrabold text-xl text-zinc-900 flex items-center gap-2">
+                    <Users className="text-[#991F50]" size={22} /> {team.name}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 text-xs font-bold">
+                    <span className="bg-[#FBEEF3] text-[#991F50] border border-[#F0CFDB] px-2.5 py-1">{techs.length} suporte{techs.length === 1 ? '' : 's'} técnico{techs.length === 1 ? '' : 's'}</span>
+                    <span className="bg-[#FBEEF3] text-[#991F50] border border-[#F0CFDB] px-2.5 py-1">{profs.length} conteudista{profs.length === 1 ? '' : 's'}</span>
+                    <span className="bg-zinc-100 text-zinc-700 border border-zinc-200 px-2.5 py-1">{discCount} disciplina{discCount === 1 ? '' : 's'}</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+                <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Suporte técnico</div>
+                    <div className="space-y-2">
+                      {techs.length === 0 && <p className="text-xs text-zinc-400 italic">Nenhum ainda.</p>}
+                      {techs.map(member)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2">Conteudistas</div>
+                    <div className="space-y-2">
+                      {profs.length === 0 && <p className="text-xs text-zinc-400 italic">Nenhum ainda.</p>}
+                      {profs.map(member)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 border-t border-zinc-200 pt-4">
+                  {!open ? (
+                    <button
+                      type="button"
+                      onClick={() => { setMemberTeamId(team.id); setMemberDraft({ name: '', username: '', password: '', role: 'tecnico' }); }}
+                      className="inline-flex items-center gap-2 border-2 border-dashed border-[#D9CFC6] rounded-xl px-4 py-2 text-sm font-bold text-[#991F50] hover:bg-[#FBEEF3] transition-colors"
+                    >
+                      <UserPlus size={16} /> Adicionar membro
+                    </button>
+                  ) : (
+                    <form onSubmit={handleCreateMember} className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="md:col-span-2 text-sm font-bold">Novo membro de {team.name}</div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider mb-1" htmlFor={'m-role-' + team.id}>Perfil</label>
+                        <select
+                          id={'m-role-' + team.id}
+                          value={memberDraft.role}
+                          onChange={(e) => setMemberDraft({ ...memberDraft, role: e.target.value })}
+                          className="w-full p-2 border border-[#D9CFC6] rounded-xl bg-white text-sm focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20"
+                        >
+                          <option value="tecnico">Suporte técnico</option>
+                          <option value="conteudista">Conteudista (professor)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider mb-1" htmlFor={'m-name-' + team.id}>Nome completo</label>
+                        <input
+                          id={'m-name-' + team.id}
+                          type="text"
+                          required
+                          value={memberDraft.name}
+                          onChange={(e) => setMemberDraft({ ...memberDraft, name: e.target.value })}
+                          placeholder="Ex: Ana Souza"
+                          className="w-full p-2 border border-[#D9CFC6] rounded-xl text-sm focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider mb-1" htmlFor={'m-user-' + team.id}>Usuário de login</label>
+                        <input
+                          id={'m-user-' + team.id}
+                          type="text"
+                          required
+                          value={memberDraft.username}
+                          onChange={(e) => setMemberDraft({ ...memberDraft, username: e.target.value })}
+                          placeholder="Ex: ana"
+                          className="w-full p-2 border border-[#D9CFC6] rounded-xl text-sm font-mono focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider mb-1" htmlFor={'m-pass-' + team.id}>Senha de acesso</label>
+                        <input
+                          id={'m-pass-' + team.id}
+                          type="text"
+                          required
+                          value={memberDraft.password}
+                          onChange={(e) => setMemberDraft({ ...memberDraft, password: e.target.value })}
+                          placeholder="Ex: ana2026"
+                          className="w-full p-2 border border-[#D9CFC6] rounded-xl text-sm focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20"
+                        />
+                      </div>
+                      <div className="md:col-span-2 flex gap-2">
+                        <button type="submit" className="flex-1 py-2 bg-iuvi-roxo text-white hover:bg-iuvi-roxo-medio transition-colors font-bold text-sm flex items-center justify-center gap-2">
+                          <PlusCircle size={16} /> Salvar membro
+                        </button>
+                        <button type="button" onClick={() => setMemberTeamId(null)} className="px-4 py-2 border border-[#D9CFC6] rounded-xl text-sm font-bold hover:bg-zinc-100">
+                          Fechar
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -1360,7 +1445,7 @@ export default function App() {
             >
               <option value="">Selecione um docente da lista...</option>
               {getVisibleProfessors().map(u => (
-                <option key={u.id} value={u.id}>{u.name}</option>
+                <option key={u.id} value={u.id}>{u.name}{currentUser.role === 'admin' ? ` — ${teamName(u.teamId)}` : ''}</option>
               ))}
             </select>
           </div>
@@ -1420,7 +1505,7 @@ export default function App() {
                 </p>
                 {currentUser.role === 'admin' && (
                   <p className="text-[11px] text-zinc-500 -mt-3 mb-4">
-                    Equipe: {users.find(u => u.id === users.find(p => p.id === d.conteudistaId)?.createdBy)?.name || '—'}
+                    Equipe: {teamName(users.find(p => p.id === d.conteudistaId)?.teamId)}
                   </p>
                 )}
 
@@ -1523,9 +1608,9 @@ export default function App() {
     const isAdmin = currentUser.role === 'admin';
     switch (sidebarTab) {
       case 'equipe':
-        return isAdmin ? TeamManagement() : Dashboard();
+        return isAdmin ? TeamsManagement() : Dashboard();
       case 'professores':
-        return currentUser.role === 'conteudista' ? Dashboard() : TeachersManagement();
+        return currentUser.role === 'tecnico' ? TeachersManagement() : Dashboard();
       case 'disciplinas':
         return currentUser.role === 'conteudista' ? Dashboard() : DisciplineManagement();
       case 'dashboard':
