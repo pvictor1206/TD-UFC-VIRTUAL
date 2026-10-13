@@ -1462,7 +1462,7 @@ export default function App() {
                   {!isAdmin && <p className="mt-1 text-xs text-zinc-500">Você cria disciplinas para a sua equipe.</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-bold uppercase tracking-wider mb-1" htmlFor="disc-teacher">2. Docente</label>
+                  <label className="block text-sm font-bold uppercase tracking-wider mb-1" htmlFor="disc-teacher">2. Conteudista</label>
                   <select
                     id="disc-teacher"
                     required
@@ -1471,7 +1471,7 @@ export default function App() {
                     onChange={(e) => setNewDiscTeacherId(e.target.value)}
                     className="w-full p-3 border border-[#D9CFC6] rounded-xl focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 bg-white disabled:bg-zinc-100 disabled:text-zinc-500"
                   >
-                    <option value="">{teamId === null ? 'Escolha a equipe primeiro' : docentes.length ? 'Selecione o docente...' : 'Esta equipe ainda não tem docentes'}</option>
+                    <option value="">{teamId === null ? 'Escolha a equipe primeiro' : docentes.length ? 'Selecione o conteudista...' : 'Esta equipe ainda não tem conteudistas'}</option>
                     {docentes.map(u => (
                       <option key={u.id} value={u.id}>{u.name}</option>
                     ))}
