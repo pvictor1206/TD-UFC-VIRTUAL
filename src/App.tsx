@@ -851,7 +851,11 @@ export default function App() {
     }));
     // só o texto da aula (autosave do editor) não precisa recarregar tudo
     const lessonOnly = Object.keys(patch).every(k => k === 'lesson' || k === 'lastEditedBy');
-    return run(() => db.updateResource(resourceId, patch), !lessonOnly);
+    if (lessonOnly) {
+      // autosave do editor: devolve true/false para o editor mostrar "Salvo" ou tentar de novo
+      return db.updateResource(resourceId, patch).then(() => true).catch((err) => { console.error(err); return false; });
+    }
+    return run(() => db.updateResource(resourceId, patch));
   };
 
   const removeResource = (disciplineId, resourceId) => run(() => db.removeResource(resourceId));
