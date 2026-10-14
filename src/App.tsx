@@ -28,7 +28,8 @@ import {
   Wand2,
   PlayCircle,
   Eye,
-  EyeOff
+  EyeOff,
+  BookOpen
 } from 'lucide-react';
 
 // --- PERFIS E EQUIPES ---
@@ -965,6 +966,16 @@ export default function App() {
         <IuviLogo height={44} negative id="g-side" />
         <div className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-bege">Transição Didática</div>
       </div>
+
+      <a
+        href="https://drive.google.com/file/d/1auHfQU8K5GwKGPGEkiImpWx4kmg3b2Qq/view"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mx-4 mb-3 flex items-center justify-center gap-2 rounded-xl bg-bege px-4 py-2.5 text-sm font-bold text-iuvi-escuro hover:brightness-95 transition"
+      >
+        <BookOpen size={16} />
+        Manual de uso do sistema
+      </a>
 
       <div className="mx-4 mb-4 p-4 rounded-xl bg-white/10">
         <div className="text-[10px] uppercase tracking-widest text-white/60 mb-1 font-semibold">Perfil ativo</div>
