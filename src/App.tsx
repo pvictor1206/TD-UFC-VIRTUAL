@@ -28,8 +28,7 @@ import {
   Wand2,
   PlayCircle,
   Eye,
-  EyeOff,
-  BookOpen
+  EyeOff
 } from 'lucide-react';
 
 // --- PERFIS E EQUIPES ---
