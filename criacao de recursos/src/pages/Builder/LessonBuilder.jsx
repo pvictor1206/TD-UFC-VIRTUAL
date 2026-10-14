@@ -3,6 +3,7 @@ import { LessonRenderer, createBlankLesson, SAMPLE_LESSON, getSectionDefinition,
 import BlockPalette, { DRAG_TYPE } from './BlockPalette';
 import BlockCard from './BlockCard';
 import ColorPicker from './ColorPicker';
+import { BuilderContext } from './BuilderContext';
 import { downloadJson, downloadLessonSite, slugify } from './exportSite';
 
 const DRAFT_KEY = 'construtor-de-aulas:rascunho';
@@ -24,7 +25,8 @@ function loadDraft() {
 // - readOnly: apenas pré-visualização, sem edição
 // - hideFileActions: oculta Abrir projeto, Salvar projeto e Baixar site
 // - hideExample: oculta o botão "Exemplo"
-export default function LessonBuilder({ initialLesson, onLessonChange, loadAssets, headerExtra, readOnly = false, hideFileActions = false, hideExample = false } = {}) {
+// - uploadImage: (file) => Promise<link>; habilita o botão "Enviar imagem" nos blocos de imagem
+export default function LessonBuilder({ initialLesson, onLessonChange, loadAssets, headerExtra, readOnly = false, hideFileActions = false, hideExample = false, uploadImage = null } = {}) {
   const embedded = initialLesson !== undefined;
   const [lesson, setLesson] = useState(() =>
     migrateLesson(embedded ? { ...createBlankLesson(), ...initialLesson } : loadDraft() || createBlankLesson())
@@ -297,6 +299,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   const previewContent = useMemo(() => lesson, [lesson]);
 
   return (
+    <BuilderContext.Provider value={{ uploadImage }}>
     <div className="min-h-screen bg-lav-soft font-[Inter] text-ink">
       <header className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 md:px-6 py-3">
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center gap-3">
@@ -565,5 +568,6 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
         </div>
       )}
     </div>
+    </BuilderContext.Provider>
   );
 }

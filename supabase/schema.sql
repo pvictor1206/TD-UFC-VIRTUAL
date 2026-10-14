@@ -311,6 +311,12 @@ insert into storage.buckets (id, name, public)
 values ('aulas-imagens', 'aulas-imagens', true)
 on conflict (id) do nothing;
 
+-- imagens das aulas: até 5 MB, só imagens
+update storage.buckets
+   set file_size_limit = 5242880,
+       allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+ where id = 'aulas-imagens';
+
 drop policy if exists materiais_select on storage.objects;
 create policy materiais_select on storage.objects for select to authenticated
   using (bucket_id = 'materiais' and public.can_see_discipline(((storage.foldername(name))[1])::bigint));

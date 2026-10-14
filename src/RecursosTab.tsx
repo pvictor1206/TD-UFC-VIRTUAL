@@ -3,6 +3,7 @@ import { Wand2, PlusCircle, Pencil, Eye, Download, FileJson, Send, CheckCircle2,
 import LessonBuilder from '@builder/LessonBuilder';
 import { downloadLessonSite, downloadJson, slugify } from '@builder/exportSite';
 import { ActionsContext } from './context';
+import * as db from './db';
 
 // Pacote standalone (JS + CSS) usado para gerar o site da aula. Carregado
 // sob demanda para não pesar no carregamento inicial do painel.
@@ -32,6 +33,7 @@ function BuilderOverlay({ resource, readOnly, hideFileActions, hideExample, onCl
         initialLesson={resource.lesson}
         onLessonChange={onChange}
         loadAssets={loadAssets}
+        uploadImage={readOnly ? null : db.uploadLessonImage}
         readOnly={readOnly}
         hideFileActions={hideFileActions}
         hideExample={hideExample}

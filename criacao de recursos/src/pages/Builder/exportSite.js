@@ -62,11 +62,56 @@ async function fetchStandaloneAssets() {
   return { js, css };
 }
 
-// Gera o .zip (index.html + standalone.js + standalone.css) e baixa.
+// Percorre as imagens da aula (bloco "image" e "carousel", inclusive dentro de seções).
+function walkImages(sections, visit) {
+  for (const s of sections || []) {
+    if (!s) continue;
+    if (s.type === 'image' && s.src) visit(s);
+    if (s.type === 'carousel') (s.images || []).forEach((img) => img && img.src && visit(img));
+    if (Array.isArray(s.children)) walkImages(s.children, visit);
+  }
+}
+
+const IMAGE_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg' };
+
+// Baixa as imagens com endereço http(s) para a pasta imagens/ do .zip e troca o endereço pelo arquivo
+// local, para o site funcionar sem internet. Se alguma não puder ser baixada, o link original é mantido.
+export async function embedImages(lesson, zip) {
+  const copy = JSON.parse(JSON.stringify(lesson));
+  const byUrl = new Map();
+  const tasks = [];
+  let count = 0;
+  walkImages(copy.sections, (obj) => {
+    const url = obj.src;
+    if (!/^https?:\/\//i.test(url)) return;
+    if (!byUrl.has(url)) {
+      count += 1;
+      const position = count;
+      byUrl.set(
+        url,
+        fetch(url)
+          .then((r) => (r.ok ? r.blob() : Promise.reject(new Error('falhou'))))
+          .then((blob) => {
+            const fromUrl = (url.split('?')[0].match(/\.([a-z0-9]{2,4})$/i) || [])[1];
+            const ext = IMAGE_EXT[blob.type] || (fromUrl ? fromUrl.toLowerCase() : 'img');
+            const name = `imagens/imagem_${String(position).padStart(2, '0')}.${ext}`;
+            zip.file(name, blob);
+            return name;
+          })
+          .catch(() => null)
+      );
+    }
+    tasks.push(byUrl.get(url).then((name) => { if (name) obj.src = name; }));
+  });
+  await Promise.all(tasks);
+  return copy;
+}
+
+// Gera o .zip (index.html + standalone.js + standalone.css + imagens/) e baixa.
 export async function downloadLessonSite(lesson, loadAssets = fetchStandaloneAssets) {
   const { js, css } = await loadAssets();
   const zip = new JSZip();
-  zip.file('index.html', buildStandaloneHtml(lesson));
+  zip.file('index.html', buildStandaloneHtml(await embedImages(lesson, zip)));
   zip.file('standalone.js', js);
   zip.file('standalone.css', css);
   const blob = await zip.generateAsync({ type: 'blob' });

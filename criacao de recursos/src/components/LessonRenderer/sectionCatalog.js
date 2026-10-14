@@ -16,6 +16,7 @@ export const FIELD_TYPES = {
   STRING_LIST: 'stringList',
   OBJECT_LIST: 'objectList',
   DATA_TABLE_ROWS: 'dataTableRows',
+  IMAGE: 'image', // imagem: enviar arquivo (se o painel permitir) ou colar o endereço
   LATEX: 'latex', // fórmula (LaTeX) com botões de símbolos e pré-visualização
   BLOCKS: 'blocks', // lista de blocos aninhados (usada pelo bloco "section")
 };
@@ -66,7 +67,7 @@ export const SECTION_CATALOG = [
     icon: '🖼️',
     description: 'Uma imagem centralizada, com legenda opcional. Amplia ao clicar.',
     fields: [
-      { key: 'src', label: 'Caminho da imagem', type: FIELD_TYPES.TEXT, help: 'Um link (https://...) ou o nome do arquivo que você vai colocar ao lado do index.html, ex: imagens/foto1.png' },
+      { key: 'src', label: 'Imagem', type: FIELD_TYPES.IMAGE, help: 'Envie um arquivo (JPG, PNG, WebP ou GIF) ou cole um link. No site baixado, as imagens vão dentro do .zip.' },
       { key: 'alt', label: 'Texto alternativo (acessibilidade)', type: FIELD_TYPES.TEXT },
       { key: 'caption', label: 'Legenda (opcional)', type: FIELD_TYPES.TEXT },
     ],
@@ -107,7 +108,7 @@ export const SECTION_CATALOG = [
         type: FIELD_TYPES.OBJECT_LIST,
         addLabel: 'Adicionar imagem',
         itemFields: [
-          { key: 'src', label: 'Caminho da imagem', type: FIELD_TYPES.TEXT },
+          { key: 'src', label: 'Imagem', type: FIELD_TYPES.IMAGE },
           { key: 'alt', label: 'Texto alternativo', type: FIELD_TYPES.TEXT },
           { key: 'caption', label: 'Legenda (opcional)', type: FIELD_TYPES.TEXT },
         ],

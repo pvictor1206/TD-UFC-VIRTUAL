@@ -1,6 +1,7 @@
 // Camada de dados (Supabase). Converte as linhas do banco (snake_case, ids de usuário em uuid)
 // para o formato que as telas já usam, e concentra todas as gravações.
 import { supabase } from './supabase';
+import { ACCEPTED_IMAGE_TYPES, MAX_INPUT_BYTES, MAX_OUTPUT_BYTES, extensionFor, shrinkImage } from './imageTools';
 
 // Precisa ser igual ao de supabase/functions/admin-users/index.ts
 export const EMAIL_DOMAIN = 'painel.example.com';
@@ -289,4 +290,23 @@ export async function removeResource(id: number) {
   const { error } = await supabase.from('resources').delete().eq('id', id);
   if (error) fail(error);
   return true;
+}
+
+/* ------------------------ imagens das aulas --------------------------- */
+
+// Envia a imagem para o bucket público "aulas-imagens" e devolve o link público.
+export async function uploadLessonImage(file: File): Promise<string> {
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) throw new Error('Use uma imagem JPG, PNG, WebP ou GIF.');
+  if (file.size > MAX_INPUT_BYTES) throw new Error('A imagem passa de 10 MB. Escolha uma menor.');
+  const prepared = await shrinkImage(file);
+  if (prepared.size > MAX_OUTPUT_BYTES) throw new Error('A imagem continua acima de 5 MB mesmo reduzida. Escolha uma menor.');
+
+  const { data: auth } = await supabase.auth.getUser();
+  const folder = auth.user?.id ?? 'anon';
+  const path = `${folder}/${crypto.randomUUID()}.${extensionFor(prepared.type)}`;
+  const up = await supabase.storage
+    .from('aulas-imagens')
+    .upload(path, prepared, { contentType: prepared.type, cacheControl: '31536000', upsert: false });
+  if (up.error) fail(up.error);
+  return supabase.storage.from('aulas-imagens').getPublicUrl(path).data.publicUrl;
 }
