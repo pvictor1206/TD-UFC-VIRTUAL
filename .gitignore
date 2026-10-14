@@ -1,2 +1,6 @@
 node_modules
 dist
+
+# Segredos locais (nunca no Git)
+.env.local
+supabase/seed.local.sql

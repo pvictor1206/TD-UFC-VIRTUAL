@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import RecursosTab from './RecursosTab';
 import { IuviLogo, UfcLogo, PatternStrip } from './Brand';
 import { ActionsContext } from './context';
+import { supabase } from './supabase';
+import * as db from './db';
 import { 
   LayoutDashboard, 
   KanbanSquare, 
@@ -29,54 +31,11 @@ import {
   EyeOff
 } from 'lucide-react';
 
-// --- DADOS INICIAIS ---
-
+// --- PERFIS E EQUIPES ---
 // Perfis: 'admin' (Administrador), 'tecnico' (Suporte técnico) e 'conteudista' (Professor).
-// EQUIPES: o administrador cria equipes. Cada equipe tem suportes técnicos e conteudistas (user.teamId).
-// Todos os suportes técnicos de uma equipe enxergam as disciplinas e os conteudistas dessa equipe, e de nenhuma outra.
-// A dinâmica suporte técnico x conteudista continua a mesma dentro de cada equipe.
-const ADMIN_USER = { id: 4, name: 'Administrador', role: 'admin', username: 'administrador', password: '123' };
-
-const INITIAL_TEAMS = [{ id: 1, name: 'Equipe EAD' }];
-
-const INITIAL_USERS = [
-  ADMIN_USER,
-  { id: 1, name: 'Suporte Técnico EAD', role: 'tecnico', username: 'admin', password: '123', teamId: 1 },
-  { id: 2, name: 'Prof. Carlos Silva', role: 'conteudista', username: 'carlos', password: '123', teamId: 1 },
-  { id: 3, name: 'Profa. Mariana Costa', role: 'conteudista', username: 'mariana', password: '123', teamId: 1 }
-];
-
-// Dados salvos antes das equipes: cada suporte técnico vira uma equipe própria, com os professores
-// que já eram dele (assim ninguém passa a enxergar o que não via).
-const normalizeAccess = (savedUsers, savedTeams) => {
-  const fresh = !(Array.isArray(savedUsers) && savedUsers.length);
-  let users = fresh ? INITIAL_USERS : savedUsers;
-  let teams = Array.isArray(savedTeams) && savedTeams.length ? savedTeams : null;
-
-  if (!users.some(u => u.role === 'admin')) {
-    const idTaken = users.some(u => u.id === ADMIN_USER.id);
-    const nameTaken = users.some(u => u.username === ADMIN_USER.username);
-    users = [{ ...ADMIN_USER, id: idTaken ? Date.now() : ADMIN_USER.id, username: nameTaken ? 'administrador1' : ADMIN_USER.username }, ...users];
-  }
-
-  if (!teams) {
-    if (fresh) {
-      teams = INITIAL_TEAMS;
-    } else {
-      const tecs = users.filter(u => u.role === 'tecnico');
-      teams = tecs.length ? tecs.map(t => ({ id: t.id, name: 'Equipe ' + t.name })) : [{ id: 1, name: 'Equipe Principal' }];
-      users = users.map(u => {
-        if (u.teamId != null) return u;
-        if (u.role === 'tecnico') return { ...u, teamId: u.id };
-        if (u.role === 'conteudista') return { ...u, teamId: teams.some(t => t.id === u.createdBy) ? u.createdBy : teams[0].id };
-        return u;
-      });
-    }
-  }
-  // qualquer membro sem equipe vai para a primeira
-  users = users.map(u => (u.role !== 'admin' && u.teamId == null ? { ...u, teamId: teams[0].id } : u));
-  return { users, teams };
-};
+// O administrador cria equipes; cada equipe tem suportes técnicos e conteudistas (profile.teamId).
+// Todos os suportes técnicos de uma equipe veem as disciplinas e os conteudistas dela, e de nenhuma outra.
+// Os dados ficam no Supabase (ver supabase/schema.sql); as regras de acesso são aplicadas pelo próprio banco.
 
 const KANBAN_STAGES = [
   { id: 'recebimento', title: 'Recebimento' },
@@ -85,77 +44,6 @@ const KANBAN_STAGES = [
   { id: 'revisao', title: 'Revisão Final' },
   { id: 'implantado', title: 'Implantado no AVA' }
 ];
-
-const INITIAL_DATA = [
-  {
-    id: 101,
-    title: 'Introdução à Programação',
-    conteudistaId: 2,
-    stage: 'producao',
-    materials: [
-      { id: 1, name: 'Apostila_Unidade1.pdf', date: '2026-05-10', sender: 'Prof. Carlos Silva', status: 'recebido' },
-      { id: 2, name: 'Roteiros_Videos.docx', date: '2026-05-12', sender: 'Prof. Carlos Silva', status: 'aguandando_analise' }
-    ],
-    pendencies: [
-      { 
-        id: 1, 
-        text: 'O vídeo da aula 3 está sem áudio nos primeiros 10 segundos.', 
-        status: 'aberta', 
-        author: 'Equipe Técnica EAD', 
-        type: 'tecnico_para_professor',
-        comments: [
-          { id: 11, author: 'Prof. Carlos Silva', text: 'Vou regravar essa introdução e enviar até amanhã.', date: '16/05/2026' }
-        ]
-      },
-      {
-        id: 2,
-        text: 'Gostaria de trocar o slide do módulo 1 por uma versão mais recente.',
-        status: 'aberta',
-        author: 'Prof. Carlos Silva',
-        type: 'professor_para_tecnico',
-        comments: []
-      }
-    ]
-  },
-  {
-    id: 102,
-    title: 'História da Arte Moderna',
-    conteudistaId: 3,
-    stage: 'design_educacional',
-    materials: [
-      { id: 3, name: 'Banco_Imagens_AltaRes.zip', date: '2026-05-15', sender: 'Profa. Mariana Costa', status: 'aguandando_analise' }
-    ],
-    pendencies: []
-  },
-  {
-    id: 103,
-    title: 'Cálculo Diferencial',
-    conteudistaId: 2,
-    stage: 'recebimento',
-    materials: [],
-    pendencies: [
-      { 
-        id: 3, 
-        text: 'Aguardando envio das ementas atualizadas para iniciar.', 
-        status: 'aberta', 
-        author: 'Equipe Técnica EAD', 
-        type: 'tecnico_para_professor',
-        comments: [] 
-      }
-    ]
-  }
-];
-
-// Persistência simples no navegador (os dados do painel são só locais)
-const STORAGE_KEY = 'iuvi-painel:v1';
-const loadSaved = (key, fallback) => {
-  try {
-    const raw = localStorage.getItem(`${STORAGE_KEY}:${key}`);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
-};
 
   // --- KANBAN COM CONTROLE DE IDA E VOLTA ---
   const KanbanTab = ({ discipline, isTecnico }) => {
@@ -367,12 +255,29 @@ const loadSaved = (key, fallback) => {
   const MaterialsTab = ({ discipline, isTecnico }) => {
     const { addMaterial, changeMaterialStatus } = useContext(ActionsContext);
     const [newFileName, setNewFileName] = useState('');
+    const [newFile, setNewFile] = useState(null);
+    const [sending, setSending] = useState(false);
 
-    const handleUpload = (e) => {
+    const handleUpload = async (e) => {
       e.preventDefault();
-      if(newFileName.trim() === '') return;
-      addMaterial(discipline.id, newFileName);
+      const name = newFileName.trim() || newFile?.name || '';
+      if (!name) return;
+      setSending(true);
+      await addMaterial(discipline.id, name, newFile);
+      setSending(false);
       setNewFileName('');
+      setNewFile(null);
+      const input = document.getElementById('material-file');
+      if (input) input.value = '';
+    };
+
+    const openMaterial = async (file) => {
+      try {
+        if (file.storagePath) window.open(await db.materialUrl(file.storagePath), '_blank', 'noopener');
+        else if (/^https?:\/\//i.test(file.name)) window.open(file.name, '_blank', 'noopener');
+      } catch (err) {
+        alert(err.message);
+      }
     };
 
     const getStatusLabel = (status) => {
@@ -394,22 +299,32 @@ const loadSaved = (key, fallback) => {
         {/* Formulário de Envio */}
         <div className="bg-white p-6 border border-[#D9CFC6] rounded-xl mb-8 shadow-sm">
           <h4 className="font-bold mb-2 text-[#991F50]">Enviar novo material para transição</h4>
-          <p className="text-sm text-zinc-600 mb-4">Adicione o link do Google Drive ou nome do material didático para a equipe técnica analisar.</p>
-          <form onSubmit={handleUpload} className="flex gap-3">
-            <input 
-              type="text" 
+          <p className="text-sm text-zinc-600 mb-4">Envie o arquivo (PDF, DOCX, imagens, ZIP…) ou cole o link do Google Drive para o suporte técnico analisar.</p>
+          <form onSubmit={handleUpload} className="space-y-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                id="material-file"
+                type="file"
+                onChange={(e) => setNewFile(e.target.files?.[0] || null)}
+                aria-label="Arquivo do material"
+                className="flex-1 border border-[#D9CFC6] rounded-xl p-2 text-sm bg-[#F8F5F1]/30 file:mr-3 file:rounded-lg file:border-0 file:bg-[#FBEEF3] file:px-3 file:py-1.5 file:font-bold file:text-[#991F50]"
+              />
+              <button
+                type="submit"
+                disabled={sending || (!newFile && !newFileName.trim())}
+                className="bg-iuvi-roxo text-white px-6 py-2.5 font-bold flex items-center justify-center gap-2 hover:bg-iuvi-roxo-medio transition-colors text-sm shrink-0 disabled:opacity-50"
+              >
+                <UploadCloud size={18} />
+                {sending ? 'Enviando…' : 'Enviar Material'}
+              </button>
+            </div>
+            <input
+              type="text"
               value={newFileName}
               onChange={(e) => setNewFileName(e.target.value)}
-              placeholder="Ex: Roteiro_Vídeos_Unidade_2.pdf ou Link para Pasta do Drive" 
-              className="flex-1 border border-[#D9CFC6] rounded-xl p-2.5 focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm bg-[#F8F5F1]/30 font-medium"
+              placeholder={newFile ? 'Nome do material (opcional — por padrão usa o nome do arquivo)' : 'Ou cole um link (Google Drive) / nome do material'}
+              className="w-full border border-[#D9CFC6] rounded-xl p-2.5 focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20 text-sm bg-[#F8F5F1]/30 font-medium"
             />
-            <button 
-              type="submit"
-              className="bg-iuvi-roxo text-white px-6 py-2.5 font-bold flex items-center gap-2 hover:bg-iuvi-roxo-medio transition-colors text-sm shrink-0"
-            >
-              <UploadCloud size={18} />
-              Enviar Material
-            </button>
           </form>
         </div>
 
@@ -427,7 +342,12 @@ const loadSaved = (key, fallback) => {
                       <FileText size={24} />
                     </div>
                     <div>
-                      <h5 className="font-bold text-base text-zinc-900">{file.name}</h5>
+                      <h5 className="font-bold text-base text-zinc-900 break-all">{file.name}</h5>
+                      {(file.storagePath || /^https?:\/\//i.test(file.name)) && (
+                        <button type="button" onClick={() => openMaterial(file)} className="mt-1 text-xs font-bold text-[#991F50] underline hover:text-[#801436]">
+                          {file.storagePath ? 'Baixar arquivo' : 'Abrir link'}
+                        </button>
+                      )}
                       <div className="flex flex-wrap items-center gap-3 mt-1 text-xs text-zinc-500">
                         <span>Enviado por: <strong>{file.sender}</strong></span>
                         <span>•</span>
@@ -646,22 +566,100 @@ const loadSaved = (key, fallback) => {
 // --- COMPONENTE PRINCIPAL ---
 
 export default function App() {
-  const [initialAccess] = useState(() => normalizeAccess(loadSaved('users', null), loadSaved('teams', null)));
-  const [users, setUsers] = useState(initialAccess.users);
-  const [teams, setTeams] = useState(initialAccess.teams);
+  const [users, setUsers] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
-  const [disciplines, setDisciplines] = useState(() => loadSaved('disciplines', INITIAL_DATA));
+  const [disciplines, setDisciplines] = useState([]);
+  const [booting, setBooting] = useState(true); // verificando se já existe sessão
+  const [loggingIn, setLoggingIn] = useState(false);
+  const loadedUserRef = React.useRef(null);
 
-  useEffect(() => {
+  const applyData = (data) => {
+    setTeams(data.teams);
+    setUsers(data.users);
+    setDisciplines(data.disciplines);
+  };
+
+  // Recarrega tudo o que o usuário logado pode ver.
+  const refresh = async () => {
     try {
-      localStorage.setItem(`${STORAGE_KEY}:users`, JSON.stringify(users));
-      localStorage.setItem(`${STORAGE_KEY}:teams`, JSON.stringify(teams));
-      localStorage.setItem(`${STORAGE_KEY}:disciplines`, JSON.stringify(disciplines));
-    } catch {
-      // armazenamento indisponível ou cheio — segue só em memória
+      applyData(await db.loadAll());
+    } catch (err) {
+      console.error(err);
     }
-  }, [users, teams, disciplines]);
-  
+  };
+
+  // Executa uma gravação; em caso de erro avisa e devolve undefined. Por padrão recarrega os dados depois.
+  const run = async (fn, reload = true) => {
+    try {
+      const result = await fn();
+      if (reload) await refresh();
+      return result;
+    } catch (err) {
+      console.error(err);
+      alert(err?.message || 'Algo deu errado. Tente de novo.');
+      await refresh();
+      return undefined;
+    }
+  };
+
+  // Sessão: mantém o login entre visitas e carrega os dados do usuário.
+  useEffect(() => {
+    let alive = true;
+    const boot = async (userId) => {
+      try {
+        if (!userId) { loadedUserRef.current = null; setCurrentUser(null); return; }
+        if (loadedUserRef.current === userId) return;
+        const profile = await db.fetchProfile(userId);
+        if (!alive) return;
+        if (!profile) {
+          await db.signOut();
+          setLoginError('Este acesso ainda não tem perfil no painel. Fale com o administrador.');
+          return;
+        }
+        const data = await db.loadAll();
+        if (!alive) return;
+        loadedUserRef.current = userId;
+        applyData(data);
+        setCurrentUser(profile);
+      } catch (err) {
+        console.error(err);
+        setLoginError(err?.message || 'Não foi possível carregar os dados.');
+      } finally {
+        if (alive) setBooting(false);
+      }
+    };
+    supabase.auth.getSession().then(({ data }) => boot(data.session?.user?.id));
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      // fora do callback para não travar o cliente de autenticação
+      if (event === 'SIGNED_IN') setTimeout(() => boot(session?.user?.id), 0);
+      if (event === 'SIGNED_OUT') {
+        setTimeout(() => {
+          loadedUserRef.current = null;
+          setCurrentUser(null); setUsers([]); setTeams([]); setDisciplines([]);
+          setActiveDisciplineId(null); setSidebarTab('dashboard');
+        }, 0);
+      }
+    });
+    return () => { alive = false; sub.subscription.unsubscribe(); };
+  }, []);
+
+  // Tempo real: quando alguém muda algo, a tela atualiza sozinha.
+  useEffect(() => {
+    if (!currentUser) return undefined;
+    let timer;
+    const schedule = () => { clearTimeout(timer); timer = setTimeout(refresh, 600); };
+    const channel = supabase.channel('painel-' + currentUser.id);
+    ['teams', 'profiles', 'disciplines', 'tasks', 'materials', 'pendencies', 'pendency_comments', 'resources'].forEach((table) => {
+      channel.on('postgres_changes', { event: '*', schema: 'public', table }, (payload) => {
+        if (table === 'resources' && payload?.new?.last_edited_by === currentUser.id) return; // ecos da própria edição
+        schedule();
+      });
+    });
+    channel.subscribe();
+    return () => { clearTimeout(timer); supabase.removeChannel(channel); };
+  }, [currentUser?.id]);
+
   // Controle de Navegação e Modais
   const [activeDisciplineId, setActiveDisciplineId] = useState(null);
   const [activeTab, setActiveTab] = useState('kanban'); // kanban, materiais, pendencias
@@ -719,263 +717,153 @@ export default function App() {
 
   const activeDiscipline = disciplines.find(d => d.id === activeDisciplineId);
 
-  // --- AÇÕES DO ESTADO ---
+  // --- AÇÕES (gravam no Supabase) ---
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const foundUser = users.find(u => u.username === loginUsername && u.password === loginPassword);
-    if (foundUser) {
-      setCurrentUser(foundUser);
-      setActiveDisciplineId(null);
-      setSidebarTab('dashboard');
-      setLoginError('');
+    setLoginError('');
+    setLoggingIn(true);
+    try {
+      await db.signIn(loginUsername, loginPassword);
       setLoginUsername('');
       setLoginPassword('');
-    } else {
-      setLoginError('Usuário ou senha incorretos.');
+      setActiveDisciplineId(null);
+      setSidebarTab('dashboard');
+    } catch (err) {
+      setLoginError(err.message);
+    } finally {
+      setLoggingIn(false);
     }
   };
 
-  const handleCreateProfessor = (e) => {
+  const handleLogout = async () => {
+    await db.signOut();
+  };
+
+  // Suporte técnico cadastra conteudistas da própria equipe
+  const handleCreateProfessor = async (e) => {
     e.preventDefault();
     if (!newProfName || !newProfUser || !newProfPass) return;
-    // Evita duplicados básicos
-    if (users.find(u => u.username === newProfUser)) {
-      alert('Este nome de usuário já está sendo utilizado!');
-      return;
-    }
-
-    const newProf = {
-      id: Date.now(),
-      name: newProfName,
-      role: 'conteudista',
-      username: newProfUser,
-      password: newProfPass,
-      teamId: currentUser.teamId // o professor entra na equipe de quem o cadastra
-    };
-
-    setUsers([...users, newProf]);
-    setNewProfName('');
-    setNewProfUser('');
-    setNewProfPass('');
+    const ok = await run(() => db.createMember({
+      name: newProfName, username: newProfUser, password: newProfPass, role: 'conteudista', teamId: currentUser.teamId,
+    }));
+    if (ok) { setNewProfName(''); setNewProfUser(''); setNewProfPass(''); }
   };
 
-  const handleCreateTeam = (e) => {
+  const handleCreateTeam = async (e) => {
     e.preventDefault();
     const name = newTeamName.trim();
     if (!name) return;
-    const id = Date.now();
-    setTeams([...teams, { id, name }]);
-    setNewTeamName('');
-    setMemberTeamId(id); // já abre o cadastro de membros da nova equipe
-    setMemberDraft({ name: '', username: '', password: '', role: 'tecnico' });
+    const team = await run(() => db.createTeam(name));
+    if (team) {
+      setNewTeamName('');
+      setMemberTeamId(team.id); // já abre o cadastro de membros da nova equipe
+      setMemberDraft({ name: '', username: '', password: '', role: 'tecnico' });
+    }
   };
 
-  const handleCreateMember = (e) => {
+  const handleCreateMember = async (e) => {
     e.preventDefault();
     const d = memberDraft;
     if (!d.name.trim() || !d.username.trim() || !d.password) return;
-    if (users.find(u => u.username === d.username.trim())) {
-      alert('Este nome de usuário já está sendo utilizado!');
-      return;
-    }
-    setUsers([...users, {
-      id: Date.now(),
-      name: d.name.trim(),
-      role: d.role,
-      username: d.username.trim(),
-      password: d.password,
-      teamId: memberTeamId
-    }]);
-    setMemberDraft({ name: '', username: '', password: '', role: d.role });
+    const ok = await run(() => db.createMember({
+      name: d.name.trim(), username: d.username.trim(), password: d.password, role: d.role, teamId: memberTeamId,
+    }));
+    if (ok) setMemberDraft({ name: '', username: '', password: '', role: d.role });
   };
 
-  const handleCreateDiscipline = (e) => {
+  const handleCreateDiscipline = async (e) => {
     e.preventDefault();
     if (!newDiscTitle || !newDiscTeacherId) return;
+    const id = await run(() => db.createDiscipline({ title: newDiscTitle.trim(), conteudistaId: newDiscTeacherId }));
+    if (id) {
+      setNewDiscTitle('');
+      setNewDiscTeacherId('');
+      setNewDiscTeamId('');
+      setSidebarTab('dashboard'); // volta à visão geral para ver o novo projeto
+    }
+  };
 
-    const newDisc = {
-      id: Date.now(),
-      title: newDiscTitle,
-      conteudistaId: parseInt(newDiscTeacherId),
-      stage: 'recebimento',
-      materials: [],
-      pendencies: []
-    };
+  // Atualiza a tela na hora (otimista) e confirma no banco em seguida.
+  const patchDiscipline = (disciplineId, fn) =>
+    setDisciplines(prev => prev.map(d => (d.id === disciplineId ? fn(d) : d)));
 
-    setDisciplines([...disciplines, newDisc]);
-    setNewDiscTitle('');
-    setNewDiscTeacherId('');
-    setNewDiscTeamId('');
-    setSidebarTab('dashboard'); // Retorna à visão geral para ver o novo projeto
+  // --- KANBAN ---
+  // completeStageId: ao avançar, marca a etapa que está sendo concluída
+  const moveStage = (disciplineId, newStage, completeStageId) => {
+    const d = disciplines.find(x => x.id === disciplineId);
+    const stageDone = completeStageId ? { ...(d?.stageDone || {}), [completeStageId]: true } : (d?.stageDone || {});
+    patchDiscipline(disciplineId, x => ({ ...x, stage: newStage, stageDone }));
+    return run(() => db.updateDiscipline(disciplineId, { stage: newStage, stage_done: stageDone }));
+  };
+
+  // Botão de check de cada etapa do Kanban (Suporte técnico / Administrador)
+  const setStageDone = (disciplineId, stageId, done) => {
+    const d = disciplines.find(x => x.id === disciplineId);
+    const stageDone = { ...(d?.stageDone || {}), [stageId]: done };
+    patchDiscipline(disciplineId, x => ({ ...x, stageDone }));
+    return run(() => db.updateDiscipline(disciplineId, { stage_done: stageDone }));
+  };
+
+  const addTask = (disciplineId, { title, description, dueDate, stage }) =>
+    run(() => db.addTask({ disciplineId, title, description, dueDate, stage, createdBy: currentUser.id }));
+
+  const updateTask = (disciplineId, taskId, patch) => {
+    patchDiscipline(disciplineId, x => ({ ...x, tasks: x.tasks.map(t => (t.id === taskId ? { ...t, ...patch } : t)) }));
+    return run(() => db.updateTask(taskId, patch));
+  };
+
+  const removeTask = (disciplineId, taskId) => run(() => db.removeTask(taskId));
+
+  // --- MATERIAIS ---
+  const changeMaterialStatus = (disciplineId, materialId, newStatus) => {
+    patchDiscipline(disciplineId, x => ({ ...x, materials: x.materials.map(m => (m.id === materialId ? { ...m, status: newStatus } : m)) }));
+    return run(() => db.updateMaterialStatus(materialId, newStatus));
+  };
+
+  const addMaterial = (disciplineId, name, file) =>
+    run(() => db.addMaterial({ disciplineId, name, file, senderId: currentUser.id }));
+
+  // --- PENDÊNCIAS E FÓRUM ---
+  const addPendency = (disciplineId, text, type) =>
+    run(() => db.addPendency({ disciplineId, text, type, authorId: currentUser.id }));
+
+  const resolvePendency = (disciplineId, pendencyId) => run(() => db.resolvePendency(pendencyId));
+
+  const addCommentToPendency = (disciplineId, pendencyId, commentText) => {
+    if (!commentText.trim()) return undefined;
+    return run(() => db.addComment({ pendencyId, text: commentText.trim(), authorId: currentUser.id }));
   };
 
   // --- RECURSOS DIDÁTICOS (Editor Estrutural) ---
-
-  const patchResources = (disciplineId, fn) =>
-    setDisciplines(prev => prev.map(d =>
-      d.id === disciplineId ? { ...d, resources: fn(d.resources || []) } : d
-    ));
-
-  const addResource = (disciplineId, title, aula = '') => {
-    const id = Date.now();
-    const now = new Date().toISOString();
-    patchResources(disciplineId, list => [...list, {
-      id,
+  const addResource = (disciplineId, title, aula = '') =>
+    run(() => db.addResource({
+      disciplineId,
       lesson: { aula, titulo: title, objetivo: '', sections: [] },
-      status: 'rascunho',
-      feedback: '',
-      author: currentUser.name,
-      lastEditedBy: currentUser.name,
-      createdAt: now,
-      updatedAt: now
-    }]);
-    return id;
-  };
+      authorId: currentUser.id,
+    }));
 
   const updateResource = (disciplineId, resourceId, patch) => {
-    patchResources(disciplineId, list => list.map(r =>
-      r.id === resourceId ? { ...r, ...patch, updatedAt: new Date().toISOString() } : r
-    ));
-  };
-
-  const removeResource = (disciplineId, resourceId) => {
-    patchResources(disciplineId, list => list.filter(r => r.id !== resourceId));
-  };
-
-  // completeStageId: ao avançar, marca a etapa que está sendo concluída
-  const moveStage = (disciplineId, newStage, completeStageId) => {
-    setDisciplines(prev => prev.map(d =>
-      d.id === disciplineId
-        ? {
-            ...d,
-            stage: newStage,
-            stageDone: completeStageId ? { ...(d.stageDone || {}), [completeStageId]: true } : d.stageDone,
-          }
-        : d
-    ));
-  };
-
-  // Botão de check de cada etapa do Kanban (Equipe Técnica / Administrador)
-  const setStageDone = (disciplineId, stageId, done) =>
-    setDisciplines(prev => prev.map(d =>
-      d.id === disciplineId ? { ...d, stageDone: { ...(d.stageDone || {}), [stageId]: done } } : d
-    ));
-
-  // --- TAREFAS DO KANBAN (criadas pela Equipe Técnica / Administrador) ---
-  const patchTasks = (disciplineId, fn) =>
-    setDisciplines(prev => prev.map(d =>
-      d.id === disciplineId ? { ...d, tasks: fn(d.tasks || []) } : d
-    ));
-
-  const addTask = (disciplineId, { title, description, dueDate, stage }) =>
-    patchTasks(disciplineId, list => [...list, {
-      id: Date.now(),
-      title,
-      description: description || '',
-      dueDate: dueDate || '',
-      stage,
-      done: false,
-      createdBy: currentUser.name,
-      createdAt: new Date().toISOString(),
-    }]);
-
-  const updateTask = (disciplineId, taskId, patch) =>
-    patchTasks(disciplineId, list => list.map(t => (t.id === taskId ? { ...t, ...patch } : t)));
-
-  const removeTask = (disciplineId, taskId) =>
-    patchTasks(disciplineId, list => list.filter(t => t.id !== taskId));
-
-  const changeMaterialStatus = (disciplineId, materialId, newStatus) => {
-    setDisciplines(disciplines.map(d => {
-      if (d.id === disciplineId) {
-        return {
-          ...d,
-          materials: d.materials.map(m => 
-            m.id === materialId ? { ...m, status: newStatus } : m
-          )
-        };
-      }
-      return d;
+    const now = new Date().toISOString();
+    patchDiscipline(disciplineId, x => ({
+      ...x,
+      resources: x.resources.map(r => (r.id === resourceId ? { ...r, ...patch, updatedAt: now } : r)),
     }));
+    // só o texto da aula (autosave do editor) não precisa recarregar tudo
+    const lessonOnly = Object.keys(patch).every(k => k === 'lesson' || k === 'lastEditedBy');
+    return run(() => db.updateResource(resourceId, patch), !lessonOnly);
   };
 
-  const addMaterial = (disciplineId, fileName) => {
-    setDisciplines(disciplines.map(d => {
-      if (d.id === disciplineId) {
-        return {
-          ...d,
-          materials: [...d.materials, {
-            id: Date.now(),
-            name: fileName,
-            date: new Date().toISOString().split('T')[0],
-            sender: currentUser.name,
-            status: 'aguandando_analise'
-          }]
-        };
-      }
-      return d;
-    }));
-  };
+  const removeResource = (disciplineId, resourceId) => run(() => db.removeResource(resourceId));
 
-  const addPendency = (disciplineId, text, type) => {
-    setDisciplines(disciplines.map(d => {
-      if (d.id === disciplineId) {
-        return {
-          ...d,
-          pendencies: [...d.pendencies, {
-            id: Date.now(),
-            text,
-            status: 'aberta',
-            author: currentUser.name,
-            type: type,
-            comments: []
-          }]
-        };
-      }
-      return d;
-    }));
-  };
-
-  const resolvePendency = (disciplineId, pendencyId) => {
-    setDisciplines(disciplines.map(d => {
-      if (d.id === disciplineId) {
-        return {
-          ...d,
-          pendencies: d.pendencies.map(p => 
-            p.id === pendencyId ? { ...p, status: 'resolvida' } : p
-          )
-        };
-      }
-      return d;
-    }));
-  };
-
-  const addCommentToPendency = (disciplineId, pendencyId, commentText) => {
-    if (!commentText.trim()) return;
-    setDisciplines(disciplines.map(d => {
-      if (d.id === disciplineId) {
-        return {
-          ...d,
-          pendencies: d.pendencies.map(p => {
-            if (p.id === pendencyId) {
-              return {
-                ...p,
-                comments: [...p.comments, {
-                  id: Date.now(),
-                  author: currentUser.name,
-                  text: commentText,
-                  date: new Date().toLocaleDateString('pt-BR')
-                }]
-              };
-            }
-            return p;
-          })
-        };
-      }
-      return d;
-    }));
-  };
+  // --- CARREGANDO SESSÃO ---
+  if (booting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8F5F1] text-zinc-600 font-semibold">
+        Carregando…
+      </div>
+    );
+  }
 
   // --- TELA DE LOGIN ---
   if (!currentUser) {
@@ -999,7 +887,7 @@ export default function App() {
           <div className="w-full max-w-sm">
             <div className="mb-8 lg:hidden"><IuviLogo height={60} id="g-login-m" /></div>
             <h1 className="text-3xl font-extrabold text-iuvi mb-1">Acesse o painel</h1>
-            <p className="text-zinc-500 mb-8">Entre com seu usuário e senha.</p>
+            <p className="text-zinc-500 mb-8">Entre com seu usuário (ou e-mail) e senha.</p>
 
             {loginError && (
               <div role="alert" className="bg-[#FDECEC] text-[#9B1C1C] p-3 mb-4 rounded-lg text-sm font-medium">
@@ -1009,7 +897,7 @@ export default function App() {
 
             <form onSubmit={handleLogin} className="space-y-4 mb-8">
               <div>
-                <label htmlFor="login-user" className="block text-sm font-semibold mb-1.5">Usuário</label>
+                <label htmlFor="login-user" className="block text-sm font-semibold mb-1.5">Usuário ou e-mail</label>
                 <input
                   id="login-user"
                   type="text"
@@ -1042,18 +930,12 @@ export default function App() {
               </div>
               <button
                 type="submit"
-                className="w-full py-3 bg-iuvi hover:bg-iuvi-2 text-white font-bold rounded-lg transition-colors"
+                disabled={loggingIn}
+                className="w-full py-3 bg-iuvi hover:bg-iuvi-2 text-white font-bold rounded-lg transition-colors disabled:opacity-60"
               >
-                Entrar
+                {loggingIn ? 'Entrando…' : 'Entrar'}
               </button>
             </form>
-
-            <div className="bg-[#FBF3E4] border border-bege rounded-lg p-4 text-xs text-zinc-700">
-              <h4 className="font-bold text-iuvi-escuro mb-1.5">Acesso rápido para testes</h4>
-              <p>Administrador: <strong>administrador</strong> / <strong>123</strong></p>
-              <p>Suporte técnico: <strong>admin</strong> / <strong>123</strong></p>
-              <p>Conteudista: <strong>carlos</strong> ou <strong>mariana</strong> / <strong>123</strong></p>
-            </div>
 
             <div className="mt-10 pt-6 border-t border-[#E6DFD7] flex items-center justify-center">
               <UfcLogo height={64} />
@@ -1147,7 +1029,7 @@ export default function App() {
           <UfcLogo height={64} white />
         </div>
         <button
-          onClick={() => { setCurrentUser(null); setActiveDisciplineId(null); setSidebarTab('dashboard'); }}
+          onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2 text-white/70 hover:text-white transition-colors text-sm font-medium"
         >
           <LogOut size={18} />
@@ -1231,7 +1113,6 @@ export default function App() {
                   <h4 className="font-bold text-zinc-900">{prof.name}</h4>
                   <div className="flex items-center gap-4 mt-1 text-xs text-zinc-500">
                     <span>Login: <strong className="font-mono">{prof.username}</strong></span>
-                    <span>Senha: <strong className="font-mono">{prof.password}</strong></span>
                   </div>
                 </div>
                 <div className="bg-[#FBEEF3] p-2 border border-[#F0CFDB]">
@@ -1298,7 +1179,6 @@ export default function App() {
                 <div className="font-bold text-sm text-zinc-900">{u.name}</div>
                 <div className="mt-0.5 flex flex-wrap gap-x-4 text-xs text-zinc-500">
                   <span>Login: <strong className="font-mono">{u.username}</strong></span>
-                  <span>Senha: <strong className="font-mono">{u.password}</strong></span>
                 </div>
               </div>
             );

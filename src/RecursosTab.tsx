@@ -61,12 +61,13 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
   const resources = discipline.resources || [];
   const editing = openBuilder && resources.find((r) => r.id === openBuilder.id);
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
     const title = newTitle.trim() || discipline.title;
     const aula = newAula.trim();
     if (!aula) return; // número da aula é obrigatório
-    const id = addResource(discipline.id, title, aula);
+    const id = await addResource(discipline.id, title, aula);
+    if (!id) return; // erro já foi avisado
     setNewTitle(discipline.title);
     setNewAula('');
     setOpenBuilder({ id, readOnly: false });
@@ -88,7 +89,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
   };
 
   // O professor só edita/envia os recursos que ele mesmo criou
-  const canProfessorEdit = (r) => r.author === currentUser.name && (r.status === 'rascunho' || r.status === 'ajuste');
+  const canProfessorEdit = (r) => r.authorId === currentUser.id && (r.status === 'rascunho' || r.status === 'ajuste');
 
   if (editing) {
     return (
