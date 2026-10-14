@@ -671,6 +671,14 @@ export default function App() {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [guideOpen, setGuideOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false); // aviso "Deseja sair do sistema?"
+
+  useEffect(() => {
+    if (!confirmLogout) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setConfirmLogout(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [confirmLogout]);
 
   useEffect(() => {
     if (!guideOpen) return undefined;
@@ -1033,7 +1041,7 @@ export default function App() {
           <UfcLogo height={64} white />
         </div>
         <button
-          onClick={handleLogout}
+          onClick={() => setConfirmLogout(true)}
           className="w-full flex items-center gap-3 px-3 py-2 text-white/70 hover:text-white transition-colors text-sm font-medium"
         >
           <LogOut size={18} />
@@ -1541,6 +1549,41 @@ export default function App() {
       <main className="flex-1 overflow-auto">
         {renderMainContent()}
       </main>
+
+      {/* Aviso antes de sair */}
+      {confirmLogout && (
+        <div
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 p-4"
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmLogout(false); }}
+        >
+          <div role="alertdialog" aria-modal="true" aria-labelledby="logout-title" aria-describedby="logout-desc" className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-[#FBEEF3] text-[#991F50]">
+              <LogOut size={22} />
+            </div>
+            <h2 id="logout-title" className="text-lg font-extrabold text-zinc-900">Deseja sair do sistema?</h2>
+            <p id="logout-desc" className="mt-1 text-sm text-zinc-600">
+              Você precisará entrar novamente com seu usuário e senha. O que você já fez está salvo.
+            </p>
+            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                autoFocus
+                onClick={() => setConfirmLogout(false)}
+                className="rounded-xl border border-[#D9CFC6] px-5 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => { setConfirmLogout(false); handleLogout(); }}
+                className="rounded-xl bg-[#991F50] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#801436]"
+              >
+                Sim, sair
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Guia em vídeo do Editor Estrutural (arquivo guia-editor-estrutural.html na raiz do site) */}
       {guideOpen && (
