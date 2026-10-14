@@ -1396,7 +1396,7 @@ export default function App() {
       <div className="p-8">
         <header className="mb-8">
           <h2 className="text-3xl font-extrabold mb-1 text-[#991F50] tracking-tight">Painel de Projetos</h2>
-          <p className="text-zinc-600 text-sm">Gestão e acompanhamento operacional da transição didática da **IUVI**.</p>
+          <p className="text-zinc-600 text-sm">Gestão e acompanhamento operacional da transição didática da IUVI.</p>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
