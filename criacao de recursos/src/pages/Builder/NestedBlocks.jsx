@@ -31,8 +31,8 @@ export default function NestedBlocks({ value, onChange, sectionNumber }) {
         <p className="text-xs text-gray-500 italic">Nenhum componente nesta seção ainda. Adicione abaixo ou pela barra lateral.</p>
       )}
       {blocks.map((block, i) => (
+        <div key={i} data-child-index={i} style={{ scrollMarginTop: 190 }}>
         <BlockCard
-          key={i}
           section={block}
           index={i}
           total={blocks.length}
@@ -43,6 +43,7 @@ export default function NestedBlocks({ value, onChange, sectionNumber }) {
           onDuplicate={() => duplicate(i)}
           onMove={(dir) => move(i, dir)}
         />
+        </div>
       ))}
       <select
         value=""

@@ -73,6 +73,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   // Índice do bloco recém-criado/duplicado, para rolar a tela até ele
   const [scrollToIndex, setScrollToIndex] = useState(null);
   const scrollAlignRef = useRef('center');
+  const scrollChildRef = useRef(null); // posição do componente recém-adicionado dentro da seção
 
   useEffect(() => {
     if (embedded) {
@@ -123,7 +124,14 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     scrollAlignRef.current = 'center';
     // Rola sem animação, depois que a nova seção já foi desenhada (a animação era
     // interrompida quando a página crescia no meio do movimento).
-    const go = () => document.querySelector(`[data-block-index="${target}"]`)?.scrollIntoView({ behavior: 'auto', block: align });
+    const child = scrollChildRef.current;
+    scrollChildRef.current = null;
+    const go = () => {
+      const section = document.querySelector(`[data-block-index="${target}"]`);
+      // Componente recém-adicionado: vai direto nele; senão, para a seção.
+      const el = (child !== null && section?.querySelector(`[data-child-index="${child}"]`)) || section;
+      el?.scrollIntoView({ behavior: 'auto', block: el === section ? align : 'start' });
+    };
     requestAnimationFrame(() => { go(); requestAnimationFrame(go); });
     setScrollToIndex(null);
   }, [scrollToIndex, lesson.sections.length]);
@@ -191,6 +199,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   const addBlockToSection = (type, sectionIndex) => {
     const definition = getSectionDefinition(type);
     if (!definition) return;
+    scrollChildRef.current = (lesson.sections[sectionIndex]?.children || []).length;
     setLesson((l) => {
       const sections = [...l.sections];
       const i = Math.min(sectionIndex, sections.length - 1);
