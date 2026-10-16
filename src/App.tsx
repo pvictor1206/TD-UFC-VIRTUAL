@@ -696,6 +696,8 @@ export default function App() {
   const [newTeamName, setNewTeamName] = useState('');
   const [memberTeamId, setMemberTeamId] = useState(null); // equipe com o formulário de membro aberto
   const [memberDraft, setMemberDraft] = useState({ name: '', username: '', password: '', role: 'tecnico' });
+  const [pwEditId, setPwEditId] = useState(null); // membro cuja senha está sendo alterada
+  const [pwValue, setPwValue] = useState('');
   const teamName = (id) => teams.find(t => t.id === id)?.name || '—';
   
   const [newDiscTitle, setNewDiscTitle] = useState('');
@@ -778,6 +780,18 @@ export default function App() {
       name: d.name.trim(), username: d.username.trim(), password: d.password, role: d.role, teamId: memberTeamId,
     }));
     if (ok) setMemberDraft({ name: '', username: '', password: '', role: d.role });
+  };
+
+  // Administrador define uma nova senha para um suporte técnico ou conteudista
+  const handleChangePassword = async (e, user) => {
+    e.preventDefault();
+    if (pwValue.length < 6) { alert('A senha precisa ter pelo menos 6 caracteres.'); return; }
+    const ok = await run(() => db.setMemberPassword(user.id, pwValue), false);
+    if (ok) {
+      setPwEditId(null);
+      setPwValue('');
+      alert('Senha de ' + user.name + ' alterada. Informe a nova senha à pessoa.');
+    }
   };
 
   const handleCreateDiscipline = async (e) => {
@@ -1202,6 +1216,31 @@ export default function App() {
                 <div className="mt-0.5 flex flex-wrap gap-x-4 text-xs text-zinc-500">
                   <span>Login: <strong className="font-mono">{u.username}</strong></span>
                 </div>
+                {pwEditId === u.id ? (
+                  <form onSubmit={(e) => handleChangePassword(e, u)} className="mt-2 flex flex-wrap items-center gap-2">
+                    <input
+                      type="text"
+                      autoFocus
+                      required
+                      minLength={6}
+                      aria-label={'Nova senha de ' + u.name}
+                      value={pwValue}
+                      onChange={(e) => setPwValue(e.target.value)}
+                      placeholder="Nova senha (mín. 6 caracteres)"
+                      className="min-w-0 flex-1 p-1.5 border border-[#D9CFC6] rounded-lg text-xs focus:outline-none focus:border-iuvi focus:ring-2 focus:ring-iuvi/20"
+                    />
+                    <button type="submit" className="px-3 py-1.5 bg-iuvi-roxo text-white hover:bg-iuvi-roxo-medio text-xs font-bold rounded-lg">Salvar</button>
+                    <button type="button" onClick={() => { setPwEditId(null); setPwValue(''); }} className="px-3 py-1.5 border border-[#D9CFC6] text-xs font-bold rounded-lg hover:bg-zinc-100">Cancelar</button>
+                  </form>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => { setPwEditId(u.id); setPwValue(''); }}
+                    className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#991F50] hover:underline"
+                  >
+                    <Lock size={12} /> Alterar senha
+                  </button>
+                )}
               </div>
             );
             return (
