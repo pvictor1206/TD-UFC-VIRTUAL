@@ -72,6 +72,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   };
   // Índice do bloco recém-criado/duplicado, para rolar a tela até ele
   const [scrollToIndex, setScrollToIndex] = useState(null);
+  const scrollAlignRef = useRef('center');
 
   useEffect(() => {
     if (embedded) {
@@ -117,8 +118,13 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   useEffect(() => {
     if (scrollToIndex === null) return;
-    const el = document.querySelector(`[data-block-index="${scrollToIndex}"]`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const target = scrollToIndex;
+    const align = scrollAlignRef.current;
+    scrollAlignRef.current = 'center';
+    // Rola sem animação, depois que a nova seção já foi desenhada (a animação era
+    // interrompida quando a página crescia no meio do movimento).
+    const go = () => document.querySelector(`[data-block-index="${target}"]`)?.scrollIntoView({ behavior: 'auto', block: align });
+    requestAnimationFrame(() => { go(); requestAnimationFrame(go); });
     setScrollToIndex(null);
   }, [scrollToIndex, lesson.sections.length]);
 
@@ -159,6 +165,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   // Nova seção (vazia) no fim da aula
   const addEmptySection = () => {
+    scrollAlignRef.current = 'start';
     setScrollToIndex(lesson.sections.length);
     setActiveIdx(lesson.sections.length);
     setLesson((l) => ({ ...l, sections: [...l.sections, newSectionData()] }));
@@ -223,6 +230,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   };
 
   const duplicateSection = (index) => {
+    scrollAlignRef.current = 'start';
     setScrollToIndex(index + 1);
     setActiveIdx(index + 1);
     setLesson((l) => {

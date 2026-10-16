@@ -97,6 +97,21 @@ export function renderSection(section, index) {
         />
       );
 
+    case 'heading': {
+      if (!section.text) return null;
+      const sizes = { grande: '1.5em', medio: '1.25em', pequeno: '1.05em' };
+      const aligns = { esquerda: 'left', centro: 'center', direita: 'right' };
+      return (
+        <h3
+          key={index}
+          className="font-bold text-ink leading-tight"
+          style={{ fontSize: sizes[section.size] || sizes.medio, textAlign: aligns[section.align] || 'left' }}
+        >
+          {section.text}
+        </h3>
+      );
+    }
+
     case 'image':
       return (
         <figure key={index} className="flex flex-col items-center mt-8 mb-16">

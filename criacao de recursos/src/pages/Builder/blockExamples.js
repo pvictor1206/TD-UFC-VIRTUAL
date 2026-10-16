@@ -12,6 +12,10 @@ export const BLOCK_EXAMPLES = {
     sample: { type: 'intro', text: 'Nesta aula vamos entender como a tecnologia transforma a forma de **aprender** e de ensinar.' },
     notes: { text: 'Vira um parágrafo de texto corrido. Use ** ** para destacar palavras.' },
   },
+  heading: {
+    sample: { type: 'heading', text: 'Exemplo resolvido', size: 'medio', align: 'esquerda' },
+    notes: { text: 'O título que aparece entre os componentes.', size: 'Muda o tamanho da letra.', align: 'Posição do título na linha.' },
+  },
   section: {
     sample: {
       type: 'section',

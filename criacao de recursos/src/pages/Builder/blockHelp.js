@@ -13,6 +13,12 @@ export const BLOCK_HELP = {
     steps: ['Escreva o texto no campo e use a barra para negrito, itálico e listas.', 'Se quiser destacar uma ideia-chave, coloque-a entre ** **.'],
     tips: ['Prefira de 3 a 6 linhas: introduções longas cansam o aluno.', 'Coloque este bloco sempre como o primeiro da lista.'],
   },
+  heading: {
+    what: 'Um título avulso, dentro da seção. Serve para separar partes do conteúdo com outro título, além do título da própria seção.',
+    when: 'Use quando uma mesma seção tiver mais de um assunto (ex.: "Exemplo resolvido" no meio da seção) e você quiser um título entre os componentes.',
+    steps: ['Escreva o texto do título.', 'Escolha o tamanho (grande, médio ou pequeno) e o alinhamento.', 'Posicione o componente onde o título deve aparecer, entre os outros componentes.'],
+    tips: ['Para o título principal do trecho, prefira o campo "Título" da seção.', 'Títulos curtos funcionam melhor.'],
+  },
   section: {
     what: 'Agrupa componentes em um trecho da aula. O nome da seção é só para você se organizar (não aparece para o aluno). O título, o rótulo e o subtítulo são opcionais e, se preenchidos, aparecem acima dos componentes.',
     when: 'Todo componente precisa estar dentro de uma seção. Use uma seção para cada tópico da aula; deixe o título em branco quando o conteúdo não precisar de título.',

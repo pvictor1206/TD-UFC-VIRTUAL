@@ -61,6 +61,37 @@ export const SECTION_CATALOG = [
     defaultData: () => ({ type: 'intro', text: '' }),
   },
   {
+    type: 'heading',
+    label: 'Título',
+    group: 'texto',
+    icon: '🔠',
+    description: 'Um título avulso dentro da seção (por exemplo, para separar partes do conteúdo). É diferente do título da seção, que fica no topo dela.',
+    fields: [
+      { key: 'text', label: 'Texto do título', type: FIELD_TYPES.TEXT },
+      {
+        key: 'size',
+        label: 'Tamanho',
+        type: FIELD_TYPES.SELECT,
+        options: [
+          { value: 'grande', label: 'Grande' },
+          { value: 'medio', label: 'Médio' },
+          { value: 'pequeno', label: 'Pequeno' },
+        ],
+      },
+      {
+        key: 'align',
+        label: 'Alinhamento',
+        type: FIELD_TYPES.SELECT,
+        options: [
+          { value: 'esquerda', label: 'Esquerda' },
+          { value: 'centro', label: 'Centralizado' },
+          { value: 'direita', label: 'Direita' },
+        ],
+      },
+    ],
+    defaultData: () => ({ type: 'heading', text: '', size: 'medio', align: 'esquerda' }),
+  },
+  {
     type: 'image',
     label: 'Imagem com legenda',
     group: 'midia',
