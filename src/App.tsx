@@ -794,6 +794,16 @@ export default function App() {
     }
   };
 
+  const handleDeleteDiscipline = async (d) => {
+    if (currentUser.role !== 'admin') return;
+    const ok = window.confirm(
+      'Excluir a disciplina "' + d.title + '"?\n\nIsso apaga também tarefas, materiais, pendências e aulas do Editor Estrutural dela. Não é possível desfazer.'
+    );
+    if (!ok) return;
+    const done = await run(() => db.deleteDiscipline(d.id));
+    if (done) setActiveDisciplineId(null);
+  };
+
   const handleCreateDiscipline = async (e) => {
     e.preventDefault();
     if (!newDiscTitle || !newDiscTeacherId) return;
@@ -1505,12 +1515,23 @@ export default function App() {
       <div className="flex flex-col h-full">
         {/* Header do Projeto */}
         <div className="bg-white border-b border-[#E6DFD7] p-8 shrink-0">
-          <button 
-            onClick={() => setActiveDisciplineId(null)}
-            className="text-sm text-zinc-500 hover:text-[#991F50] mb-4 flex items-center gap-1 transition-colors font-bold"
-          >
-            ← Voltar para Visão Geral
-          </button>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <button
+              onClick={() => setActiveDisciplineId(null)}
+              className="text-sm text-zinc-500 hover:text-[#991F50] flex items-center gap-1 transition-colors font-bold"
+            >
+              ← Voltar para Visão Geral
+            </button>
+            {currentUser.role === 'admin' && (
+              <button
+                type="button"
+                onClick={() => handleDeleteDiscipline(activeDiscipline)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-red-300 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <Trash2 size={14} /> Excluir disciplina
+              </button>
+            )}
+          </div>
           <div className="flex justify-between items-end">
             <div>
               <h2 className="text-3xl font-extrabold text-black">{activeDiscipline.title}</h2>

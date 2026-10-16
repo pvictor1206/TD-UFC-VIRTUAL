@@ -174,6 +174,14 @@ export async function updateDiscipline(id: number, patch: { stage?: string; stag
   return true;
 }
 
+// Apaga a disciplina e, em cascata, tarefas, materiais, pendências, comentários e recursos (só o administrador, via RLS).
+export async function deleteDiscipline(id: number) {
+  const { data, error } = await supabase.from('disciplines').delete().eq('id', id).select('id');
+  if (error) fail(error);
+  if (!data || data.length === 0) throw new Error('Não foi possível excluir a disciplina (apenas o administrador pode).');
+  return true;
+}
+
 export async function addTask(t: { disciplineId: number; title: string; description?: string; dueDate?: string; stage: string; createdBy: string }) {
   const { error } = await supabase.from('tasks').insert({
     discipline_id: t.disciplineId,
