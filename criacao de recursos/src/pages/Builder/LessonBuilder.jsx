@@ -409,7 +409,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
             {/* Dados da aula: barra compacta, fixa no topo ao rolar */}
             <div className="sticky top-[72px] z-20 bg-white/95 backdrop-blur rounded-xl border border-lav shadow-sm px-3 py-2">
               <div className="flex items-center gap-2">
-                <span className="hidden sm:block text-[11px] font-bold uppercase tracking-widest text-blue-600 shrink-0">Aula</span>
+                <span className="shrink-0 rounded-md bg-blue-700 px-2.5 py-1.5 text-xs font-extrabold uppercase tracking-widest text-white">Aula</span>
                 <input
                   type="text"
                   aria-label="Número da aula"
@@ -417,7 +417,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   placeholder="Nº"
                   value={lesson.aula ?? ''}
                   onChange={(e) => updateMeta('aula', e.target.value)}
-                  className="w-14 shrink-0 rounded-lg border border-gray-300 px-2 py-1.5 text-sm text-center font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-16 shrink-0 rounded-lg border-2 border-blue-700 bg-blue-50 px-2 py-1 text-lg text-center font-extrabold text-blue-800 placeholder:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 <input
                   type="text"
