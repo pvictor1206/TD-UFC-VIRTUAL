@@ -133,9 +133,38 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
       const el = (child !== null && section?.querySelector(`[data-child-index="${child}"]`)) || section;
       el?.scrollIntoView({ behavior: 'auto', block: el === section ? align : 'start' });
     };
+    // Repete a rolagem por um instante: o editor de texto e as imagens aumentam a página depois do 1º desenho.
     requestAnimationFrame(() => { go(); requestAnimationFrame(go); });
+    setTimeout(go, 150);
+    setTimeout(go, 400);
     setScrollToIndex(null);
   }, [scrollToIndex, lesson.sections.length]);
+
+  // Ao abrir a pré-visualização guarda onde a tela estava; ao voltar para o editor, retorna ao mesmo ponto.
+  const rootRef = useRef(null);
+  const savedScrollRef = useRef(null);
+  const getScroller = () => {
+    for (let el = rootRef.current?.parentElement; el; el = el.parentElement) {
+      const o = getComputedStyle(el).overflowY;
+      if ((o === 'auto' || o === 'scroll') && el.scrollHeight > el.clientHeight) return el;
+    }
+    return null;
+  };
+  const changeView = (next) => {
+    if (next === view) return;
+    if (view === 'editar') {
+      const sc = getScroller();
+      savedScrollRef.current = sc ? sc.scrollTop : window.scrollY;
+    }
+    setView(next);
+  };
+  useEffect(() => {
+    if (view !== 'editar' || savedScrollRef.current === null) return;
+    const top = savedScrollRef.current;
+    savedScrollRef.current = null;
+    const restore = () => { const sc = getScroller(); if (sc) sc.scrollTop = top; else window.scrollTo(0, top); };
+    requestAnimationFrame(() => { restore(); requestAnimationFrame(restore); });
+  }, [view]);
 
   // Capítulo visível na tela (acompanha a rolagem) e atalho para ir até um capítulo
   const [viewIdx, setViewIdx] = useState(0);
@@ -318,7 +347,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   return (
     <BuilderContext.Provider value={{ uploadImage, canEditSpacing }}>
-    <div className="min-h-screen bg-lav-soft font-[Inter] text-ink">
+    <div ref={rootRef} className="min-h-screen bg-lav-soft font-[Inter] text-ink">
       <header className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 md:px-6 py-3">
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center gap-3">
           {headerExtra}
@@ -350,14 +379,14 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
           <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
             <button
               type="button"
-              onClick={() => setView('editar')}
+              onClick={() => changeView('editar')}
               className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${view === 'editar' ? 'bg-white dark:bg-gray-700 shadow text-blue-700 dark:text-blue-300' : 'text-gray-500'}`}
             >
               ✏️ Editar
             </button>
             <button
               type="button"
-              onClick={() => setView('preview')}
+              onClick={() => changeView('preview')}
               className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${view === 'preview' ? 'bg-white dark:bg-gray-700 shadow text-blue-700 dark:text-blue-300' : 'text-gray-500'}`}
             >
               👁️ Pré-visualizar

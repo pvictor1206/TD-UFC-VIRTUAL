@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { SECTION_CATALOG, GROUPS, getSectionDefinition } from '@lesson';
 import BlockCard from './BlockCard';
 
@@ -5,10 +6,23 @@ import BlockCard from './BlockCard';
 // edição da lista principal, mas não permite colocar um capítulo dentro de outro.
 export default function NestedBlocks({ value, onChange, sectionNumber }) {
   const blocks = value || [];
+  const rootRef = useRef(null);
+  const newIndexRef = useRef(null); // componente recém-criado neste capítulo: a tela rola até ele
+
+  useEffect(() => {
+    const i = newIndexRef.current;
+    if (i === null) return;
+    newIndexRef.current = null;
+    const go = () => rootRef.current?.querySelector(`[data-child-index="${i}"]`)?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    requestAnimationFrame(() => { go(); requestAnimationFrame(go); });
+    setTimeout(go, 150);
+  }, [blocks.length]);
 
   const add = (type) => {
     const definition = getSectionDefinition(type);
-    if (definition) onChange([...blocks, definition.defaultData()]);
+    if (!definition) return;
+    newIndexRef.current = blocks.length;
+    onChange([...blocks, definition.defaultData()]);
   };
   const update = (i, block) => onChange(blocks.map((b, idx) => (idx === i ? block : b)));
   const remove = (i) => onChange(blocks.filter((_, idx) => idx !== i));
@@ -26,7 +40,7 @@ export default function NestedBlocks({ value, onChange, sectionNumber }) {
   };
 
   return (
-    <div className="space-y-3">
+    <div ref={rootRef} className="space-y-3">
       {blocks.length === 0 && (
         <p className="text-xs text-gray-500 italic">Nenhum componente nesta capítulo ainda. Adicione abaixo ou pela barra lateral.</p>
       )}
