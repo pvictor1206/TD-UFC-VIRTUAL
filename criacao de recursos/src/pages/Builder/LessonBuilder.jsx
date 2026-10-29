@@ -394,7 +394,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
         </div>
       ) : (
         <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 px-4 md:px-6 py-6">
-          <aside className="lg:sticky lg:top-[88px] lg:self-start bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 max-h-[80vh] overflow-y-auto">
+          <aside className="lg:sticky lg:top-[88px] lg:self-start bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 lg:h-[calc(100vh-104px)] overflow-y-auto">
             <button
               type="button"
               onClick={addEmptySection}
