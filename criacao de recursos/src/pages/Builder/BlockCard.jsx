@@ -83,7 +83,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               onClick={() => setCollapsed((c) => !c)}
               aria-expanded={!collapsed}
               title={collapsed ? 'Mostrar conteúdo do capítulo' : 'Recolher capítulo'}
-              className="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-lg text-ink hover:bg-lav-bar"
+              className="w-11 h-11 shrink-0 inline-flex items-center justify-center rounded-lg text-3xl leading-none text-ink hover:bg-lav-bar"
             >
               {collapsed ? '▸' : '▾'}
             </button>
