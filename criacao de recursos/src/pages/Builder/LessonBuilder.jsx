@@ -131,6 +131,11 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
       const section = document.querySelector(`[data-block-index="${target}"]`);
       // Componente recém-adicionado: vai direto nele; senão, para o capítulo.
       const el = (child !== null && section?.querySelector(`[data-child-index="${child}"]`)) || section;
+      if (el && el !== section) {
+        // deixa o início do componente abaixo das barras fixas do topo (a barra da aula varia de altura)
+        const bar = document.querySelector('[data-sticky-bar]');
+        el.style.scrollMarginTop = `${72 + (bar ? bar.offsetHeight : 0) + 12}px`;
+      }
       el?.scrollIntoView({ behavior: 'auto', block: el === section ? align : 'start' });
     };
     // Repete a rolagem por um instante: o editor de texto e as imagens aumentam a página depois do 1º desenho.
@@ -436,7 +441,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
           <main className="space-y-4">
             {/* Dados da aula: barra compacta, fixa no topo ao rolar */}
-            <div className="sticky top-[72px] z-20 bg-white/95 backdrop-blur rounded-xl border border-lav shadow-sm px-3 py-2">
+            <div data-sticky-bar className="sticky top-[72px] z-20 bg-white/95 backdrop-blur rounded-xl border border-lav shadow-sm px-3 py-2">
               <div className="flex items-center gap-2">
                 <span className="shrink-0 rounded-md bg-blue-700 px-2.5 py-1.5 text-xs font-extrabold uppercase tracking-widest text-white">Aula</span>
                 <input

@@ -13,7 +13,14 @@ export default function NestedBlocks({ value, onChange, sectionNumber }) {
     const i = newIndexRef.current;
     if (i === null) return;
     newIndexRef.current = null;
-    const go = () => rootRef.current?.querySelector(`[data-child-index="${i}"]`)?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    const go = () => {
+      const el = rootRef.current?.querySelector(`[data-child-index="${i}"]`);
+      if (!el) return;
+      // deixa o início do componente abaixo das barras fixas do topo
+      const bar = document.querySelector('[data-sticky-bar]');
+      el.style.scrollMarginTop = `${72 + (bar ? bar.offsetHeight : 0) + 12}px`;
+      el.scrollIntoView({ behavior: 'auto', block: 'start' });
+    };
     requestAnimationFrame(() => { go(); requestAnimationFrame(go); });
     setTimeout(go, 150);
   }, [blocks.length]);
