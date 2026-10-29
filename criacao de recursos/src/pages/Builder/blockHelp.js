@@ -9,26 +9,26 @@
 export const BLOCK_HELP = {
   intro: {
     what: 'Texto corrido, direto na página e sem moldura. Aceita negrito, itálico e listas.',
-    when: 'Use para introduções, explicações e qualquer parágrafo da aula. Para dar um título ao texto, coloque-o em uma seção com título.',
+    when: 'Use para introduções, explicações e qualquer parágrafo da aula. Para dar um título ao texto, coloque-o em um capítulo com título.',
     steps: ['Escreva o texto no campo e use a barra para negrito, itálico e listas.', 'Se quiser destacar uma ideia-chave, coloque-a entre ** **.'],
     tips: ['Prefira de 3 a 6 linhas: introduções longas cansam o aluno.', 'Coloque este bloco sempre como o primeiro da lista.'],
   },
   heading: {
-    what: 'Um título avulso, dentro da seção. Serve para separar partes do conteúdo com outro título, além do título da própria seção.',
-    when: 'Use quando uma mesma seção tiver mais de um assunto (ex.: "Exemplo resolvido" no meio da seção) e você quiser um título entre os componentes.',
+    what: 'Um título avulso, dentro do capítulo. Serve para separar partes do conteúdo com outro título, além do título do próprio capítulo.',
+    when: 'Use quando uma mesma capítulo tiver mais de um assunto (ex.: "Exemplo resolvido" no meio do capítulo) e você quiser um título entre os componentes.',
     steps: ['Escreva o texto do título.', 'Escolha o tamanho (grande, médio ou pequeno) e o alinhamento.', 'Posicione o componente onde o título deve aparecer, entre os outros componentes.'],
-    tips: ['Para o título principal do trecho, prefira o campo "Título" da seção.', 'Títulos curtos funcionam melhor.'],
+    tips: ['Para o título principal do trecho, prefira o campo "Título" do capítulo.', 'Títulos curtos funcionam melhor.'],
   },
   section: {
-    what: 'Agrupa componentes em um trecho da aula. O nome da seção é só para você se organizar (não aparece para o aluno). O título, o rótulo e o subtítulo são opcionais e, se preenchidos, aparecem acima dos componentes.',
-    when: 'Todo componente precisa estar dentro de uma seção. Use uma seção para cada tópico da aula; deixe o título em branco quando o conteúdo não precisar de título.',
+    what: 'Agrupa componentes em um trecho da aula. O nome do capítulo é só para você se organizar (não aparece para o aluno). O título, o rótulo e o subtítulo são opcionais e, se preenchidos, aparecem acima dos componentes.',
+    when: 'Todo componente precisa estar dentro de um capítulo. Use um capítulo para cada tópico da aula; deixe o título em branco quando o conteúdo não precisar de título.',
     steps: [
-      'Clique em "+ Adicionar seção" (na barra lateral ou no fim da lista).',
-      'Dê um nome à seção no topo do cartão (só você vê). Se quiser um título para o aluno, preencha o campo "Título exibido ao aluno".',
-      'Clique na seção para ativá-la e adicione componentes pela barra lateral, ou pela lista dentro da própria seção.',
-      'Use os botões do cartão para mover, duplicar ou excluir a seção inteira.',
+      'Clique em "+ Adicionar capítulo" (na barra lateral ou no fim da lista).',
+      'Dê um nome à capítulo no topo do cartão (só você vê). Se quiser um título para o aluno, preencha o campo "Título exibido ao aluno".',
+      'Clique no capítulo para ativá-lo e adicione componentes pela barra lateral, ou pela lista dentro do próprio capítulo.',
+      'Use os botões do cartão para mover, duplicar ou excluir o capítulo inteiro.',
     ],
-    tips: ['A seção com borda destacada é onde os componentes da barra lateral entram.', 'Uma seção não pode conter outra seção.'],
+    tips: ['O capítulo com borda destacada é onde os componentes da barra lateral entram.', 'Um capítulo não pode conter outro capítulo.'],
   },
   image: {
     what: 'Uma imagem centralizada, com legenda opcional. O aluno pode ampliar clicando nela.',
@@ -158,7 +158,7 @@ export const BLOCK_HELP = {
     what: 'Caixa de destaque com selo do tipo: Definição, Teorema, Demonstração, Exemplo, Observação, Dica ou Atenção (esta em tom quente).',
     when: 'Para separar do texto o que o aluno precisa guardar: definições, enunciados de teoremas, avisos de erros comuns.',
     steps: ['Escolha o tipo.', 'Se quiser, dê um título (ex: Teorema de Pitágoras).', 'Escreva o texto; fórmulas entram entre $ $.'],
-    tips: ['Use poucas caixas por seção para elas continuarem chamando atenção.'],
+    tips: ['Use poucas caixas por capítulo para elas continuarem chamando atenção.'],
   },
   glossary: {
     what: 'Lista de termos com suas definições, em linhas alternadas.',

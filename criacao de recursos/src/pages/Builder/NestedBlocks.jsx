@@ -1,8 +1,8 @@
 import { SECTION_CATALOG, GROUPS, getSectionDefinition } from '@lesson';
 import BlockCard from './BlockCard';
 
-// Lista de blocos dentro de uma seção (título). Usa os mesmos cartões de
-// edição da lista principal, mas não permite colocar uma seção dentro de outra.
+// Lista de blocos dentro de um capítulo (título). Usa os mesmos cartões de
+// edição da lista principal, mas não permite colocar um capítulo dentro de outro.
 export default function NestedBlocks({ value, onChange, sectionNumber }) {
   const blocks = value || [];
 
@@ -28,7 +28,7 @@ export default function NestedBlocks({ value, onChange, sectionNumber }) {
   return (
     <div className="ml-1 space-y-3 border-l-4 border-lav-bar pl-4">
       {blocks.length === 0 && (
-        <p className="text-xs text-gray-500 italic">Nenhum componente nesta seção ainda. Adicione abaixo ou pela barra lateral.</p>
+        <p className="text-xs text-gray-500 italic">Nenhum componente nesta capítulo ainda. Adicione abaixo ou pela barra lateral.</p>
       )}
       {blocks.map((block, i) => (
         <div key={i} data-child-index={i} style={{ scrollMarginTop: 190 }}>
@@ -48,10 +48,10 @@ export default function NestedBlocks({ value, onChange, sectionNumber }) {
       <select
         value=""
         onChange={(e) => e.target.value && add(e.target.value)}
-        aria-label="Adicionar bloco dentro desta seção"
+        aria-label="Adicionar bloco dentro deste capítulo"
         className="w-full rounded-lg border border-dashed border-blue-400 bg-white text-blue-700 px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
-        <option value="">+ Adicionar componente nesta seção…</option>
+        <option value="">+ Adicionar componente nesta capítulo…</option>
         {GROUPS.map((group) => {
           const options = SECTION_CATALOG.filter((b) => b.group === group.id && b.type !== 'section');
           if (options.length === 0) return null;

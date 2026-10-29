@@ -29,7 +29,7 @@ export const BLOCK_EXAMPLES = {
     },
     notes: {
       label: 'Etiqueta pequena acima do título.',
-      title: 'O título da seção.',
+      title: 'O título do capítulo.',
       subtitle: 'Linha discreta abaixo do título.',
       children: 'Os blocos que ficam sob este título.',
     },

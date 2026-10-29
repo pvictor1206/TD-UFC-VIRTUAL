@@ -6,7 +6,7 @@ export const createBlankLesson = () => ({
   sections: [],
 });
 
-// Todo componente fica dentro de uma seção; o título da seção é opcional.
+// Todo componente fica dentro de um capítulo; o título do capítulo é opcional.
 export const SAMPLE_LESSON = {
   aula: '00',
   titulo: 'Aula de exemplo — todos os blocos disponíveis',
@@ -22,8 +22,8 @@ export const SAMPLE_LESSON = {
     },
     {
       type: 'section',
-      title: 'Seção com título',
-      subtitle: 'Uma seção agrupa componentes; o título é opcional',
+      title: 'Capítulo com título',
+      subtitle: 'Um capítulo agrupa componentes; o título é opcional',
       children: [
         {
           type: 'dropdown_group',

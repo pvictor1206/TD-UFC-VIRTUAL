@@ -60,8 +60,8 @@ export const migrateLesson = (lesson) => {
   return sections === lesson.sections ? lesson : { ...lesson, sections };
 };
 
-// O editor exige que todo componente esteja dentro de uma seção: blocos soltos
-// consecutivos são agrupados em uma seção sem título. Idempotente.
+// O editor exige que todo componente esteja dentro de um capítulo: blocos soltos
+// consecutivos são agrupados em um capítulo sem título. Idempotente.
 export const groupIntoSections = (sections = []) => {
   const out = [];
   let loose = null;

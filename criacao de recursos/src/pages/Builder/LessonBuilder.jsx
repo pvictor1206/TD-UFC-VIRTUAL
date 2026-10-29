@@ -73,7 +73,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   // Índice do bloco recém-criado/duplicado, para rolar a tela até ele
   const [scrollToIndex, setScrollToIndex] = useState(null);
   const scrollAlignRef = useRef('center');
-  const scrollChildRef = useRef(null); // posição do componente recém-adicionado dentro da seção
+  const scrollChildRef = useRef(null); // posição do componente recém-adicionado dentro do capítulo
 
   useEffect(() => {
     if (embedded) {
@@ -122,13 +122,13 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     const target = scrollToIndex;
     const align = scrollAlignRef.current;
     scrollAlignRef.current = 'center';
-    // Rola sem animação, depois que a nova seção já foi desenhada (a animação era
+    // Rola sem animação, depois que a novo capítulo já foi desenhada (a animação era
     // interrompida quando a página crescia no meio do movimento).
     const child = scrollChildRef.current;
     scrollChildRef.current = null;
     const go = () => {
       const section = document.querySelector(`[data-block-index="${target}"]`);
-      // Componente recém-adicionado: vai direto nele; senão, para a seção.
+      // Componente recém-adicionado: vai direto nele; senão, para o capítulo.
       const el = (child !== null && section?.querySelector(`[data-child-index="${child}"]`)) || section;
       el?.scrollIntoView({ behavior: 'auto', block: el === section ? align : 'start' });
     };
@@ -136,7 +136,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     setScrollToIndex(null);
   }, [scrollToIndex, lesson.sections.length]);
 
-  // Seção visível na tela (acompanha a rolagem) e atalho para ir até uma seção
+  // Capítulo visível na tela (acompanha a rolagem) e atalho para ir até um capítulo
   const [viewIdx, setViewIdx] = useState(0);
   const goToSection = (i) => {
     setActiveIdx(i);
@@ -165,13 +165,13 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   const updateMeta = (key, value) => setLesson((l) => ({ ...l, [key]: value }));
 
-  // Seção onde os componentes da barra lateral serão adicionados
+  // Capítulo onde os componentes da barra lateral serão adicionados
   const [activeIdx, setActiveIdx] = useState(0);
   const activeSection = Math.min(activeIdx, Math.max(lesson.sections.length - 1, 0));
 
   const newSectionData = () => getSectionDefinition('section').defaultData();
 
-  // Nova seção (vazia) no fim da aula
+  // Nova capítulo (vazia) no fim da aula
   const addEmptySection = () => {
     scrollAlignRef.current = 'start';
     setScrollToIndex(lesson.sections.length);
@@ -180,10 +180,10 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
     setView('editar');
   };
 
-  // Componente do menu lateral: o usuário escolhe em qual seção ele entra.
-  // (Com uma única seção não há o que escolher: entra direto nela.)
+  // Componente do menu lateral: o usuário escolhe em qual capítulo ele entra.
+  // (Com um único capítulo não há o que escolher: entra direto nele.)
   const [pendingType, setPendingType] = useState(null);
-  const [dragOverIdx, setDragOverIdx] = useState(null); // seção sob o componente arrastado
+  const [dragOverIdx, setDragOverIdx] = useState(null); // capítulo sob o componente arrastado
   useEffect(() => {
     const clear = () => setDragOverIdx(null);
     window.addEventListener('dragend', clear);
@@ -193,7 +193,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
   const sectionLabel = (section, i) => {
     const name = section?.name || section?.title || '';
-    return `Seção ${i + 1}${name ? ` — ${name}` : ''}`;
+    return `Capítulo ${i + 1}${name ? ` — ${name}` : ''}`;
   };
 
   const addBlockToSection = (type, sectionIndex) => {
@@ -216,7 +216,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
   const addSection = (type) => {
     if (!getSectionDefinition(type)) return;
     if (lesson.sections.length === 0) {
-      flash('Crie uma seção primeiro: clique em "+ Adicionar seção".');
+      flash('Crie um capítulo primeiro: clique em "+ Adicionar capítulo".');
       return;
     }
     if (lesson.sections.length === 1) {
@@ -399,7 +399,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
               onClick={addEmptySection}
               className="w-full mb-4 rounded-lg bg-blue-700 text-white text-sm font-bold px-3 py-2.5 hover:bg-blue-800 transition-colors"
             >
-              + Adicionar seção
+              + Adicionar capítulo
             </button>
             <BlockPalette onAdd={addSection} disabled={sectionCount === 0} />
           </aside>
@@ -449,9 +449,9 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                 />
               )}
 
-              {/* Navegação rápida entre seções (útil quando há muitas) */}
+              {/* Navegação rápida entre capítulos (útil quando há muitas) */}
               {sectionCount > 1 && (
-                <nav aria-label="Ir para a seção" className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
+                <nav aria-label="Ir para o capítulo" className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1">
                   <span className="shrink-0 text-[11px] font-bold uppercase tracking-widest text-gray-500">Ir para</span>
                   {lesson.sections.map((sec, i) => {
                     const name = sec.name || sec.title || '';
@@ -478,13 +478,13 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
 
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-gray-700 dark:text-gray-200">
-                Seções {sectionCount > 0 && <span className="text-gray-400 font-normal">({sectionCount})</span>}
+                Capítulos {sectionCount > 0 && <span className="text-gray-400 font-normal">({sectionCount})</span>}
               </h2>
             </div>
 
             {sectionCount === 0 && (
               <div className="text-center text-sm text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl py-12">
-                Nenhuma seção ainda. Clique em "Adicionar seção" para começar — os componentes ficam dentro dela.
+                Nenhum capítulo ainda. Clique em "Adicionar capítulo" para começar — os componentes ficam dentro dele.
               </div>
             )}
 
@@ -543,7 +543,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
               onClick={addEmptySection}
               className="w-full rounded-xl border-2 border-dashed border-blue-400 text-blue-700 py-4 text-sm font-bold hover:bg-lav-soft transition-colors"
             >
-              + Adicionar seção
+              + Adicionar capítulo
             </button>
           </main>
         </div>
@@ -555,9 +555,9 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
           onMouseDown={(e) => { if (e.target === e.currentTarget) setPendingType(null); }}
           onKeyDown={(e) => { if (e.key === 'Escape') setPendingType(null); }}
         >
-          <div role="dialog" aria-modal="true" aria-label="Escolher seção" className="w-full max-w-md rounded-2xl bg-white shadow-2xl p-5">
+          <div role="dialog" aria-modal="true" aria-label="Escolher capítulo" className="w-full max-w-md rounded-2xl bg-white shadow-2xl p-5">
             <h2 className="text-base font-bold text-ink">
-              Em qual seção adicionar {getSectionDefinition(pendingType)?.icon} {getSectionDefinition(pendingType)?.label}?
+              Em qual capítulo adicionar {getSectionDefinition(pendingType)?.icon} {getSectionDefinition(pendingType)?.label}?
             </h2>
             <div className="mt-3 max-h-[50vh] overflow-y-auto space-y-2">
               {lesson.sections.map((sec, i) => (
@@ -571,7 +571,7 @@ export default function LessonBuilder({ initialLesson, onLessonChange, loadAsset
                   <span className="block text-sm font-bold text-ink">{sectionLabel(sec, i)}</span>
                   <span className="block text-xs text-gray-500">
                     {(sec.children || []).length} componente{(sec.children || []).length === 1 ? '' : 's'}
-                    {i === activeSection ? ' · seção selecionada' : ''}
+                    {i === activeSection ? ' · capítulo selecionado' : ''}
                   </span>
                 </button>
               ))}

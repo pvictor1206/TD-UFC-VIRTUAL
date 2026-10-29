@@ -37,10 +37,10 @@ const helpFormatacao = 'Use **texto** para negrito, *texto* para itálico e linh
 export const SECTION_CATALOG = [
   {
     type: 'section',
-    label: 'Seção',
+    label: 'Capítulo',
     group: 'estrutura',
     icon: '🔖',
-    description: 'Agrupa componentes. O nome da seção (faixa cinza no topo do cartão) é só para você se organizar e não aparece para o aluno; o título e os componentes, sim.',
+    description: 'Agrupa componentes. O nome do capítulo (faixa cinza no topo do cartão) é só para você se organizar e não aparece para o aluno; o título e os componentes, sim.',
     fields: [
       { key: 'label', label: 'Rótulo (ex: HISTÓRIA)', type: FIELD_TYPES.TEXT },
       { key: 'title', label: 'Título', type: FIELD_TYPES.TEXT },
@@ -65,7 +65,7 @@ export const SECTION_CATALOG = [
     label: 'Título',
     group: 'texto',
     icon: '🔠',
-    description: 'Um título avulso dentro da seção (por exemplo, para separar partes do conteúdo). É diferente do título da seção, que fica no topo dela.',
+    description: 'Um título avulso dentro do capítulo (por exemplo, para separar partes do conteúdo). É diferente do título do capítulo, que fica no topo dele.',
     fields: [
       { key: 'text', label: 'Texto do título', type: FIELD_TYPES.TEXT },
       {

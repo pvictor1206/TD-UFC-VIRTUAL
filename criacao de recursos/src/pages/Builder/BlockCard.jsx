@@ -78,13 +78,13 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
               type="button"
               onClick={() => setCollapsed((c) => !c)}
               aria-expanded={!collapsed}
-              title={collapsed ? 'Mostrar conteúdo da seção' : 'Recolher seção'}
+              title={collapsed ? 'Mostrar conteúdo do capítulo' : 'Recolher capítulo'}
               className="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-lg text-ink hover:bg-lav-bar"
             >
               {collapsed ? '▸' : '▾'}
             </button>
             <span className="shrink-0 rounded-md bg-blue-700 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wider text-white">
-              Seção {index + 1}
+              Capítulo {index + 1}
             </span>
             <label className="flex flex-1 min-w-0 items-center gap-2 rounded-lg border-2 border-gray-300 bg-white px-3 shadow-sm transition-colors hover:border-blue-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200">
               <span aria-hidden className="shrink-0 text-base">✏️</span>
@@ -92,9 +92,9 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
                 type="text"
                 value={section.name ?? ''}
                 onChange={(e) => setFieldValue('name', e.target.value)}
-                placeholder={`Seção ${index + 1} — clique aqui e escreva um nome`}
-                aria-label="Nome da seção (só você vê, não aparece para o aluno)"
-                title="Nome da seção: só aparece no editor, não aparece para o aluno"
+                placeholder={`Capítulo ${index + 1} — clique aqui e escreva um nome`}
+                aria-label="Nome do capítulo (só você vê, não aparece para o aluno)"
+                title="Nome do capítulo: só aparece no editor, não aparece para o aluno"
                 className="min-w-0 flex-1 bg-transparent py-2 text-sm font-bold text-gray-900 placeholder:font-medium placeholder:text-gray-500 focus:outline-none"
               />
             </label>
@@ -127,7 +127,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
         <div className="p-4 space-y-4">
           <div className="rounded-xl border-2 border-lav-bar bg-lav p-3 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-bold text-ink">Título da seção</span>
+              <span className="text-sm font-bold text-ink">Título do capítulo</span>
               <span className="text-xs text-ink/70">(opcional — deixe em branco para não mostrar título)</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl border-b border-lav-bar pb-3">

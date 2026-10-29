@@ -62,7 +62,7 @@ async function fetchStandaloneAssets() {
   return { js, css };
 }
 
-// Percorre as imagens da aula (bloco "image" e "carousel", inclusive dentro de seções).
+// Percorre as imagens da aula (bloco "image" e "carousel", inclusive dentro de capítulos).
 function walkImages(sections, visit) {
   for (const s of sections || []) {
     if (!s) continue;

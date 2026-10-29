@@ -1,4 +1,4 @@
-// Espaçamento vertical entre componentes, títulos e seções (opção do professor).
+// Espaçamento vertical entre componentes, títulos e capítulos (opção do professor).
 // O valor é uma quantidade em pixels (ex: "24"). Vazio = espaçamento padrão de
 // cada componente (nada é alterado). Aulas antigas usavam nomes (pequeno, médio...),
 // que continuam funcionando e são convertidos para px.

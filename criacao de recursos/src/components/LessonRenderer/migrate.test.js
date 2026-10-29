@@ -2,7 +2,7 @@ import { it, expect } from 'vitest';
 import { migrateLesson } from './migrate';
 import { SAMPLE_LESSON } from './blankLesson';
 
-it('migra blocos antigos para seção + filhos e é idempotente', () => {
+it('migra blocos antigos para capítulo + filhos e é idempotente', () => {
   const old = { sections: [
     { type: 'highlight_section', title: 'T', text: 'x' },
     { type: 'highlight_section', title: '', text: 'y' },

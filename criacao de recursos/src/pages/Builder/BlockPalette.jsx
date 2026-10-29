@@ -1,7 +1,7 @@
 import { SECTION_CATALOG, GROUPS } from '@lesson';
 import HelpButton from './HelpButton';
 
-// Tipo de dado usado ao arrastar um componente até uma seção.
+// Tipo de dado usado ao arrastar um componente até um capítulo.
 export const DRAG_TYPE = 'application/x-editor-componente';
 
 export default function BlockPalette({ onAdd, disabled = false }) {
@@ -28,7 +28,7 @@ export default function BlockPalette({ onAdd, disabled = false }) {
                 <button
                   type="button"
                   onClick={() => onAdd(block.type)}
-                  title={`${block.description} Clique ou arraste até uma seção.`}
+                  title={`${block.description} Clique ou arraste até um capítulo.`}
                   className="flex flex-1 min-w-0 items-center gap-2 text-left cursor-grab active:cursor-grabbing rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm hover:border-blue-300 hover:bg-lav-soft dark:hover:bg-blue-950/30 transition-colors"
                 >
                   <span className="text-base">{block.icon}</span>
