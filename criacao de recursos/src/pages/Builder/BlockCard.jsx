@@ -75,7 +75,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
       }`}
     >
       <div className={isSection ? 'bg-lav rounded-tr-[9px]' : ''}>
-      <div className={`flex items-center justify-between gap-3 px-4 py-3 ${nested ? 'rounded-t-[7px]' : 'rounded-tr-[9px]'} border-b ${isSection ? 'bg-lav border-lav-bar' : 'bg-white border-gray-200'}`}>
+      <div className={`flex items-center justify-between gap-3 px-4 py-3 ${nested ? 'rounded-t-[7px]' : 'rounded-tr-[9px]'} ${isSection ? 'border-b bg-lav border-lav-bar' : 'bg-white'}`}>
         {isSection ? (
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <button
