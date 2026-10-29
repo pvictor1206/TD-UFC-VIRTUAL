@@ -25,7 +25,7 @@ export const RESOURCE_STATUS = {
 const formatDate = (iso) => new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 
 // Tela cheia com o Editor Estrutural (edição ou somente leitura).
-function BuilderOverlay({ resource, readOnly, hideFileActions, hideExample, onClose, onChange }) {
+function BuilderOverlay({ resource, readOnly, hideFileActions, hideExample, canEditSpacing, onClose, onChange }) {
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-white">
       <LessonBuilder
@@ -37,6 +37,7 @@ function BuilderOverlay({ resource, readOnly, hideFileActions, hideExample, onCl
         readOnly={readOnly}
         hideFileActions={hideFileActions}
         hideExample={hideExample}
+        canEditSpacing={canEditSpacing}
         headerExtra={
           <button
             type="button"
@@ -100,6 +101,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
         readOnly={openBuilder.readOnly}
         hideFileActions={!isTecnico}
         hideExample={!isTecnico}
+        canEditSpacing={isTecnico}
         onClose={() => setOpenBuilder(null)}
         onChange={handleLessonChange(editing)}
       />

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { getSectionDefinition, spacingPx, SPACING_MAX_PX } from '@lesson';
 import SchemaField from './SchemaField';
 import HelpButton from './HelpButton';
+import { BuilderContext } from './BuilderContext';
 
 // Espaçamento vertical em pixels. Vazio = padrão do componente.
 // `inline`: rótulo à esquerda do campo (usado no rodapé dos componentes).
@@ -47,6 +48,8 @@ function SpacingSelect({ label, value, onChange, inline = false }) {
 
 export default function BlockCard({ section, index, total, onChange, onRemove, onMove, onDuplicate, nested = false, number }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [showSpacing, setShowSpacing] = useState(false);
+  const { canEditSpacing } = useContext(BuilderContext);
   const definition = getSectionDefinition(section.type);
 
   if (!definition) {
@@ -71,6 +74,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
           : 'rounded-xl border-2 border-l-[10px] border-blue-700 shadow-md'
       }`}
     >
+      <div className={isSection ? 'bg-lav rounded-tr-[9px]' : ''}>
       <div className={`flex items-center justify-between gap-3 px-4 py-3 ${nested ? 'rounded-t-[7px]' : 'rounded-tr-[9px]'} border-b ${isSection ? 'bg-lav border-lav-bar' : 'bg-white border-gray-200'}`}>
         {isSection ? (
           <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -116,6 +120,15 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
         )}
         <div className="flex items-center gap-1.5 shrink-0">
           <HelpButton definition={definition} className="mr-1" />
+          {canEditSpacing && (
+            <button
+              type="button"
+              onClick={() => setShowSpacing((v) => !v)}
+              aria-expanded={showSpacing}
+              title="Espaçamento (só Suporte técnico e Administrador)"
+              className={`w-9 h-9 inline-flex items-center justify-center text-lg rounded-lg ${showSpacing ? 'bg-blue-700 text-white' : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+            >⚙</button>
+          )}
           <button type="button" disabled={index === 0} onClick={() => onMove(-1)} title="Mover para cima" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↑</button>
           <button type="button" disabled={index === total - 1} onClick={() => onMove(1)} title="Mover para baixo" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg disabled:opacity-30 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">↓</button>
           <button type="button" onClick={onDuplicate} title="Duplicar bloco" className="w-9 h-9 inline-flex items-center justify-center text-xl rounded-lg text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700">⧉</button>
@@ -124,29 +137,34 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
       </div>
 
       {!collapsed && isSection && (
-        <div className="p-4 space-y-4">
-          <div className="rounded-xl border-2 border-lav-bar bg-lav p-3 space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-bold text-ink">Título do capítulo</span>
-              <span className="text-xs text-ink/70">(opcional — deixe em branco para não mostrar título)</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl border-b border-lav-bar pb-3">
+        <div className="space-y-2 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm font-bold text-ink">Título do capítulo</span>
+            <span className="text-xs text-ink/70">(opcional — deixe em branco para não mostrar título)</span>
+          </div>
+          {canEditSpacing && showSpacing && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl rounded-lg bg-white/60 p-3">
               <SpacingSelect label="↕ Espaço em cima do título" value={section.titleBefore} onChange={(v) => setFieldValue('titleBefore', v)} />
               <SpacingSelect label="↕ Espaço entre o título e os componentes" value={section.titleAfter} onChange={(v) => setFieldValue('titleAfter', v)} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_2fr] gap-3">
-              {definition.fields.filter((f) => f.key !== 'children').map((field) => (
-                <SchemaField
-                  key={field.key}
-                  field={field}
-                  value={section[field.key]}
-                  onChange={(v) => setFieldValue(field.key, v)}
-                  siblingValues={section}
-                />
-              ))}
-            </div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_2fr] gap-3">
+            {definition.fields.filter((f) => f.key !== 'children').map((field) => (
+              <SchemaField
+                key={field.key}
+                field={field}
+                value={section[field.key]}
+                onChange={(v) => setFieldValue(field.key, v)}
+                siblingValues={section}
+              />
+            ))}
           </div>
+        </div>
+      )}
+      </div>
 
+      {!collapsed && isSection && (
+        <div className="p-4 space-y-4">
           <div className="rounded-xl border-2 border-lav-bar p-3 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-bold text-ink">Componentes</span>
@@ -166,7 +184,7 @@ export default function BlockCard({ section, index, total, onChange, onRemove, o
       )}
 
       {/* Espaçamento vertical: logo abaixo do nome do componente */}
-      {!collapsed && nested && !isSection && (
+      {!collapsed && nested && !isSection && canEditSpacing && showSpacing && (
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-lav bg-lav-soft/70 px-4 py-3">
           <span className="text-xs font-bold uppercase tracking-wide text-ink">↕ Espaçamento</span>
           <SpacingSelect inline label="Em cima" value={section.spaceBefore} onChange={(v) => setFieldValue('spaceBefore', v)} />
