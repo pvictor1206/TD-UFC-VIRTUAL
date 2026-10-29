@@ -26,7 +26,7 @@ export default function NestedBlocks({ value, onChange, sectionNumber }) {
   };
 
   return (
-    <div className="ml-1 space-y-3 border-l-4 border-lav-bar pl-4">
+    <div className="space-y-3">
       {blocks.length === 0 && (
         <p className="text-xs text-gray-500 italic">Nenhum componente nesta capítulo ainda. Adicione abaixo ou pela barra lateral.</p>
       )}
