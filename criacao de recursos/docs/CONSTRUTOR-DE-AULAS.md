@@ -7,6 +7,13 @@ componentes padrão já usados em todas as aulas (acordeões, cards, tabelas,
 citações, quiz, vídeo, etc.), e baixar o resultado como **um site pronto**
 (HTML + CSS + JS), sem precisar mexer em JSON, terminal ou código.
 
+> **Editor Estrutural — Versão 2** (`src/pages/BuilderV2/`, usada pela aba de mesmo nome no painel):
+> mesma aula e mesmos componentes, mas numa tela só — a página aparece no centro já editável
+> (clique para selecionar, digite nos títulos e textos, arraste para reorganizar), com a lista de
+> componentes/camadas à esquerda e as propriedades à direita. Não há "Editar" x "Pré-visualizar".
+> Usa o mesmo JSON de aula e o mesmo renderizador da Versão 1, então uma aula aberta em uma versão
+> abre igual na outra. A Versão 1 (`src/pages/Builder/`) não foi alterada.
+
 ## Como usar
 
 1. Rode o projeto localmente:

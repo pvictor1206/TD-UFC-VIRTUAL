@@ -99,9 +99,10 @@ function BlockFrame({ block, s, c, total, selected, ops, onSelect, dragRef, clea
     return () => ro.disconnect();
   }, []);
 
-  // Bloco de texto selecionado: já deixa o cursor no editor, no fim do texto.
+  // Bloco de texto selecionado (ou título novo, ainda vazio): já deixa o cursor lá, no fim do texto.
+  // (Título com texto não entra aqui: o próprio clique já posicionou o cursor.)
   useEffect(() => {
-    if (!selected || block.type !== 'intro') return;
+    if (!selected || !(block.type === 'intro' || (block.type === 'heading' && !block.text))) return;
     const ed = frameRef.current?.querySelector('[contenteditable="true"]');
     if (!ed) return;
     ed.focus({ preventScroll: true });

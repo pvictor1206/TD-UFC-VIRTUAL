@@ -102,7 +102,7 @@ function Layers({ lesson, selected, onSelect }) {
     <div className="space-y-0.5">
       <LayerRow depth={0} active={selected?.kind === 'lesson'} rowRef={ref({ kind: 'lesson' })} onClick={() => onSelect({ kind: 'lesson' }, true)}>
         <span className="w-5 shrink-0 text-center">🎓</span>
-        <span className="truncate">Aula {lesson.aula} {lesson.titulo ? `— ${lesson.titulo}` : ''}</span>
+        <span className="truncate">{lesson.titulo || `Aula ${lesson.aula || ''}`.trim()}</span>
       </LayerRow>
 
       {lesson.sections.length === 0 && <p className="px-2 py-4 text-sm text-gray-400">Nenhum capítulo ainda.</p>}
