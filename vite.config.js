@@ -35,6 +35,7 @@ export default defineConfig({
       '@assets': path.join(criador, 'src/assets'),
       '@modules': path.join(criador, 'src/components/Modules'),
       '@builder': path.join(criador, 'src/pages/Builder'),
+      '@builder2': path.join(criador, 'src/pages/BuilderV2'), // Editor Estrutural — Versão 2
       '@standalone': path.join(criador, 'public/standalone'),
     },
   },

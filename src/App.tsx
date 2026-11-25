@@ -26,6 +26,7 @@ import {
   FolderPlus,
   Lock,
   Wand2,
+  Sparkles,
   PlayCircle,
   Eye,
   EyeOff
@@ -1554,9 +1555,10 @@ export default function App() {
               { id: 'materiais', label: 'Materiais de Apoio', icon: FileText },
               { id: 'pendencias', label: 'Pendências e Fórum', icon: AlertCircle },
               { id: 'recursos', label: 'Editor Estrutural', icon: Wand2 },
+              { id: 'recursos2', label: 'Editor Estrutural Versão 2', icon: Sparkles },
             ].map(tab => (
+              <React.Fragment key={tab.id}>
               <button
-                key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 pb-3 font-bold transition-colors ${activeTab === tab.id ? 'border-b-4 border-iuvi text-[#991F50]' : 'text-zinc-400 hover:text-zinc-700'}`}
               >
@@ -1568,16 +1570,19 @@ export default function App() {
                   </span>
                 )}
               </button>
+              {/* Botão vermelho: guia em vídeo, ao lado da aba Editor Estrutural (versão 1) */}
+              {tab.id === 'recursos' && (
+                <button
+                  type="button"
+                  onClick={() => setGuideOpen(true)}
+                  title="Assistir ao guia em vídeo do Editor Estrutural"
+                  className="-ml-3 mb-3 flex h-8 items-center gap-1.5 self-center rounded-full bg-red-600 px-3.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm transition-colors hover:bg-red-700"
+                >
+                  <PlayCircle size={15} /> Vídeo
+                </button>
+              )}
+              </React.Fragment>
             ))}
-            {/* Botão vermelho: guia em vídeo, ao lado da aba Editor Estrutural */}
-            <button
-              type="button"
-              onClick={() => setGuideOpen(true)}
-              title="Assistir ao guia em vídeo do Editor Estrutural"
-              className="-ml-3 mb-3 flex h-8 items-center gap-1.5 self-center rounded-full bg-red-600 px-3.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm transition-colors hover:bg-red-700"
-            >
-              <PlayCircle size={15} /> Vídeo
-            </button>
           </div>
         </div>
 
@@ -1587,6 +1592,7 @@ export default function App() {
           {activeTab === 'materiais' && <MaterialsTab discipline={activeDiscipline} isTecnico={isTecnico} />}
           {activeTab === 'pendencias' && <PendenciesTab discipline={activeDiscipline} isTecnico={isTecnico} />}
           {activeTab === 'recursos' && <RecursosTab discipline={activeDiscipline} isTecnico={isTecnico} currentUser={currentUser} />}
+          {activeTab === 'recursos2' && <RecursosTab version={2} discipline={activeDiscipline} isTecnico={isTecnico} currentUser={currentUser} />}
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Wand2, PlusCircle, Pencil, Eye, Download, FileJson, Send, CheckCircle2, RotateCcw, Trash2, ArrowLeft } from 'lucide-react';
 import LessonBuilder from '@builder/LessonBuilder';
+import LessonBuilderV2 from '@builder2/LessonBuilderV2';
 import { downloadLessonSite, downloadJson, slugify } from '@builder/exportSite';
 import { ActionsContext } from './context';
 import * as db from './db';
@@ -25,10 +26,13 @@ export const RESOURCE_STATUS = {
 const formatDate = (iso) => new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 
 // Tela cheia com o Editor Estrutural (edição ou somente leitura).
-function BuilderOverlay({ resource, readOnly, hideFileActions, hideExample, canEditSpacing, onClose, onChange }) {
+// Versão 1 = edição e pré-visualização em telas separadas; Versão 2 = tudo numa tela só, editando na própria página.
+// As duas leem e gravam a mesma aula (resource.lesson), então o conteúdo vale para as duas.
+function BuilderOverlay({ version = 1, resource, readOnly, hideFileActions, hideExample, canEditSpacing, onClose, onChange }) {
+  const Builder = version === 2 ? LessonBuilderV2 : LessonBuilder;
   return (
-    <div className="fixed inset-0 z-50 overflow-auto bg-white">
-      <LessonBuilder
+    <div className={`fixed inset-0 z-50 bg-white ${version === 2 ? 'overflow-hidden' : 'overflow-auto'}`}>
+      <Builder
         key={resource.id}
         initialLesson={resource.lesson}
         onLessonChange={onChange}
@@ -52,7 +56,7 @@ function BuilderOverlay({ resource, readOnly, hideFileActions, hideExample, canE
   );
 }
 
-export default function RecursosTab({ discipline, isTecnico, currentUser }) {
+export default function RecursosTab({ discipline, isTecnico, currentUser, version = 1 }) {
   const { addResource, updateResource, removeResource } = useContext(ActionsContext);
   const [openBuilder, setOpenBuilder] = useState(null); // { id, readOnly }
   // o título do recurso já vem preenchido com o nome da disciplina (pode ser editado)
@@ -97,6 +101,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
   if (editing) {
     return (
       <BuilderOverlay
+        version={version}
         resource={editing}
         readOnly={openBuilder.readOnly}
         hideFileActions={!isTecnico}
@@ -112,12 +117,17 @@ export default function RecursosTab({ discipline, isTecnico, currentUser }) {
 
   return (
     <div className="max-w-4xl">
-      <h3 className="text-xl font-bold mb-2">Editor Estrutural</h3>
+      <h3 className="text-xl font-bold mb-2">{version === 2 ? 'Editor Estrutural Versão 2' : 'Editor Estrutural'}</h3>
       <p className="text-sm text-zinc-600 mb-6">
         {isTecnico
           ? 'Crie recursos você mesmo ou acompanhe os do professor: visualize, edite o conteúdo, baixe o site pronto e aprove ou peça ajustes.'
           : 'Monte a sua aula com os componentes padrão (acordeões, cards, quiz, tabelas…). Ao terminar, envie para a Equipe EAD analisar.'}
       </p>
+      {version === 2 && (
+        <p className="text-sm text-zinc-600 mb-6 -mt-4">
+          Nesta versão não há “editar” e “visualizar”: a página da aula aparece pronta e você edita direto nela. As aulas são as mesmas da versão 1 — o que você muda aqui aparece lá, e vice-versa.
+        </p>
+      )}
 
       {(
         <form onSubmit={handleCreate} className="bg-white p-6 border border-[#D9CFC6] rounded-xl mb-8 shadow-sm">
