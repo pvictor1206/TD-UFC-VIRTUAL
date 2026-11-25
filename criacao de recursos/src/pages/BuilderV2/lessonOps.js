@@ -78,6 +78,18 @@ export const swapSection = (lesson, s, dir) => {
   return { ...lesson, sections };
 };
 
+// Leva um capítulo para outra posição. "to" é a posição de inserção contada ANTES de tirar o capítulo do lugar
+// (0 = antes do primeiro, n = depois do último). Devolve { lesson, at }.
+export function moveSection(lesson, from, to) {
+  let target = to;
+  if (from < target) target -= 1;
+  if (!lesson.sections[from] || target === from) return { lesson, at: from };
+  const sections = [...lesson.sections];
+  const [section] = sections.splice(from, 1);
+  sections.splice(target, 0, section);
+  return { lesson: { ...lesson, sections }, at: target };
+}
+
 // ---------- apoio à interface ----------
 
 // Onde entra um componente novo quando o usuário clica na lista (sem arrastar):

@@ -1,21 +1,30 @@
-import { Component, memo, useEffect, useRef, useState } from 'react';
+import { Component, memo, useContext, useEffect, useRef, useState } from 'react';
 import { renderSection, getSectionDefinition, lessonThemeStyle, spacingValue } from '@lesson';
-import RichTextEditor from '../Builder/RichTextEditor';
+import SchemaField from '../Builder/SchemaField';
+import HelpButton from '../Builder/HelpButton';
+import { BuilderContext } from '../Builder/BuilderContext';
 import InlineText from './InlineText';
-import { DRAG_NEW, DRAG_MOVE, SELECT_COLOR } from './LeftPanel';
+import SpacingField from './SpacingField';
+import { BLOCK_EDITORS, OPTION_KEYS } from './blocks';
+import { DRAG_NEW, DRAG_MOVE, DRAG_CHAPTER, SELECT_COLOR } from './LeftPanel';
 import { kids } from './lessonOps';
 
-// A página da aula, desenhada com o mesmo renderizador que o aluno vê (renderSection), mas
-// editável no próprio lugar: clique para selecionar, edite os textos direto, arraste para
-// reorganizar. O desenho dos capítulos e do cabeçalho espelha o de LessonRenderer.jsx.
+// A página da aula como o aluno vê, mas editável dentro de cada componente: clique no texto e
+// digite, adicione/remova itens ali mesmo, arraste para reorganizar. Os desenhos de cada
+// componente estão em ./blocks; o do cabeçalho e dos capítulos espelha o de LessonRenderer.jsx.
 
 const SELECTED = { outline: `2px solid ${SELECT_COLOR}`, outlineOffset: 2 };
 const HOVER = 'hover:outline hover:outline-1 hover:outline-offset-2 hover:outline-[#0a84ff]/60';
 
-const isDragOfOurs = (e) => {
+// O que está sendo arrastado: 'chapter' (capítulo), 'new' (componente da lista), 'move' (componente da página) ou null.
+const dragKind = (e) => {
   const types = Array.from(e.dataTransfer?.types || []);
-  return types.includes(DRAG_NEW) || types.includes(DRAG_MOVE);
+  if (types.includes(DRAG_CHAPTER)) return 'chapter';
+  if (types.includes(DRAG_NEW)) return 'new';
+  if (types.includes(DRAG_MOVE)) return 'move';
+  return null;
 };
+const isBlockDrag = (e) => { const k = dragKind(e); return k === 'new' || k === 'move'; };
 
 // Onde um componente largado em `e.clientY` entraria dentro de um capítulo (posição + altura da linha-guia).
 function locate(e, chapterEl) {
@@ -49,75 +58,80 @@ class BlockBoundary extends Component {
     if (!this.state.failed) return this.props.children;
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-        Não foi possível mostrar este componente. Confira as propriedades no painel ao lado.
+        Não foi possível mostrar este componente. Confira o conteúdo dele.
       </div>
     );
   }
 }
 
-// Só redesenha quando o próprio componente muda (digitar em um não refaz os outros).
+// Só para tipos de componente que ainda não têm editor próprio: mostra o componente pronto.
 const RenderedBlock = memo(function RenderedBlock({ block }) {
   return renderSection(block, 0);
 });
 
-const SIZES = { grande: '1.5em', medio: '1.25em', pequeno: '1.05em' };
-const ALIGNS = { esquerda: 'left', centro: 'center', direita: 'right' };
-
-function BlockBody({ block, selected, onChange }) {
-  if (block.type === 'heading') {
-    return (
-      <InlineText
-        as="h3"
-        value={block.text}
-        onChange={(text) => onChange({ ...block, text })}
-        placeholder="Escreva o título…"
-        className="block font-bold leading-tight text-ink"
-        style={{ fontSize: SIZES[block.size] || SIZES.medio, textAlign: ALIGNS[block.align] || 'left' }}
-      />
-    );
-  }
-  if (block.type === 'intro' && selected) {
-    return <RichTextEditor value={block.text} onChange={(text) => onChange({ ...block, text })} rows={3} placeholder="Texto" />;
-  }
-  return <RenderedBlock block={block} />;
+// Engrenagem ⚙ do componente: o que não é texto (tamanho, alinhamento, colunas, espaçamento...).
+function OptionsPopover({ block, def, hasEditor, canEditSpacing, onChange, onClose }) {
+  const keys = hasEditor ? OPTION_KEYS[block.type] || [] : null; // sem editor próprio: todos os campos
+  const fields = def.fields.filter((f) => !keys || keys.includes(f.key));
+  const set = (key, value) => onChange({ ...block, [key]: value });
+  return (
+    <div
+      className="absolute left-0 top-0 z-50 max-h-[70vh] w-72 space-y-3 overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 text-left text-ink shadow-xl"
+      style={{ fontSize: 14 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-bold uppercase tracking-wide text-gray-500">{hasEditor ? 'Opções' : 'Editar'} · {def.label}</p>
+        <button type="button" onClick={onClose} aria-label="Fechar opções" className="rounded-md px-2 text-gray-500 hover:bg-gray-100">✕</button>
+      </div>
+      {fields.map((field) => (
+        <SchemaField key={field.key} field={field} value={block[field.key]} onChange={(v) => set(field.key, v)} siblingValues={block} />
+      ))}
+      {canEditSpacing && (
+        <div className="space-y-3 rounded-lg bg-lav-soft/70 p-3">
+          <p className="text-xs font-bold uppercase tracking-wide text-ink">↕ Espaçamento</p>
+          <SpacingField label="Em cima" value={block.spaceBefore} onChange={(v) => set('spaceBefore', v)} />
+          <SpacingField label="Em baixo" value={block.spaceAfter} onChange={(v) => set('spaceAfter', v)} />
+        </div>
+      )}
+    </div>
+  );
 }
 
 const chromeBtn = 'flex h-6 w-6 items-center justify-center text-sm hover:bg-black/15 disabled:opacity-40 disabled:hover:bg-transparent';
 
-function BlockFrame({ block, s, c, total, selected, ops, onSelect, dragRef, clearDrop }) {
+function BlockFrame({ block, s, c, total, selected, focusKey, ops, onSelect, dragRef, clearDrop }) {
+  const { canEditSpacing } = useContext(BuilderContext);
   const def = getSectionDefinition(block.type);
+  const Editor = BLOCK_EDITORS[block.type];
   const frameRef = useRef(null);
   const contentRef = useRef(null);
   const [empty, setEmpty] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
 
-  // Componente sem nada para mostrar (ex.: carrossel sem imagens) ganha um aviso, para dar para clicar nele.
+  // (só para componentes sem editor próprio) aviso quando não há nada para mostrar
   useEffect(() => {
     const el = contentRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    if (Editor || !el || typeof ResizeObserver === 'undefined') return undefined;
     const ro = new ResizeObserver(() => setEmpty(el.getBoundingClientRect().height < 8));
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [Editor]);
 
-  // Bloco de texto selecionado (ou título novo, ainda vazio): já deixa o cursor lá, no fim do texto.
-  // (Título com texto não entra aqui: o próprio clique já posicionou o cursor.)
+  useEffect(() => { if (!selected) setOptionsOpen(false); }, [selected]);
+
+  // Componente recém-adicionado: já deixa o cursor no primeiro campo para começar a escrever.
   useEffect(() => {
-    if (!selected || !(block.type === 'intro' || (block.type === 'heading' && !block.text))) return;
-    const ed = frameRef.current?.querySelector('[contenteditable="true"]');
-    if (!ed) return;
-    ed.focus({ preventScroll: true });
-    const range = document.createRange();
-    range.selectNodeContents(ed);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }, [selected, block.type]);
+    if (!focusKey || focusKey.s !== s || focusKey.c !== c) return;
+    frameRef.current?.querySelector('[data-field]')?.focus({ preventScroll: true });
+    ops.clearFocus();
+  }, [focusKey]);
 
   const before = spacingValue(block.spaceBefore);
   const own = spacingValue(block.spaceAfter);
   const spaced = before !== undefined || own !== undefined;
   const pick = () => onSelect({ kind: 'block', s, c });
+  const hasOptions = !Editor || (OPTION_KEYS[block.type] || []).length > 0 || canEditSpacing;
 
   return (
     <div data-s={s} data-c={c} className={`scroll-mt-6 ${spaced ? 'last:mb-0!' : ''}`} style={{ paddingTop: before, marginBottom: own }}>
@@ -125,22 +139,28 @@ function BlockFrame({ block, s, c, total, selected, ops, onSelect, dragRef, clea
         ref={frameRef}
         className={`group/block relative ${selected ? '' : HOVER}`}
         style={selected ? SELECTED : undefined}
-        // 1º clique seleciona; com o componente selecionado, ele funciona normalmente (acordeões, quiz...)
-        onClickCapture={(e) => {
+        // clicar/focar em qualquer ponto do componente o seleciona (sem atrapalhar a digitação)
+        onMouseDownCapture={() => { if (!selected) pick(); }}
+        onFocusCapture={() => { if (!selected) pick(); }}
+        // componente sem editor próprio: o 1º clique só seleciona (e links não abrem)
+        onClickCapture={Editor ? undefined : (e) => {
           if (!selected) { e.preventDefault(); e.stopPropagation(); pick(); } else if (e.target.closest?.('a')) e.preventDefault();
         }}
         onClick={(e) => e.stopPropagation()}
-        onFocusCapture={() => { if (!selected) pick(); }}
       >
         <div ref={contentRef} className={spaced ? '[&>*]:my-0!' : ''}>
           <BlockBoundary resetKey={block}>
-            <BlockBody block={block} selected={selected} onChange={(b) => ops.changeBlock(s, c, b)} />
+            {Editor ? (
+              <Editor block={block} selected={selected} onChange={(b) => ops.changeBlock(s, c, b)} />
+            ) : (
+              <RenderedBlock block={block} />
+            )}
           </BlockBoundary>
         </div>
 
-        {empty && (
+        {!Editor && empty && (
           <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center text-sm text-gray-400">
-            {def?.icon} {def?.label || block.type} — vazio. Preencha as propriedades no painel à direita.
+            {def?.icon} {def?.label || block.type} — vazio.
           </div>
         )}
 
@@ -159,7 +179,7 @@ function BlockFrame({ block, s, c, total, selected, ops, onSelect, dragRef, clea
                 draggable
                 title="Arraste para mover este componente"
                 onDragStart={(e) => {
-                  dragRef.current = { s, c };
+                  dragRef.current = { kind: 'block', s, c };
                   e.dataTransfer.setData(DRAG_MOVE, '1');
                   e.dataTransfer.setData('text/plain', def?.label || '');
                   e.dataTransfer.effectAllowed = 'move';
@@ -174,8 +194,22 @@ function BlockFrame({ block, s, c, total, selected, ops, onSelect, dragRef, clea
               <button type="button" disabled={c === 0} onClick={() => ops.moveBlockBy(s, c, -1)} title="Mover para cima" className={chromeBtn}>↑</button>
               <button type="button" disabled={c === total - 1} onClick={() => ops.moveBlockBy(s, c, 1)} title="Mover para baixo" className={chromeBtn}>↓</button>
               <button type="button" onClick={() => ops.duplicateBlock(s, c)} title="Duplicar" className={chromeBtn}>⧉</button>
+              {hasOptions && (
+                <button type="button" onClick={() => setOptionsOpen((v) => !v)} aria-expanded={optionsOpen} title="Opções deste componente" className={`${chromeBtn} ${optionsOpen ? 'bg-black/20' : ''}`}>⚙</button>
+              )}
+              {def && <HelpButton definition={def} className="!h-6 !w-6 !rounded-none !border-0 !bg-transparent !text-xs !text-white hover:!bg-black/15" />}
               <button type="button" onClick={() => ops.removeBlock(s, c)} title="Excluir (Delete)" className={`${chromeBtn} rounded-r-md`}>🗑</button>
             </div>
+            {optionsOpen && def && (
+              <OptionsPopover
+                block={block}
+                def={def}
+                hasEditor={!!Editor}
+                canEditSpacing={canEditSpacing}
+                onChange={(b) => ops.changeBlock(s, c, b)}
+                onClose={() => setOptionsOpen(false)}
+              />
+            )}
           </>
         ) : (
           <span
@@ -185,6 +219,18 @@ function BlockFrame({ block, s, c, total, selected, ops, onSelect, dragRef, clea
             {def?.icon} {def?.label}
           </span>
         )}
+
+        {/* "+" na borda de baixo: adiciona um componente logo abaixo deste */}
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); ops.openQuickAdd(e.currentTarget.getBoundingClientRect(), { s, c: c + 1 }); }}
+          title="Adicionar um componente logo abaixo"
+          aria-label="Adicionar componente abaixo"
+          className="absolute -bottom-3 left-1/2 z-30 hidden h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full text-base font-bold leading-none text-white shadow-md group-hover/block:flex focus:flex"
+          style={{ background: SELECT_COLOR }}
+        >
+          +
+        </button>
       </div>
     </div>
   );
@@ -192,12 +238,15 @@ function BlockFrame({ block, s, c, total, selected, ops, onSelect, dragRef, clea
 
 const barBtn = 'flex h-7 w-7 items-center justify-center rounded-md text-base text-ink/70 transition-colors hover:bg-white/70 disabled:opacity-30 disabled:hover:bg-transparent';
 
-function ChapterFrame({ section, s, total, selected, onSelect, ops, drop, setDrop, dragRef, clearDrop }) {
+function ChapterFrame({ section, s, total, selected, focusKey, onSelect, ops, drop, setDrop, dragRef, clearDrop }) {
+  const { canEditSpacing } = useContext(BuilderContext);
   const [collapsed, setCollapsed] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
   const children = kids(section);
   const chapterSelected = selected?.kind === 'section' && selected.s === s;
   const inside = selected?.kind === 'block' && selected.s === s;
-  const dropHere = drop && drop.s === s;
+  const dropHere = drop?.kind === 'block' && drop.s === s;
+  const barRef = useRef(null);
   // rótulo e subtítulo vazios só aparecem quando o capítulo está em uso, para não poluir a página
   const showAll = chapterSelected || inside;
   const titleAfter = spacingValue(section.titleAfter);
@@ -205,24 +254,43 @@ function ChapterFrame({ section, s, total, selected, onSelect, ops, drop, setDro
 
   const stop = (fn) => (e) => { e.stopPropagation(); fn(); };
 
+  // arrastando um capítulo: solta antes (metade de cima) ou depois (metade de baixo) deste
+  const chapterIndex = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    return e.clientY < r.top + r.height / 2 ? s : s + 1;
+  };
+
   const onDragOver = (e) => {
-    if (!isDragOfOurs(e)) return;
+    const kind = dragKind(e);
+    if (!kind) return;
     e.preventDefault();
     e.stopPropagation();
-    e.dataTransfer.dropEffect = Array.from(e.dataTransfer.types).includes(DRAG_NEW) ? 'copy' : 'move';
+    e.dataTransfer.dropEffect = kind === 'new' ? 'copy' : 'move';
+    if (kind === 'chapter') {
+      const index = chapterIndex(e);
+      if (drop?.kind !== 'chapter' || drop.index !== index) setDrop({ kind: 'chapter', index });
+      return;
+    }
     const { c, top } = collapsed ? { c: children.length, top: 0 } : locate(e, e.currentTarget);
-    if (!drop || drop.s !== s || drop.c !== c || Math.abs(drop.top - top) > 1) setDrop({ s, c, top });
+    if (!dropHere || drop.c !== c || Math.abs(drop.top - top) > 1) setDrop({ kind: 'block', s, c, top });
   };
   const onDrop = (e) => {
-    if (!isDragOfOurs(e)) return;
+    const kind = dragKind(e);
+    if (!kind) return;
     e.preventDefault();
     e.stopPropagation();
+    const dragged = dragRef.current;
+    if (kind === 'chapter') {
+      const index = chapterIndex(e);
+      clearDrop();
+      dragRef.current = null;
+      if (dragged?.kind === 'chapter') ops.dropChapter(dragged.s, index);
+      return;
+    }
     const at = collapsed ? children.length : locate(e, e.currentTarget).c;
-    const types = Array.from(e.dataTransfer.types);
-    const move = dragRef.current;
     clearDrop();
-    if (types.includes(DRAG_NEW)) ops.addBlock(e.dataTransfer.getData(DRAG_NEW), { s, c: at });
-    else if (move) ops.dropMove(move, { s, c: at });
+    if (kind === 'new') ops.addBlock(e.dataTransfer.getData(DRAG_NEW), { s, c: at });
+    else if (dragged?.kind === 'block') ops.dropMove(dragged, { s, c: at });
     dragRef.current = null;
   };
 
@@ -236,8 +304,32 @@ function ChapterFrame({ section, s, total, selected, onSelect, ops, drop, setDro
       onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDrop((d) => (d && d.s === s ? null : d)); }}
       onDrop={onDrop}
     >
+      {/* linhas-guia ao arrastar um capítulo para esta posição */}
+      {drop?.kind === 'chapter' && drop.index === s && (
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-5 z-40 h-1 rounded-full" style={{ background: SELECT_COLOR }} />
+      )}
+      {drop?.kind === 'chapter' && s === total - 1 && drop.index === total && (
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 -bottom-5 z-40 h-1 rounded-full" style={{ background: SELECT_COLOR }} />
+      )}
+
       {/* barra do capítulo (só existe no editor) */}
-      <div className="mb-3 flex items-center gap-2 rounded-lg border border-lav-bar bg-lav px-2 py-1.5">
+      <div ref={barRef} className="relative mb-3 flex items-center gap-2 rounded-lg border border-lav-bar bg-lav px-2 py-1.5">
+        <span
+          draggable
+          title="Arraste para mudar este capítulo de lugar"
+          onClick={(e) => e.stopPropagation()}
+          onDragStart={(e) => {
+            dragRef.current = { kind: 'chapter', s };
+            e.dataTransfer.setData(DRAG_CHAPTER, '1');
+            e.dataTransfer.setData('text/plain', `Capítulo ${s + 1}`);
+            e.dataTransfer.effectAllowed = 'move';
+            if (barRef.current) e.dataTransfer.setDragImage(barRef.current, 24, 16);
+          }}
+          onDragEnd={() => { dragRef.current = null; clearDrop(); }}
+          className="flex h-8 w-6 shrink-0 cursor-grab select-none items-center justify-center rounded-md text-ink/60 hover:bg-white/60 active:cursor-grabbing"
+        >
+          ⠿
+        </span>
         <button
           type="button"
           onClick={stop(() => setCollapsed((v) => !v))}
@@ -262,7 +354,17 @@ function ChapterFrame({ section, s, total, selected, onSelect, ops, drop, setDro
         <button type="button" disabled={s === 0} onClick={stop(() => ops.moveSectionBy(s, -1))} title="Mover capítulo para cima" className={barBtn}>↑</button>
         <button type="button" disabled={s === total - 1} onClick={stop(() => ops.moveSectionBy(s, 1))} title="Mover capítulo para baixo" className={barBtn}>↓</button>
         <button type="button" onClick={stop(() => ops.duplicateSection(s))} title="Duplicar capítulo" className={barBtn}>⧉</button>
+        {canEditSpacing && (
+          <button type="button" onClick={stop(() => setOptionsOpen((v) => !v))} aria-expanded={optionsOpen} title="Espaçamento do título (só Suporte técnico e Administrador)" className={`${barBtn} ${optionsOpen ? 'bg-white/70' : ''}`}>⚙</button>
+        )}
         <button type="button" onClick={stop(() => ops.removeSection(s))} title="Excluir capítulo" className={`${barBtn} text-red-600`}>🗑</button>
+        {optionsOpen && canEditSpacing && (
+          <div className="absolute right-0 top-full z-50 mt-1 w-72 space-y-3 rounded-xl border border-gray-200 bg-white p-4 text-ink shadow-xl" style={{ fontSize: 14 }} onClick={(e) => e.stopPropagation()}>
+            <p className="text-xs font-bold uppercase tracking-wide text-gray-500">↕ Espaçamento do título</p>
+            <SpacingField label="Em cima do título" value={section.titleBefore} onChange={(v) => ops.patchSection(s, { titleBefore: v })} />
+            <SpacingField label="Entre o título e os componentes" value={section.titleAfter} onChange={(v) => ops.patchSection(s, { titleAfter: v })} />
+          </div>
+        )}
       </div>
 
       {collapsed ? (
@@ -290,7 +392,7 @@ function ChapterFrame({ section, s, total, selected, onSelect, ops, drop, setDro
           <div data-children className="relative space-y-4">
             {children.length === 0 && (
               <div className="rounded-xl border-2 border-dashed border-lav-bar bg-lav-soft/50 px-4 py-8 text-center text-sm text-ink/60">
-                Capítulo vazio — clique em um componente da lista à esquerda ou arraste-o até aqui.
+                Capítulo vazio — arraste um componente da lista para cá ou use o botão abaixo.
               </div>
             )}
             {children.map((block, c) => (
@@ -301,6 +403,7 @@ function ChapterFrame({ section, s, total, selected, onSelect, ops, drop, setDro
                 c={c}
                 total={children.length}
                 selected={selected?.kind === 'block' && selected.s === s && selected.c === c}
+                focusKey={focusKey}
                 ops={ops}
                 onSelect={onSelect}
                 dragRef={dragRef}
@@ -315,6 +418,15 @@ function ChapterFrame({ section, s, total, selected, onSelect, ops, drop, setDro
               />
             )}
           </div>
+
+          {/* adicionar um componente no fim deste capítulo (também dá para arrastar da lista) */}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); ops.openQuickAdd(e.currentTarget.getBoundingClientRect(), { s, c: children.length }); }}
+            className="w-full rounded-lg border-2 border-dashed border-lav-bar py-2 text-sm font-bold text-ink/60 transition-colors hover:bg-lav-soft hover:text-ink"
+          >
+            + Adicionar componente neste capítulo
+          </button>
         </section>
       )}
     </div>
@@ -351,9 +463,8 @@ function LessonHeader({ lesson, selected, onSelect, ops }) {
   );
 }
 
-export default function Canvas({ lesson, selected, onSelect, ops, scrollRef }) {
+export default function Canvas({ lesson, selected, focusKey, onSelect, ops, scrollRef, dragRef }) {
   const [drop, setDrop] = useState(null);
-  const dragRef = useRef(null);
   const clearDrop = () => setDrop(null);
 
   useEffect(() => {
@@ -382,7 +493,7 @@ export default function Canvas({ lesson, selected, onSelect, ops, scrollRef }) {
               {sectionCount === 0 && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  onDragOver={(e) => { if (isDragOfOurs(e)) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } }}
+                  onDragOver={(e) => { if (dragKind(e) === 'new') { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } }}
                   onDrop={(e) => {
                     if (!Array.from(e.dataTransfer.types).includes(DRAG_NEW)) return;
                     e.preventDefault();
@@ -407,6 +518,7 @@ export default function Canvas({ lesson, selected, onSelect, ops, scrollRef }) {
                   s={s}
                   total={sectionCount}
                   selected={selected}
+                  focusKey={focusKey}
                   onSelect={onSelect}
                   ops={ops}
                   drop={drop}

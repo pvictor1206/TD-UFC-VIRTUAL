@@ -125,7 +125,7 @@ export default function RecursosTab({ discipline, isTecnico, currentUser, versio
       </p>
       {version === 2 && (
         <p className="text-sm text-zinc-600 mb-6 -mt-4">
-          Nesta versão não há “editar” e “visualizar”: a página da aula aparece pronta e você edita direto nela. As aulas são as mesmas da versão 1 — o que você muda aqui aparece lá, e vice-versa.
+          Nesta versão não há “editar” e “visualizar”: a página da aula aparece pronta e você edita direto dentro de cada componente: clique no texto e digite, adicione itens ali mesmo e arraste os componentes para o capítulo (ou reordene pelas Camadas). O botão “Visão do aluno” mostra a aula pronta. As aulas são as mesmas da versão 1 — o que você muda aqui aparece lá, e vice-versa.
         </p>
       )}
 

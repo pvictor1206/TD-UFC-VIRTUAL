@@ -9,8 +9,11 @@ citações, quiz, vídeo, etc.), e baixar o resultado como **um site pronto**
 
 > **Editor Estrutural — Versão 2** (`src/pages/BuilderV2/`, usada pela aba de mesmo nome no painel):
 > mesma aula e mesmos componentes, mas numa tela só — a página aparece no centro já editável
-> (clique para selecionar, digite nos títulos e textos, arraste para reorganizar), com a lista de
-> componentes/camadas à esquerda e as propriedades à direita. Não há "Editar" x "Pré-visualizar".
+> (clique no texto e digite, adicione/remova itens dentro do próprio componente, arraste para reorganizar),
+> com a lista de componentes e as camadas à esquerda. Não há painel de propriedades nem "Editar" x
+> "Pré-visualizar"; as opções que não são texto ficam na engrenagem ⚙ de cada componente.
+> A ordem se muda arrastando (na página ou nas Camadas, inclusive entre capítulos), o "+" adiciona um
+> componente no ponto exato, e o botão "Visão do aluno" mostra a aula pronta, como ela aparece para ele.
 > Usa o mesmo JSON de aula e o mesmo renderizador da Versão 1, então uma aula aberta em uma versão
 > abre igual na outra. A Versão 1 (`src/pages/Builder/`) não foi alterada.
 

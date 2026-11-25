@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { LessonRenderer, createBlankLesson, getSectionDefinition, migrateLesson } from '@lesson';
 import { BuilderContext } from '../Builder/BuilderContext';
 import Canvas from './Canvas';
-import Inspector from './Inspector';
 import LeftPanel from './LeftPanel';
+import QuickAdd from './QuickAdd';
 import TopBar from './TopBar';
 import useAutosave from './useAutosave';
 import useFileActions from './useFileActions';
@@ -80,8 +80,16 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
   const [selected, setSelected] = useState(null);
   const [tab, setTab] = useState('components');
   const [showLeft, setShowLeft] = useState(true);
-  const [showRight, setShowRight] = useState(true);
+  // componente recém-adicionado: o cursor vai para o primeiro campo dele
+  const [focusKey, setFocusKey] = useState(null);
   const scrollRef = useRef(null);
+  // o que está sendo arrastado ({ kind: 'block', s, c } | { kind: 'chapter', s }): compartilhado entre a página e as camadas
+  const dragRef = useRef(null);
+  // janelinha "adicionar componente aqui" ({ rect, s, c, scroll })
+  const [quickAdd, setQuickAdd] = useState(null);
+  // visão do aluno: mostra a aula pronta, como ela aparece para ele (e volta para a edição no mesmo ponto)
+  const [studentView, setStudentView] = useState(false);
+  const savedScroll = useRef(0);
   const { toast, notify, dismiss } = useToast();
   const { saveState, flushSave } = useAutosave(lesson, onLessonChange, true);
   const files = useFileActions({ lesson, setLesson, loadAssets, notify });
@@ -124,8 +132,9 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
         return cur && cur.type === block.type ? L.updateBlock(l, s, c, block) : l;
       }),
 
-    // `at` = onde soltar ({ s, c }); sem ele, entra abaixo do que está selecionado
-    addBlock: (type, at) => {
+    // `at` = onde soltar ({ s, c }); sem ele, entra abaixo do que está selecionado.
+    // A página rola até o componente novo quando não há `at` (ou com opts.scroll, ex.: ao adicionar pelas camadas).
+    addBlock: (type, at, opts = {}) => {
       const block = L.newBlock(type);
       if (!block) return;
       let base = lesson;
@@ -140,9 +149,11 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
       const sel = { kind: 'block', s: target.s, c: target.c };
       setLesson(next);
       setSelected(sel);
-      if (!at) scrollToSelection(sel);
+      setFocusKey({ s: target.s, c: target.c });
+      if (!at || opts.scroll) scrollToSelection(sel);
       notify(`"${getSectionDefinition(type).label}" adicionado em: ${L.sectionLabel(next.sections[target.s], target.s)}`);
     },
+    clearFocus: () => setFocusKey(null),
     removeBlock: (s, c) => {
       withUndo('Componente excluído.', L.removeBlock(lesson, s, c));
       setSelected({ kind: 'section', s });
@@ -155,11 +166,18 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
       setLesson(L.swapBlock(lesson, s, c, dir));
       select({ kind: 'block', s, c: c + dir }, true);
     },
-    dropMove: (from, to) => {
+    dropMove: (from, to, opts = {}) => {
       const r = L.moveBlock(lesson, from, to);
       setLesson(r.lesson);
-      setSelected({ kind: 'block', ...r.at });
+      select({ kind: 'block', ...r.at }, !!opts.scroll);
     },
+    // leva um capítulo inteiro para a posição `index` (contada antes de tirá-lo do lugar)
+    dropChapter: (from, index, opts = {}) => {
+      const r = L.moveSection(lesson, from, index);
+      setLesson(r.lesson);
+      select({ kind: 'section', s: r.at }, !!opts.scroll);
+    },
+    openQuickAdd: (rect, at, opts = {}) => setQuickAdd({ rect, ...at, scroll: !!opts.scroll }),
 
     addSection: () => {
       const at = lesson.sections.length;
@@ -180,6 +198,18 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
     },
   };
 
+  const toggleStudentView = () => {
+    if (!studentView) savedScroll.current = scrollRef.current?.scrollTop ?? 0;
+    setQuickAdd(null);
+    setStudentView((v) => !v);
+  };
+  // ao voltar para a edição, a página reaparece no mesmo ponto em que estava
+  useEffect(() => {
+    if (studentView) return;
+    const top = savedScroll.current;
+    requestAnimationFrame(() => { if (scrollRef.current) scrollRef.current.scrollTop = top; });
+  }, [studentView]);
+
   const undo = () => {
     if (!toast?.undo) return;
     setLesson(toast.undo);
@@ -190,18 +220,20 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
   // Atalhos (com o foco fora de campos de texto): Esc tira a seleção; Delete exclui o componente selecionado.
   useEffect(() => {
     const onKey = (e) => {
+      if (studentView) return;
       const t = e.target;
       if (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
       if (!(t === document.body || scrollRef.current?.contains(t))) return;
       if (e.key === 'Escape') setSelected(null);
-      else if (e.key === 'Delete' && selected?.kind === 'block' && lesson.sections[selected.s]?.children?.[selected.c]) {
+      // Delete só com o foco "solto" na página (não com o cursor num botão), para não excluir sem querer
+      else if (e.key === 'Delete' && t === document.body && selected?.kind === 'block' && lesson.sections[selected.s]?.children?.[selected.c]) {
         e.preventDefault();
         ops.removeBlock(selected.s, selected.c);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [selected, lesson]);
+  }, [selected, lesson, studentView]);
 
   return (
     <BuilderContext.Provider value={{ uploadImage, canEditSpacing }}>
@@ -215,10 +247,20 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
           files={files}
           cor={lesson.cor}
           onCor={(v) => ops.updateMeta('cor', v)}
-          panels={{ left: showLeft, right: showRight, toggleLeft: () => setShowLeft((v) => !v), toggleRight: () => setShowRight((v) => !v) }}
+          panels={{ left: showLeft, toggleLeft: () => setShowLeft((v) => !v) }}
+          student={{ on: studentView, toggle: toggleStudentView }}
         />
         <div className="flex min-h-0 flex-1">
-          {showLeft && (
+          {studentView && (
+            <div data-student-view className="min-w-0 flex-1 overflow-y-auto bg-white">
+              <div className="sticky top-0 z-20 flex flex-wrap items-center justify-center gap-3 border-b border-lav-bar bg-lav py-1.5 text-xs font-semibold text-ink">
+                Visão do aluno — é exatamente assim que a aula vai aparecer para ele
+                <button type="button" onClick={toggleStudentView} className="rounded-md bg-white px-2.5 py-1 font-bold underline hover:bg-lav-soft">Voltar a editar</button>
+              </div>
+              <LessonRenderer content={lesson} />
+            </div>
+          )}
+          {!studentView && showLeft && (
             <LeftPanel
               lesson={lesson}
               selected={selected}
@@ -227,12 +269,24 @@ function Editor({ initialLesson, onLessonChange, loadAssets, headerExtra, hideFi
               onSelect={select}
               onAddBlock={(type) => ops.addBlock(type)}
               onAddSection={ops.addSection}
+              dragRef={dragRef}
+              ops={ops}
             />
           )}
-          <Canvas lesson={lesson} selected={selected} onSelect={select} ops={ops} scrollRef={scrollRef} />
-          {showRight && <Inspector lesson={lesson} selected={selected} canEditSpacing={canEditSpacing} ops={ops} />}
+          {!studentView && <Canvas lesson={lesson} selected={selected} focusKey={focusKey} onSelect={select} ops={ops} scrollRef={scrollRef} dragRef={dragRef} />}
         </div>
         <Toast toast={toast} lesson={lesson} onUndo={undo} />
+        {quickAdd && lesson.sections[quickAdd.s] && (
+          <QuickAdd
+            rect={quickAdd.rect}
+            title={`Adicionar em: ${L.sectionLabel(lesson.sections[quickAdd.s], quickAdd.s)}`}
+            onClose={() => setQuickAdd(null)}
+            onPick={(type) => {
+              ops.addBlock(type, { s: quickAdd.s, c: quickAdd.c }, { scroll: quickAdd.scroll });
+              setQuickAdd(null);
+            }}
+          />
+        )}
       </div>
     </BuilderContext.Provider>
   );

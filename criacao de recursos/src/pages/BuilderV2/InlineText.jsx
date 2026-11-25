@@ -33,6 +33,7 @@ export default function InlineText({ as: Tag = 'span', value, onChange, placehol
       role="textbox"
       aria-label={label || placeholder}
       data-placeholder={placeholder}
+      data-field=""
       onInput={emit}
       onFocus={onFocus}
       onKeyDown={(e) => {
