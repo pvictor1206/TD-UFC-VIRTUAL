@@ -45,7 +45,7 @@ const Timeline = ({ items = [] }) => {
               </div>
 
               {isOpen && (
-                <div className="mt-3 pt-3 border-t border-lav text-ink/80 italic">
+                <div className="mt-3 pt-3 border-t border-lav text-ink/80 italic whitespace-pre-line">
                   {eventoContent}
                 </div>
               )}

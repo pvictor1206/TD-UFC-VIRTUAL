@@ -75,9 +75,9 @@ export function CtaEditor({ block, onChange }) {
     <div className="my-4">
       <section className="px-0 py-4">
         <div className="mx-auto flex w-full max-w-[720px] items-center justify-center rounded-t-[14px] bg-lav p-4 sm:w-4/5 sm:p-5 md:w-3/5 md:p-6">
-          <p className="w-full break-words text-center text-[17px] font-bold leading-relaxed text-ink">
-            <InlineText value={block.message} onChange={set('message')} placeholder="Mensagem da chamada" className="block" />
-          </p>
+          <div className="w-full">
+            <Area value={block.message} onChange={set('message')} placeholder="Mensagem da chamada" className="break-words text-center text-[17px] font-bold leading-relaxed text-ink" />
+          </div>
         </div>
         <div className="mx-auto w-full max-w-[720px] sm:w-4/5 md:w-3/5">
           <div className="block h-[50px] select-none rounded-b-[14px] bg-lav-soft text-center text-[12px] font-bold uppercase leading-[50px] tracking-wide text-ink">

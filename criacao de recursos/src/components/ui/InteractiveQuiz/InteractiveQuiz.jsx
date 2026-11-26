@@ -34,7 +34,7 @@ const Question = ({ question, onAnswer, selectedAnswer, correctAnswer, disabled 
 
   return (
     <div>
-      <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-6 text-center">{question.text}</h3>
+      <h3 className="whitespace-pre-line text-lg md:text-xl font-semibold text-gray-800 mb-6 text-center">{question.text}</h3>
       <div className="space-y-3">
         {question.options?.map((option, index) => (
           <button

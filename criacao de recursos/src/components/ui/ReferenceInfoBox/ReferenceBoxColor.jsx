@@ -24,7 +24,7 @@ export default function ReferenceBoxColor({
       >
         <p
           className="
-            italic leading-relaxed text-justify
+            whitespace-pre-line italic leading-relaxed text-justify
             text-[length:var(--ref-fs-mob)] md:text-[length:var(--ref-fs-desk)]
           "
           style={{ color: textColor }}

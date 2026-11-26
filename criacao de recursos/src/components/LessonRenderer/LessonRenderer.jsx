@@ -227,8 +227,8 @@ export function renderSection(section, index) {
       // O componente de UI só recebe `quote`; incorporamos a citação/fonte
       // no próprio HTML para não perder a informação (ver docs/CONSTRUTOR-DE-AULAS.md).
       const quoteHtml = section.citation
-        ? `${section.text || ''}<br/><span style="font-size:0.85em;font-style:normal;opacity:0.75">— ${section.citation}</span>`
-        : section.text || '';
+        ? `${(section.text || '').trimEnd()}<br/><span style="font-size:0.85em;font-style:normal;opacity:0.75">— ${section.citation}</span>`
+        : (section.text || '').trimEnd();
       return (
         <section key={index} className="my-8">
           <ReferenceBoxColor quote={quoteHtml} />
@@ -353,7 +353,7 @@ export default function LessonRenderer({ content, showAccessibilityControls = tr
               {content.titulo}
             </h1>
             {content.objetivo && (
-              <p className="max-w-3xl text-gray-600 dark:text-gray-400 leading-relaxed font-light italic" style={{ fontSize: 'clamp(1em, 3vw, 1.1em)' }}>
+              <p className="max-w-3xl whitespace-pre-line text-gray-600 dark:text-gray-400 leading-relaxed font-light italic" style={{ fontSize: 'clamp(1em, 3vw, 1.1em)' }}>
                 {content.objetivo}
               </p>
             )}

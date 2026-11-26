@@ -4,7 +4,7 @@ import MathView from '@lesson/MathView';
 import { LANGUAGES, highlightLines, parseLineRanges } from '@lesson/highlight';
 import LatexField from '../Builder/LatexField';
 import { BuilderContext } from '../Builder/BuilderContext';
-import { markupToHtml, htmlToMarkup } from './richText';
+import { markupToHtml, htmlToMarkup } from '@lesson/richText';
 
 // Peças de edição "dentro do componente". Tudo que é campo editável leva `data-field`
 // (é assim que o editor acha o primeiro campo para já deixar o cursor num componente novo).

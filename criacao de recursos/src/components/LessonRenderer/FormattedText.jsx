@@ -34,9 +34,10 @@ export default function FormattedText({ text, className = '', style = {} }) {
   if (!hasBullets) {
     return (
       <div
-        className={className}
+        // respeita as quebras de linha digitadas no editor
+        className={`whitespace-pre-line ${className}`}
         style={style}
-        dangerouslySetInnerHTML={{ __html: toHtml(text) }}
+        dangerouslySetInnerHTML={{ __html: toHtml(String(text).trimEnd()) }}
       />
     );
   }

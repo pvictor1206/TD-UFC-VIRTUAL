@@ -40,7 +40,7 @@ export default function QuestionnairePrompt({
       >
         <p
           className="
-            font-bold text-center break-words leading-relaxed
+            whitespace-pre-line font-bold text-center break-words leading-relaxed
             text-[length:var(--msg-fs-mob)] md:text-[length:var(--msg-fs-desk)]
           "
           style={{ color: topTextColor }} 

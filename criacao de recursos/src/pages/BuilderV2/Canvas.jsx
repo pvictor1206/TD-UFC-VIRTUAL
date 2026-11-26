@@ -4,6 +4,7 @@ import SchemaField from '../Builder/SchemaField';
 import HelpButton from '../Builder/HelpButton';
 import { BuilderContext } from '../Builder/BuilderContext';
 import InlineText from './InlineText';
+import { Area } from './fields';
 import SpacingField from './SpacingField';
 import { BLOCK_EDITORS, OPTION_KEYS } from './blocks';
 import { DRAG_NEW, DRAG_MOVE, DRAG_CHAPTER, SELECT_COLOR } from './LeftPanel';
@@ -454,9 +455,9 @@ function LessonHeader({ lesson, selected, onSelect, ops }) {
           <h1 className="font-bold leading-tight text-gray-900" style={{ fontSize: 'clamp(1.5em, 7vw, 2.5em)' }}>
             <InlineText value={lesson.titulo} onChange={(v) => ops.updateMeta('titulo', v)} placeholder="Título da aula" className="block" />
           </h1>
-          <p className="max-w-3xl font-light italic leading-relaxed text-gray-600" style={{ fontSize: 'clamp(1em, 3vw, 1.1em)' }}>
-            <InlineText value={lesson.objetivo} onChange={(v) => ops.updateMeta('objetivo', v)} placeholder="Objetivo da aula (opcional)" className="block" />
-          </p>
+          <div className="max-w-3xl" style={{ fontSize: 'clamp(1em, 3vw, 1.1em)' }}>
+            <Area value={lesson.objetivo} onChange={(v) => ops.updateMeta('objetivo', v)} placeholder="Objetivo da aula (opcional)" className="font-light italic leading-relaxed text-gray-600" />
+          </div>
         </div>
       </header>
     </div>

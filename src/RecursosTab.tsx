@@ -25,6 +25,12 @@ export const RESOURCE_STATUS = {
 
 const formatDate = (iso) => new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 
+// Número da aula mostrado no cartão ("1" vira "Aula 1"; quem digitou "Aula 1" no campo não vê "Aula Aula 1").
+const aulaLabel = (lesson) => {
+  const numero = String(lesson?.aula ?? '').trim().replace(/^aula\s*/i, '');
+  return numero ? `Aula ${numero}` : '';
+};
+
 // Tela cheia com o Editor Estrutural (edição ou somente leitura).
 // Versão 1 = edição e pré-visualização em telas separadas; Versão 2 = tudo numa tela só, editando na própria página.
 // As duas leem e gravam a mesma aula (resource.lesson), então o conteúdo vale para as duas.
@@ -168,13 +174,21 @@ export default function RecursosTab({ discipline, isTecnico, currentUser, versio
         ) : (
           resources.map((r) => {
             const st = RESOURCE_STATUS[r.status] || RESOURCE_STATUS.rascunho;
+            const aula = aulaLabel(r.lesson);
             const blocks = r.lesson?.sections?.length || 0;
             const profCanEdit = !isTecnico && canProfessorEdit(r);
             return (
               <div key={r.id} className="bg-white p-5 border border-[#D9CFC6] rounded-xl">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-3">
                   <div>
-                    <h5 className="font-bold text-lg text-zinc-900">{r.lesson?.titulo || 'Aula sem título'}</h5>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {aula ? (
+                        <span className="shrink-0 rounded-md bg-[#991F50] px-2.5 py-1 text-xs font-extrabold uppercase tracking-wider text-white">{aula}</span>
+                      ) : (
+                        <span title="Preencha o número da aula dentro do editor" className="shrink-0 rounded-md border border-dashed border-zinc-400 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-zinc-500">Aula sem número</span>
+                      )}
+                      <h5 className="font-bold text-lg text-zinc-900">{r.lesson?.titulo || 'Aula sem título'}</h5>
+                    </div>
                     <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-zinc-500">
                       <span>Autor: <strong>{r.author}</strong></span>
                       <span>•</span>
