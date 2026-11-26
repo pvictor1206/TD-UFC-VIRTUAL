@@ -30,13 +30,13 @@ export default function QuickAdd({ rect, title, onPick, onClose }) {
     return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey); };
   }, [onClose]);
 
-  // abaixo do botão; se não couber, acima
-  const width = 360;
+  // abaixo do botão; se ali couber pouco e acima houver mais espaço, abre acima
+  const width = 320;
   const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
-  const room = window.innerHeight - rect.bottom;
-  const style = room > 320
-    ? { left, top: rect.bottom + 6, maxHeight: Math.min(460, room - 16) }
-    : { left, bottom: window.innerHeight - rect.top + 6, maxHeight: Math.min(460, rect.top - 16) };
+  const below = window.innerHeight - rect.bottom;
+  const style = below >= 400 || below >= rect.top
+    ? { left, top: rect.bottom + 6, maxHeight: Math.min(560, below - 16) }
+    : { left, bottom: window.innerHeight - rect.top + 6, maxHeight: Math.min(560, rect.top - 16) };
 
   return createPortal(
     <div
@@ -59,22 +59,23 @@ export default function QuickAdd({ rect, title, onPick, onClose }) {
           className="w-full rounded-lg bg-gray-100 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-300"
         />
       </div>
-      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-3">
+      {/* um componente abaixo do outro, com o nome inteiro */}
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-2">
         {groups.length === 0 && <p className="py-4 text-center text-gray-400">Nenhum componente encontrado.</p>}
         {groups.map((group) => (
           <div key={group.id}>
-            <h3 className="mb-1 px-1 text-[11px] font-bold uppercase tracking-widest text-gray-400">{group.label}</h3>
-            <div className="grid grid-cols-2 gap-1">
+            <h3 className="mb-1 px-2 text-[11px] font-bold uppercase tracking-widest text-gray-400">{group.label}</h3>
+            <div className="flex flex-col gap-0.5">
               {group.blocks.map((b) => (
                 <button
                   key={b.type}
                   type="button"
                   onClick={() => onPick(b.type)}
                   title={b.description}
-                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-left hover:bg-gray-100"
+                  className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left outline-none transition-colors hover:bg-lav-soft focus-visible:bg-lav-soft focus-visible:ring-2 focus-visible:ring-blue-300"
                 >
-                  <span className="w-5 shrink-0 text-center text-base">{b.icon}</span>
-                  <span className="truncate font-medium">{b.label}</span>
+                  <span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-base">{b.icon}</span>
+                  <span className="min-w-0 flex-1 font-medium leading-snug">{b.label}</span>
                 </button>
               ))}
             </div>
